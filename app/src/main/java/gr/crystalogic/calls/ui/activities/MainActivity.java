@@ -1,8 +1,13 @@
 package gr.crystalogic.calls.ui.activities;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,10 +24,13 @@ import gr.crystalogic.calls.R;
 import gr.crystalogic.calls.domain.Call;
 import gr.crystalogic.calls.providers.CallsProvider;
 import gr.crystalogic.calls.ui.adapters.CallsAdapter;
+import gr.crystalogic.calls.ui.listeners.ICallInteractionListener;
 import gr.crystalogic.calls.utils.Device;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
 
     private RecyclerView mRecyclerView;
     private CallsAdapter mAdapter;
@@ -104,22 +112,38 @@ public class MainActivity extends AppCompatActivity
 
         CallsProvider callsProvider = new CallsProvider(this);
         List<Call> calls = callsProvider.getCalls();
-        mAdapter = new CallsAdapter(calls,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-/*                        int position = mRecyclerView.getChildAdapterPosition(v);
-                        Conversation conversation = mAdapter.getItemAtPosition(position);
-                        showConversation(conversation.getId());*/
-                    }
-                },
-                new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        return false;
-                    }
-                });
+        mAdapter = new CallsAdapter(calls, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = mRecyclerView.getChildAdapterPosition(v);
+                mAdapter.selectCallAtPosition(position);
+            }
+        }, new ICallInteractionListener() {
+            @Override
+            public void callContact(Call call) {
+                MainActivity.this.callContact(call.getNumber());
+            }
+
+            @Override
+            public void sendSMS(Call call) {
+                MainActivity.this.sendSMS(call.getNumber());
+            }
+        });
+
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    private void callContact(String number) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CODE_ASK_CALL_PERMISSION);
+            return;
+        }
+
+        Intent i = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
+        startActivity(i);
+    }
+
+    private void sendSMS(String number) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
+    }
 }

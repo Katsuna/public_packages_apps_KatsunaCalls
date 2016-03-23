@@ -9,4 +9,6 @@
     <string name="info">Info</string>
     <string name="unknown">Unknown</string>
     <string name="contacts_app_missing">Contacts App is missing.</string>
+    <string name="call">Call</string>
+    <string name="message">Message</string>
 </resources>

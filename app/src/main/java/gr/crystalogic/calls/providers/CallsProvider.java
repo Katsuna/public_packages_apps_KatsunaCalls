@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.dao;
+package gr.crystalogic.calls.providers;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -9,33 +9,34 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import gr.crystalogic.calls.dao.metadata.CallColumns;
+import gr.crystalogic.calls.providers.metadata.CallColumns;
 import gr.crystalogic.calls.domain.Call;
 
 @SuppressWarnings("ResourceType")
-public class CallsDao {
+public class CallsProvider {
 
-    private static final String TAG = "CallsDao";
+    private static final String TAG = "CallsProvider";
 
     private final ContentResolver cr;
 
-    public CallsDao(Context context) {
+    public CallsProvider(Context context) {
         cr = context.getContentResolver();
     }
 
     public List<Call> getCalls() {
 
         List<Call> calls = new ArrayList<>();
+        String orderBy = CallLog.Calls.DATE + " DESC";
 
-        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, null);
+        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, orderBy);
         if (cursor != null && cursor.moveToFirst()) {
             do {
-
                 Call call = new Call();
                 call.setId(cursor.getLong(cursor.getColumnIndex(CallColumns.ID)));
                 call.setType(cursor.getInt(cursor.getColumnIndex(CallColumns.TYPE)));
-                call.setContactId(cursor.getLong(cursor.getColumnIndex(CallColumns.CONTACT_ID)));
+                //call.setContactId(cursor.getLong(cursor.getColumnIndex(CallColumns.CONTACT_ID)));
                 call.setLookupUri(cursor.getString(cursor.getColumnIndex(CallColumns.LOOKUP_URI)));
+                call.setName(cursor.getString(cursor.getColumnIndex(CallColumns.NAME)));
                 call.setNumber(cursor.getString(cursor.getColumnIndex(CallColumns.NUMBER)));
                 call.setDate(cursor.getLong(cursor.getColumnIndex(CallColumns.DATE)));
                 call.setIsRead(cursor.getInt(cursor.getColumnIndex(CallColumns.IS_READ)));

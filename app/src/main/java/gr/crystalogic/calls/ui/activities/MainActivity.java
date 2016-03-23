@@ -1,4 +1,4 @@
-package gr.crystalogic.calls;
+package gr.crystalogic.calls.ui.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -7,14 +7,23 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-import gr.crystalogic.calls.dao.CallsDao;
+import java.util.List;
+
+import gr.crystalogic.calls.R;
+import gr.crystalogic.calls.domain.Call;
+import gr.crystalogic.calls.providers.CallsProvider;
+import gr.crystalogic.calls.ui.adapters.CallsAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private RecyclerView mRecyclerView;
+    private CallsAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CallsDao dao = new CallsDao(MainActivity.this);
+                CallsProvider dao = new CallsProvider(MainActivity.this);
                 dao.getCalls();
             }
         });
@@ -40,6 +49,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        initControls();
     }
 
     @Override
@@ -69,5 +80,42 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadCalls();
+    }
+
+    private void initControls() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.calls_list);
+    }
+
+    private void loadCalls() {
+/*
+        if (!Device.hasAllPermissions(this, permissions)) {
+            Device.requestPermissions(this, permissions, Constants.REQUEST_CODE_READ_SMS_AND_CONTACTS);
+            return;
+        }*/
+
+        CallsProvider callsProvider = new CallsProvider(this);
+        List<Call> calls = callsProvider.getCalls();
+        mAdapter = new CallsAdapter(calls,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+/*                        int position = mRecyclerView.getChildAdapterPosition(v);
+                        Conversation conversation = mAdapter.getItemAtPosition(position);
+                        showConversation(conversation.getId());*/
+                    }
+                },
+                new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        return false;
+                    }
+                });
+        mRecyclerView.setAdapter(mAdapter);
     }
 }

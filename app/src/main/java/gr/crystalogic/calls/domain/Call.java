@@ -1,10 +1,15 @@
 package gr.crystalogic.calls.domain;
 
+import android.text.TextUtils;
+
+import org.joda.time.DateTime;
+
 public class Call {
 
     private long id;
     private int type;
     private String number;
+    private String name;
     private long date;
     private long duration;
     private int isNew;
@@ -82,5 +87,26 @@ public class Call {
 
     public void setLookupUri(String lookupUri) {
         this.lookupUri = lookupUri;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDisplayName() {
+        if (TextUtils.isEmpty(name))  {
+            return number;
+        } else {
+            return name;
+        }
+    }
+
+    public String getDateFormatted() {
+        DateTime dateTime = new DateTime(date);
+        return  dateTime.toString("HH:mm EEEE d-M-yy");
     }
 }

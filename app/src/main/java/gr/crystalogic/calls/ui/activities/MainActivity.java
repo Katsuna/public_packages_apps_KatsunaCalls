@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import gr.crystalogic.calls.R;
 import gr.crystalogic.calls.domain.Call;
 import gr.crystalogic.calls.providers.CallsProvider;
 import gr.crystalogic.calls.ui.adapters.CallsAdapter;
+import gr.crystalogic.calls.utils.Device;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,8 +38,9 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CallsProvider dao = new CallsProvider(MainActivity.this);
-                dao.getCalls();
+                if (!Device.openApp(MainActivity.this, "gr.crystalogic.oldmen")) {
+                    Toast.makeText(MainActivity.this, R.string.contacts_app_missing, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -118,4 +121,5 @@ public class MainActivity extends AppCompatActivity
                 });
         mRecyclerView.setAdapter(mAdapter);
     }
+
 }

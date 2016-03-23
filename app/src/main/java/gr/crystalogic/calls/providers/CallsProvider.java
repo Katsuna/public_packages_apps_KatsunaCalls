@@ -44,7 +44,7 @@ public class CallsProvider {
                 call.setDuration(cursor.getLong(cursor.getColumnIndex(CallColumns.DURATION)));
                 calls.add(call);
 
-                showCursor(cursor);
+                //showCursor(cursor);
 
             } while (cursor.moveToNext());
 

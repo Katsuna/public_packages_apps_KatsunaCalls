@@ -34,7 +34,11 @@ public class CallsProvider {
                 Call call = new Call();
                 call.setId(cursor.getLong(cursor.getColumnIndex(CallColumns.ID)));
                 call.setType(cursor.getInt(cursor.getColumnIndex(CallColumns.TYPE)));
-                call.setContactId(cursor.getLong(cursor.getColumnIndex(CallColumns.CONTACT_ID)));
+                //TODO: find a better way to replace missing contactId on devices with lollipop or later
+                int contactIdColumnIndex = cursor.getColumnIndex(CallColumns.CONTACT_ID);
+                if (contactIdColumnIndex != -1) {
+                    call.setContactId(cursor.getLong(contactIdColumnIndex ));
+                }
                 call.setName(cursor.getString(cursor.getColumnIndex(CallColumns.NAME)));
                 call.setNumber(cursor.getString(cursor.getColumnIndex(CallColumns.NUMBER)));
                 call.setDate(cursor.getLong(cursor.getColumnIndex(CallColumns.DATE)));

@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
+    private static final int REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION = 2;
 
     private RecyclerView mRecyclerView;
     private CallsAdapter mAdapter;
@@ -104,11 +105,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadCalls() {
-/*
-        if (!Device.hasAllPermissions(this, permissions)) {
-            Device.requestPermissions(this, permissions, Constants.REQUEST_CODE_READ_SMS_AND_CONTACTS);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG}, REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION);
             return;
-        }*/
+        }
 
         CallsProvider callsProvider = new CallsProvider(this);
         List<Call> calls = callsProvider.getCalls();
@@ -131,6 +131,20 @@ public class MainActivity extends AppCompatActivity
         });
 
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    loadCalls();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     private void callContact(String number) {

@@ -34,8 +34,7 @@ public class CallsProvider {
                 Call call = new Call();
                 call.setId(cursor.getLong(cursor.getColumnIndex(CallColumns.ID)));
                 call.setType(cursor.getInt(cursor.getColumnIndex(CallColumns.TYPE)));
-                //call.setContactId(cursor.getLong(cursor.getColumnIndex(CallColumns.CONTACT_ID)));
-                call.setLookupUri(cursor.getString(cursor.getColumnIndex(CallColumns.LOOKUP_URI)));
+                call.setContactId(cursor.getLong(cursor.getColumnIndex(CallColumns.CONTACT_ID)));
                 call.setName(cursor.getString(cursor.getColumnIndex(CallColumns.NAME)));
                 call.setNumber(cursor.getString(cursor.getColumnIndex(CallColumns.NUMBER)));
                 call.setDate(cursor.getLong(cursor.getColumnIndex(CallColumns.DATE)));
@@ -45,7 +44,6 @@ public class CallsProvider {
                 calls.add(call);
 
                 //showCursor(cursor);
-
             } while (cursor.moveToNext());
 
             cursor.close();

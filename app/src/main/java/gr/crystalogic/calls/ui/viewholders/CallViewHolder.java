@@ -1,6 +1,8 @@
 package gr.crystalogic.calls.ui.viewholders;
 
+import android.net.Uri;
 import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -30,8 +32,11 @@ public class CallViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Call call) {
+
+        Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(call.getContactId()));
+
         Picasso.with(itemView.getContext())
-                .load(call.getLookupUri())
+                .load(uri)
                 .fit()
                 .into(mPhoto);
 
@@ -47,7 +52,8 @@ public class CallViewHolder extends RecyclerView.ViewHolder {
             mCallType.setText("INCOMING");
         } else if (call.getType() == CallLog.Calls.OUTGOING_TYPE) {
             mCallType.setText("OUTGOING");
-        } if (call.getType() == CallLog.Calls.MISSED_TYPE) {
+        }
+        if (call.getType() == CallLog.Calls.MISSED_TYPE) {
             mCallType.setText("MISSED");
         }
 

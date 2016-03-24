@@ -3,14 +3,17 @@ package gr.crystalogic.calls.providers;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import gr.crystalogic.calls.providers.metadata.CallColumns;
 import gr.crystalogic.calls.domain.Call;
+import gr.crystalogic.calls.domain.Contact;
+import gr.crystalogic.calls.providers.metadata.CallColumns;
 
 @SuppressWarnings("ResourceType")
 public class CallsProvider {
@@ -34,17 +37,13 @@ public class CallsProvider {
                 Call call = new Call();
                 call.setId(cursor.getLong(cursor.getColumnIndex(CallColumns.ID)));
                 call.setType(cursor.getInt(cursor.getColumnIndex(CallColumns.TYPE)));
-                //TODO: find a better way to replace missing contactId on devices with lollipop or later
-                int contactIdColumnIndex = cursor.getColumnIndex(CallColumns.CONTACT_ID);
-                if (contactIdColumnIndex != -1) {
-                    call.setContactId(cursor.getLong(contactIdColumnIndex ));
-                }
                 call.setName(cursor.getString(cursor.getColumnIndex(CallColumns.NAME)));
                 call.setNumber(cursor.getString(cursor.getColumnIndex(CallColumns.NUMBER)));
                 call.setDate(cursor.getLong(cursor.getColumnIndex(CallColumns.DATE)));
                 call.setIsRead(cursor.getInt(cursor.getColumnIndex(CallColumns.IS_READ)));
                 call.setIsNew(cursor.getInt(cursor.getColumnIndex(CallColumns.NEW)));
                 call.setDuration(cursor.getLong(cursor.getColumnIndex(CallColumns.DURATION)));
+                call.setContact(getContactByNumber(call.getNumber()));
                 calls.add(call);
 
                 //showCursor(cursor);
@@ -54,6 +53,30 @@ public class CallsProvider {
         }
 
         return calls;
+    }
+
+    public Contact getContactByNumber(String number) {
+        Contact contact = null;
+
+        String[] projection = {
+                ContactsContract.PhoneLookup._ID,
+                ContactsContract.PhoneLookup.DISPLAY_NAME,
+                ContactsContract.PhoneLookup.NUMBER,
+                ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI
+        };
+
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+
+        Cursor cursor = cr.query(uri, projection, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            contact = new Contact();
+            contact.setId(cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID)));
+            contact.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME)));
+            contact.setPhotoUri(cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI)));
+
+            cursor.close();
+        }
+        return contact;
     }
 
     private void showCursor(Cursor cursor) {

@@ -1,7 +1,5 @@
 package gr.crystalogic.calls.domain;
 
-import android.text.TextUtils;
-
 import org.joda.time.DateTime;
 
 public class Call {
@@ -14,8 +12,7 @@ public class Call {
     private long duration;
     private int isNew;
     private int isRead;
-    private long contactId;
-    private String lookupUri;
+    private Contact contact;
 
     public long getId() {
         return id;
@@ -73,22 +70,6 @@ public class Call {
         this.isRead = isRead;
     }
 
-    public long getContactId() {
-        return contactId;
-    }
-
-    public void setContactId(long contactId) {
-        this.contactId = contactId;
-    }
-
-    public String getLookupUri() {
-        return lookupUri;
-    }
-
-    public void setLookupUri(String lookupUri) {
-        this.lookupUri = lookupUri;
-    }
-
     public String getName() {
         return name;
     }
@@ -97,16 +78,16 @@ public class Call {
         this.name = name;
     }
 
-    public String getDisplayName() {
-        if (TextUtils.isEmpty(name))  {
-            return number;
-        } else {
-            return name;
-        }
-    }
-
     public String getDateFormatted() {
         DateTime dateTime = new DateTime(date);
         return  dateTime.toString("HH:mm EEEE d-M-yy");
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }

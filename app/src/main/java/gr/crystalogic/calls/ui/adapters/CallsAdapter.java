@@ -22,7 +22,7 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private int mSelectedContactPosition = -1;
     private final View.OnClickListener mOnClickListener;
-    private ICallInteractionListener mListener;
+    private final ICallInteractionListener mListener;
 
     @Override
     public int getItemViewType(int position) {

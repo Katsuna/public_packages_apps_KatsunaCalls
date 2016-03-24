@@ -5,7 +5,6 @@ import android.provider.CallLog;
 public class CallColumns {
     public static final String ID = CallLog.Calls._ID;
     public static final String TYPE = CallLog.Calls.TYPE;
-    public static final String CONTACT_ID = "contactid";
     public static final String NAME = CallLog.Calls.CACHED_NAME;
     public static final String NUMBER = CallLog.Calls.NUMBER;
     public static final String IS_READ = CallLog.Calls.IS_READ;

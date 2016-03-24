@@ -1,10 +1,7 @@
 package gr.crystalogic.calls.ui.viewholders;
 
-import android.net.Uri;
 import android.provider.CallLog;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,17 +30,16 @@ public class CallViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Call call) {
 
-        Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(call.getContactId()));
-
-        Picasso.with(itemView.getContext())
-                .load(uri)
-                .fit()
-                .into(mPhoto);
-
-        if (TextUtils.isEmpty(call.getName())) {
+        if (call.getContact() == null) {
+            mPhoto.setImageBitmap(null);
             mDisplayName.setText(R.string.unknown);
         } else {
-            mDisplayName.setText(call.getName());
+            Picasso.with(itemView.getContext())
+                    .load(call.getContact().getPhotoUri())
+                    .fit()
+                    .into(mPhoto);
+
+            mDisplayName.setText(call.getContact().getName());
         }
 
         mNumber.setText(call.getNumber());

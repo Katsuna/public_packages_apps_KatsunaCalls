@@ -11,6 +11,7 @@ import com.squareup.picasso.Picasso;
 
 import gr.crystalogic.calls.R;
 import gr.crystalogic.calls.domain.Call;
+import gr.crystalogic.calls.utils.DateFormatter;
 
 public class CallBaseViewHolder extends RecyclerView.ViewHolder {
 
@@ -42,7 +43,7 @@ public class CallBaseViewHolder extends RecyclerView.ViewHolder {
         }
 
         mNumber.setText(call.getNumber());
-        mDateTime.setText(call.getDateFormatted());
+        mDateTime.setText(DateFormatter.format(itemView.getContext(), call.getDate()));
 
         if (call.getType() == CallLog.Calls.MISSED_TYPE) {
             mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));

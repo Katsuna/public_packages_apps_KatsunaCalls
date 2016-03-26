@@ -1,7 +1,5 @@
 package gr.crystalogic.calls.domain;
 
-import org.joda.time.DateTime;
-
 public class Call {
 
     private long id;
@@ -76,11 +74,6 @@ public class Call {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDateFormatted() {
-        DateTime dateTime = new DateTime(date);
-        return  dateTime.toString("HH:mm EEEE d-M-yy");
     }
 
     public Contact getContact() {

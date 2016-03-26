@@ -30,9 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:textColor="@color/gray"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="@color/black"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/number"
@@ -40,7 +39,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/gray"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <TextView
@@ -58,13 +57,15 @@
                 android:id="@+id/callButton"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="@string/call" />
+                android:text="@string/call"
+                android:textColor="@color/white" />
 
             <Button
                 android:id="@+id/messageButton"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="@string/message" />
+                android:text="@string/message"
+                android:textColor="@color/white" />
 
         </LinearLayout>
     </LinearLayout>

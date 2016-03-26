@@ -1,5 +1,6 @@
 package gr.crystalogic.calls.ui.viewholders;
 
+import android.graphics.Typeface;
 import android.provider.CallLog;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -47,11 +48,14 @@ public class CallBaseViewHolder extends RecyclerView.ViewHolder {
 
         if (call.getType() == CallLog.Calls.MISSED_TYPE) {
             mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
+            mDisplayName.setTypeface(null, Typeface.BOLD);
             mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
+            mNumber.setTypeface(null, Typeface.BOLD);
         } else {
-            mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.gray));
-            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.gray));
+            mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black));
+            mDisplayName.setTypeface(null, Typeface.NORMAL);
+            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black));
+            mNumber.setTypeface(null, Typeface.NORMAL);
         }
-
     }
 }

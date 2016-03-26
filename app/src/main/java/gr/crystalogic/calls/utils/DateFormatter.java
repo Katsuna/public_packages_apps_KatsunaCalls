@@ -1,7 +1,6 @@
 package gr.crystalogic.calls.utils;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -26,6 +25,6 @@ public class DateFormatter {
             output = dateTime.toString("HH:mm EEEE d-M-yy");
         }
 
-        return  output;
+        return output;
     }
 }

@@ -1,12 +1,8 @@
 package gr.crystalogic.calls.ui.viewholders;
 
 import android.provider.CallLog;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import gr.crystalogic.calls.R;
 import gr.crystalogic.calls.domain.Call;

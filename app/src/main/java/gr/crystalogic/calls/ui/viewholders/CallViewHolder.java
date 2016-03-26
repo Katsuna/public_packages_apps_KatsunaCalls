@@ -11,48 +11,26 @@ import com.squareup.picasso.Picasso;
 import gr.crystalogic.calls.R;
 import gr.crystalogic.calls.domain.Call;
 
-public class CallViewHolder extends RecyclerView.ViewHolder {
+public class CallViewHolder extends CallBaseViewHolder {
 
-    private final ImageView mPhoto;
-    private final TextView mDisplayName;
-    private final TextView mNumber;
-    private final TextView mDateTime;
-    private final TextView mCallType;
+    private final ImageView mCallTypeImage;
 
     public CallViewHolder(View itemView) {
         super(itemView);
-        mPhoto = (ImageView) itemView.findViewById(R.id.photo);
-        mDisplayName = (TextView) itemView.findViewById(R.id.displayName);
-        mNumber = (TextView) itemView.findViewById(R.id.number);
-        mCallType = (TextView) itemView.findViewById(R.id.callType);
-        mDateTime = (TextView) itemView.findViewById(R.id.dateTime);
+        mCallTypeImage = (ImageView) itemView.findViewById(R.id.callTypeImage);
     }
 
     public void bind(Call call) {
-
-        if (call.getContact() == null) {
-            mPhoto.setImageBitmap(null);
-            mDisplayName.setText(R.string.unknown);
-        } else {
-            Picasso.with(itemView.getContext())
-                    .load(call.getContact().getPhotoUri())
-                    .fit()
-                    .into(mPhoto);
-
-            mDisplayName.setText(call.getContact().getName());
-        }
-
-        mNumber.setText(call.getNumber());
+        super.bind(call);
 
         if (call.getType() == CallLog.Calls.INCOMING_TYPE) {
-            mCallType.setText("INCOMING");
+            mCallTypeImage.setImageResource(R.drawable.ic_call_received_black_24dp);
         } else if (call.getType() == CallLog.Calls.OUTGOING_TYPE) {
-            mCallType.setText("OUTGOING");
+            mCallTypeImage.setImageResource(R.drawable.ic_call_made_black_24dp);
+        } else if (call.getType() == CallLog.Calls.MISSED_TYPE) {
+            mCallTypeImage.setImageResource(R.drawable.ic_call_missed_red_500_24dp);
+        } else {
+            mCallTypeImage.setImageBitmap(null);
         }
-        if (call.getType() == CallLog.Calls.MISSED_TYPE) {
-            mCallType.setText("MISSED");
-        }
-
-        mDateTime.setText(call.getDateFormatted());
     }
 }

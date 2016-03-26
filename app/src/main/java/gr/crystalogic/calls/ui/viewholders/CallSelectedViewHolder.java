@@ -7,7 +7,7 @@ import gr.crystalogic.calls.R;
 import gr.crystalogic.calls.domain.Call;
 import gr.crystalogic.calls.ui.listeners.ICallInteractionListener;
 
-public class CallSelectedViewHolder extends CallViewHolder {
+public class CallSelectedViewHolder extends CallBaseViewHolder {
 
     private final ICallInteractionListener mListener;
     private final Button mCallButton;

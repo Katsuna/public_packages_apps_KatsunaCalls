@@ -9,6 +9,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import gr.crystalogic.calls.domain.Call;
@@ -31,6 +32,8 @@ public class CallsProvider {
         List<Call> calls = new ArrayList<>();
         String orderBy = CallLog.Calls.DATE + " DESC";
 
+        LinkedHashMap<String, Contact> map = new LinkedHashMap<>();
+
         Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, orderBy);
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -43,7 +46,14 @@ public class CallsProvider {
                 call.setIsRead(cursor.getInt(cursor.getColumnIndex(CallColumns.IS_READ)));
                 call.setIsNew(cursor.getInt(cursor.getColumnIndex(CallColumns.NEW)));
                 call.setDuration(cursor.getLong(cursor.getColumnIndex(CallColumns.DURATION)));
-                call.setContact(getContactByNumber(call.getNumber()));
+
+                //use map to store already found contacts for better perfomance
+                Contact contact = map.get(call.getNumber());
+                if (contact == null) {
+                    contact = getContactByNumber(call.getNumber());
+                    map.put(call.getNumber(), contact);
+                }
+                call.setContact(contact);
                 calls.add(call);
 
                 //showCursor(cursor);

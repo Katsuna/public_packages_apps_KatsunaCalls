@@ -13,4 +13,7 @@
     <string name="message">Message</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
+    <string name="select_phone">Select phone number</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -1,22 +1,30 @@
 package gr.crystalogic.calls.ui.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.List;
@@ -44,13 +52,50 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabContacts);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!Device.openApp(MainActivity.this, "gr.crystalogic.oldmen")) {
                     Toast.makeText(MainActivity.this, R.string.contacts_app_missing, Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        FloatingActionButton fabDial = (FloatingActionButton) findViewById(R.id.fabDial);
+        fabDial.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green)));
+        fabDial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                alert.setTitle(R.string.select_phone);
+                final EditText input = new EditText(MainActivity.this);
+                input.setInputType(InputType.TYPE_CLASS_PHONE);
+                alert.setView(input);
+                alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String number = input.getText().toString();
+                        if (!TextUtils.isEmpty(number)) {
+                            callContact(number);
+                        }
+                    }
+                });
+                alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //Put actions for CANCEL button here, or leave in blank
+                    }
+                });
+                final AlertDialog dialog = alert.show();
+
+                //focus on input
+                input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                        }
+                    }
+                });
             }
         });
 

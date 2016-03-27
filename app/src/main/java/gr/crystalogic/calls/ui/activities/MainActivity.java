@@ -56,8 +56,22 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!Device.openApp(MainActivity.this, "gr.crystalogic.oldmen")) {
-                    Toast.makeText(MainActivity.this, R.string.contacts_app_missing, Toast.LENGTH_SHORT).show();
+                final String contactApp = "gr.crystalogic.oldmen";
+
+                if (!Device.openApp(MainActivity.this, contactApp )) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                    alert.setTitle(R.string.missing_app);
+                    alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            Device.goToMarket(MainActivity.this, contactApp);
+                        }
+                    });
+                    alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            //Put actions for CANCEL button here, or leave in blank
+                        }
+                    });
+                    alert.show();
                 }
             }
         });

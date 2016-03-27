@@ -8,7 +8,6 @@
     <string name="help">Help</string>
     <string name="info">Info</string>
     <string name="unknown">Unknown</string>
-    <string name="contacts_app_missing">Contacts App is missing.</string>
     <string name="call">Call</string>
     <string name="message">Message</string>
     <string name="today">Today</string>
@@ -16,4 +15,5 @@
     <string name="select_phone">Select phone number</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="missing_app">You need to install Contacts application. Are you sure?</string>
 </resources>

@@ -12,6 +12,21 @@ public class Call {
     private int isRead;
     private Contact contact;
 
+    public Call() {}
+
+    public Call(Call call) {
+        id = call.getId();
+        type = call.getType();
+        number = call.getNumber();
+        name = call.getName();
+        date = call.getDate();
+        duration = call.getDuration();
+        isNew = call.getIsNew();
+        if (call.getContact() != null) {
+            contact = new Contact(call.getContact());
+        }
+    }
+
     public long getId() {
         return id;
     }

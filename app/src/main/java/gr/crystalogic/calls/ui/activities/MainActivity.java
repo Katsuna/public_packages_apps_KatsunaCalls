@@ -1,6 +1,8 @@
 package gr.crystalogic.calls.ui.activities;
 
 import android.Manifest;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,15 +20,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gr.crystalogic.calls.R;
@@ -44,6 +51,9 @@ public class MainActivity extends AppCompatActivity
 
     private RecyclerView mRecyclerView;
     private CallsAdapter mAdapter;
+    private SearchView mSearchView;
+    private TextView mNoResultsView;
+    private List<Call> mModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +68,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 final String contactApp = "gr.crystalogic.oldmen";
 
-                if (!Device.openApp(MainActivity.this, contactApp )) {
+                if (!Device.openApp(MainActivity.this, contactApp)) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                     alert.setTitle(R.string.missing_app);
                     alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -162,6 +172,7 @@ public class MainActivity extends AppCompatActivity
 
     private void initControls() {
         mRecyclerView = (RecyclerView) findViewById(R.id.calls_list);
+        mNoResultsView = (TextView) findViewById(R.id.no_results);
     }
 
     private void loadCalls() {
@@ -172,8 +183,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         CallsProvider callsProvider = new CallsProvider(this);
-        List<Call> calls = callsProvider.getCalls();
-        mAdapter = new CallsAdapter(calls, new View.OnClickListener() {
+        mModels = callsProvider.getCalls();
+        mAdapter = new CallsAdapter(getDeepCopy(mModels), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = mRecyclerView.getChildAdapterPosition(v);
@@ -220,5 +231,103 @@ public class MainActivity extends AppCompatActivity
 
     private void sendSMS(String number) {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        // Assumes current activity is the searchable activity
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                search(newText);
+                return false;
+            }
+        });
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mAdapter.animateTo(getDeepCopy(mModels));
+                showNoResultsView();
+                return false;
+            }
+        });
+
+
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            mSearchView.setQuery(query, false);
+        }
+    }
+
+    private void search(String query) {
+        Log.e("search", query);
+
+        if (TextUtils.isEmpty(query)) {
+            mAdapter.animateTo(getDeepCopy(mModels));
+        } else {
+            final List<Call> filteredModelList = filter(getDeepCopy(mModels), query);
+            mAdapter.animateTo(filteredModelList);
+            mRecyclerView.scrollToPosition(0);
+        }
+        showNoResultsView();
+    }
+
+    private void showNoResultsView() {
+        if (mAdapter.getItemCount() > 0) {
+            mNoResultsView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            mNoResultsView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
+    private List<Call> getDeepCopy(List<Call> calls) {
+        List<Call> output = new ArrayList<>();
+        for (Call model : calls) {
+            output.add(new Call(model));
+        }
+        return output;
+    }
+
+    private List<Call> filter(List<Call> models, String query) {
+        query = query.toLowerCase();
+
+        final List<Call> filteredModelList = new ArrayList<>();
+        for (Call model : models) {
+            String text = "";
+            if (model.getContact() == null) {
+                text = model.getNumber();
+            } else {
+                text = model.getContact().getName().toLowerCase();
+            }
+
+            if (text.contains(query) || model.getNumber().contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
     }
 }

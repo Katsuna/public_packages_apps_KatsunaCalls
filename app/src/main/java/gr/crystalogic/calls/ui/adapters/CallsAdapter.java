@@ -83,4 +83,55 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mSelectedContactPosition = position;
         notifyItemChanged(position);
     }
+
+    public void animateTo(List<Call> models) {
+        applyAndAnimateRemovals(models);
+        applyAndAnimateAdditions(models);
+        applyAndAnimateMovedItems(models);
+    }
+
+    private void applyAndAnimateRemovals(List<Call> newModels) {
+        for (int i = mModels.size() - 1; i >= 0; i--) {
+            final Call model = mModels.get(i);
+            if (!newModels.contains(model)) {
+                removeItem(i);
+            }
+        }
+    }
+
+    private void applyAndAnimateAdditions(List<Call> newModels) {
+        for (int i = 0, count = newModels.size(); i < count; i++) {
+            final Call model = newModels.get(i);
+            if (!mModels.contains(model)) {
+                addItem(i, model);
+            }
+        }
+    }
+
+    private void applyAndAnimateMovedItems(List<Call> newModels) {
+        for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
+            final Call model = newModels.get(toPosition);
+            final int fromPosition = mModels.indexOf(model);
+            if (fromPosition >= 0 && fromPosition != toPosition) {
+                moveItem(fromPosition, toPosition);
+            }
+        }
+    }
+
+    private void removeItem(int position) {
+        mModels.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    private void addItem(int position, Call model) {
+        mModels.add(position, model);
+        notifyItemInserted(position);
+    }
+
+    private void moveItem(int fromPosition, int toPosition) {
+        final Call model = mModels.remove(fromPosition);
+        mModels.add(toPosition, model);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
 }

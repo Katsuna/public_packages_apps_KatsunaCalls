@@ -6,6 +6,15 @@ public class Contact {
     private String name;
     private String photoUri;
 
+    public Contact() {
+    }
+
+    public Contact(Contact contact) {
+        id = contact.getId();
+        name = contact.getName();
+        photoUri = contact.getPhotoUri();
+    }
+
     public long getId() {
         return id;
     }

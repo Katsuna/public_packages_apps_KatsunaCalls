@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity
 
         final List<Call> filteredModelList = new ArrayList<>();
         for (Call model : models) {
-            String text = "";
+            String text;
             if (model.getContact() == null) {
                 text = model.getNumber();
             } else {

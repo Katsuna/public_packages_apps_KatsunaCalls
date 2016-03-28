@@ -41,6 +41,7 @@ import gr.crystalogic.calls.domain.Call;
 import gr.crystalogic.calls.providers.CallsProvider;
 import gr.crystalogic.calls.ui.adapters.CallsAdapter;
 import gr.crystalogic.calls.ui.listeners.ICallInteractionListener;
+import gr.crystalogic.calls.utils.Constants;
 import gr.crystalogic.calls.utils.Device;
 
 public class MainActivity extends AppCompatActivity
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
     private static final int REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION = 2;
+    private static final int CREATE_CONTACT_REQUEST = 3;
 
     private RecyclerView mRecyclerView;
     private CallsAdapter mAdapter;
@@ -66,22 +68,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String contactApp = "gr.crystalogic.oldmen";
-
-                if (!Device.openApp(MainActivity.this, contactApp)) {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                    alert.setTitle(R.string.missing_app);
-                    alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            Device.goToMarket(MainActivity.this, contactApp);
-                        }
-                    });
-                    alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            //Put actions for CANCEL button here, or leave in blank
-                        }
-                    });
-                    alert.show();
+                if (!Device.openApp(MainActivity.this, Constants.CONTACTS_APP)) {
+                    showContactsAppInstallationDialog();
                 }
             }
         });
@@ -133,6 +121,22 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         initControls();
+    }
+
+    private void showContactsAppInstallationDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        alert.setTitle(R.string.missing_app);
+        alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                Device.goToMarket(MainActivity.this, Constants.CONTACTS_APP);
+            }
+        });
+        alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //Put actions for CANCEL button here, or leave in blank
+            }
+        });
+        alert.show();
     }
 
     @Override
@@ -200,7 +204,25 @@ public class MainActivity extends AppCompatActivity
             public void sendSMS(Call call) {
                 MainActivity.this.sendSMS(call.getNumber());
             }
-        });
+
+            @Override
+            public void createContact(Call call) {
+                mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
+
+                Intent i = new Intent(Constants.CREATE_CONTACT_ACTION);
+                i.putExtra("number", call.getNumber());
+
+                PackageManager packageManager = getPackageManager();
+                List activities = packageManager.queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+                boolean isIntentSafe = activities.size() > 0;
+
+                if (isIntentSafe) {
+                    startActivityForResult(i, CREATE_CONTACT_REQUEST);
+                } else {
+                    showContactsAppInstallationDialog();
+                }
+            }
+        }, mSelectedCallPosition);
 
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -329,5 +351,22 @@ public class MainActivity extends AppCompatActivity
             }
         }
         return filteredModelList;
+    }
+
+    private int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CREATE_CONTACT_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                String number = data.getExtras().get("number").toString();
+                for (int i = 0; i < mModels.size(); i++) {
+                    if (mModels.get(i).getNumber().equals(number)) {
+                        mSelectedCallPosition = i;
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

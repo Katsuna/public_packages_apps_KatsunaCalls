@@ -12,6 +12,7 @@ import gr.crystalogic.calls.domain.Call;
 import gr.crystalogic.calls.ui.listeners.ICallInteractionListener;
 import gr.crystalogic.calls.ui.viewholders.CallSelectedViewHolder;
 import gr.crystalogic.calls.ui.viewholders.CallViewHolder;
+import gr.crystalogic.calls.utils.Constants;
 
 public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -20,23 +21,24 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private final List<Call> mModels;
 
-    private int mSelectedContactPosition = -1;
+    private int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
     private final View.OnClickListener mOnClickListener;
     private final ICallInteractionListener mListener;
 
     @Override
     public int getItemViewType(int position) {
         int viewType = CALL_NOT_SELECTED;
-        if (position == mSelectedContactPosition) {
+        if (position == mSelectedCallPosition) {
             viewType = CALL_SELECTED;
         }
         return viewType;
     }
 
-    public CallsAdapter(List<Call> models, View.OnClickListener onClickListener, ICallInteractionListener listener) {
+    public CallsAdapter(List<Call> models, View.OnClickListener onClickListener, ICallInteractionListener listener, int selectedCallPosition) {
         mModels = models;
         mOnClickListener = onClickListener;
         mListener = listener;
+        mSelectedCallPosition = selectedCallPosition;
     }
 
     @Override
@@ -80,7 +82,7 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void selectCallAtPosition(int position) {
-        mSelectedContactPosition = position;
+        mSelectedCallPosition = position;
         notifyItemChanged(position);
     }
 

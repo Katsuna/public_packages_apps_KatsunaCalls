@@ -2,6 +2,7 @@ package gr.crystalogic.calls.ui.viewholders;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import gr.crystalogic.calls.R;
 import gr.crystalogic.calls.domain.Call;
@@ -12,11 +13,13 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     private final ICallInteractionListener mListener;
     private final Button mCallButton;
     private final Button mMessageButton;
+    private final ImageView mCreateContact;
 
     public CallSelectedViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView);
         mCallButton = (Button) itemView.findViewById(R.id.callButton);
         mMessageButton = (Button) itemView.findViewById(R.id.messageButton);
+        mCreateContact = (ImageView) itemView.findViewById(R.id.createContact);
         mListener = listener;
     }
 
@@ -35,5 +38,18 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
                 mListener.sendSMS(call);
             }
         });
+
+        mCreateContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.createContact(call);
+            }
+        });
+
+        if (call.getContact() == null) {
+            mCreateContact.setVisibility(View.VISIBLE);
+        } else {
+            mCreateContact.setVisibility(View.GONE);
+        }
     }
 }

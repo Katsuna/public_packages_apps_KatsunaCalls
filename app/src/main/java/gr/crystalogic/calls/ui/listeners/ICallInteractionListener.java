@@ -6,4 +6,6 @@ public interface ICallInteractionListener {
     void callContact(Call call);
 
     void sendSMS(Call call);
+
+    void createContact(Call call);
 }

@@ -15,7 +15,7 @@
     <string name="select_phone">Select phone number</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="missing_app">You need to install Contacts application. Are you sure?</string>
+    <string name="missing_app">You need to install Contacts application.</string>
     <string name="action_search">Search</string>
     <string name="search_label">Search calls</string>
     <string name="search_hint">Search</string>

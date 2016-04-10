@@ -12,4 +12,6 @@
     <color name="black">#000000</color>
     <color name="green">#1b9b8d</color>
     <color name="greyXLight">#c0c0c0</color>
+    <color name="green4button">#009640</color>
+    <color name="blue4button">#009ed4</color>
 </resources>

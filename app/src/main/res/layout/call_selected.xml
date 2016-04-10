@@ -1,92 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/SelectCallStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp">
+    android:orientation="vertical">
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/photo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
-        android:background="@drawable/ic_person_grey_500_48dp"
-        app:riv_border_color="@color/pink"
-        app:riv_border_width="2dp"
-        app:riv_corner_radius="50dp"
-        app:riv_mutate_background="true"
-        app:riv_oval="false"
-        app:riv_tile_mode="repeat" />
-
-    <ImageView
-        android:id="@+id/createContact"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
-        android:background="@drawable/ic_mode_edit_pink_500_18dp"
-        android:visibility="invisible" />
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/photo"
-        android:layout_toLeftOf="@id/createContact"
-        android:layout_toRightOf="@id/photo"
-        android:layout_toStartOf="@id/createContact"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="10dp">
 
-        <TextView
-            android:id="@+id/displayName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/photo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@drawable/ic_person_grey_500_48dp"
+            app:riv_border_color="@color/pink"
+            app:riv_border_width="2dp"
+            app:riv_corner_radius="50dp"
+            app:riv_mutate_background="true"
+            app:riv_oval="false"
+            app:riv_tile_mode="repeat" />
 
-        <TextView
-            android:id="@+id/number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/dateTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/createContact"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@drawable/ic_mode_edit_pink_500_18dp"
+            android:visibility="invisible" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_toEndOf="@id/photo"
+            android:layout_toLeftOf="@id/createContact"
+            android:layout_toRightOf="@id/photo"
+            android:layout_toStartOf="@id/createContact"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/callButton"
-                android:layout_width="100dp"
+            <TextView
+                android:id="@+id/displayName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/call"
-                android:textColor="@color/white" />
+                android:fontFamily="sans-serif-medium"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
 
-            <Button
-                android:id="@+id/messageButton"
-                android:layout_width="100dp"
+            <TextView
+                android:id="@+id/number"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/message"
-                android:textColor="@color/white" />
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/dateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/callButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_gravity="start"
+            android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:background="@color/green4button"
+            android:drawableLeft="@drawable/ic_call_white_36dp"
+            android:drawableStart="@drawable/ic_call_white_36dp"
+            android:padding="5dp"
+            android:text="@string/call"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/messageButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_gravity="start"
+            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_weight="1"
+            android:background="@color/blue4button"
+            android:drawableLeft="@drawable/ic_message_white_36dp"
+            android:drawableStart="@drawable/ic_message_white_36dp"
+            android:padding="5dp"
+            android:text="@string/message"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
+

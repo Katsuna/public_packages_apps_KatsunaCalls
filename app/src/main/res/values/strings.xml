@@ -8,8 +8,8 @@
     <string name="help">Help</string>
     <string name="info">Info</string>
     <string name="unknown">Unknown</string>
-    <string name="call">Call</string>
-    <string name="message">Message</string>
+    <string name="call">call</string>
+    <string name="message">message</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="select_phone">Select phone number</string>

@@ -14,14 +14,14 @@ import gr.crystalogic.calls.R;
 import gr.crystalogic.calls.domain.Call;
 import gr.crystalogic.calls.utils.DateFormatter;
 
-public class CallBaseViewHolder extends RecyclerView.ViewHolder {
+class CallBaseViewHolder extends RecyclerView.ViewHolder {
 
     private final ImageView mPhoto;
     private final TextView mDisplayName;
     private final TextView mNumber;
     private final TextView mDateTime;
 
-    public CallBaseViewHolder(View itemView) {
+    CallBaseViewHolder(View itemView) {
         super(itemView);
         mPhoto = (ImageView) itemView.findViewById(R.id.photo);
         mDisplayName = (TextView) itemView.findViewById(R.id.displayName);
@@ -29,7 +29,7 @@ public class CallBaseViewHolder extends RecyclerView.ViewHolder {
         mDateTime = (TextView) itemView.findViewById(R.id.dateTime);
     }
 
-    public void bind(Call call) {
+    void bind(Call call) {
 
         if (call.getContact() == null) {
             mPhoto.setImageBitmap(null);

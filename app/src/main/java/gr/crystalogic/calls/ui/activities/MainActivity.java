@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabContacts);
+        assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         FloatingActionButton fabDial = (FloatingActionButton) findViewById(R.id.fabDial);
+        assert fabDial != null;
         fabDial.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green)));
         fabDial.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,10 +116,12 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        assert drawer != null;
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
 
         initControls();
@@ -142,6 +146,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -164,6 +169,7 @@ public class MainActivity extends AppCompatActivity
         } */
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -359,6 +365,7 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CREATE_CONTACT_REQUEST) {
             if (resultCode == RESULT_OK) {
+                //noinspection ConstantConditions
                 String number = data.getExtras().get("number").toString();
                 for (int i = 0; i < mModels.size(); i++) {
                     if (mModels.get(i).getNumber().equals(number)) {

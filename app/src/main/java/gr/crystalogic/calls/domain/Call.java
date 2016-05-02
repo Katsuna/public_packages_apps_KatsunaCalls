@@ -1,5 +1,6 @@
 package gr.crystalogic.calls.domain;
 
+@SuppressWarnings("WeakerAccess")
 public class Call {
 
     private long id;

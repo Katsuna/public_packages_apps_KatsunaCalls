@@ -65,7 +65,7 @@ public class CallsProvider {
         return calls;
     }
 
-    public Contact getContactByNumber(String number) {
+    private Contact getContactByNumber(String number) {
         Contact contact = null;
 
         String[] projection = {

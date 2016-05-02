@@ -33,7 +33,7 @@ public class Device {
         return true;
     }
 
-    public static boolean hasPermission(final Context context, final String permission) {
+    private static boolean hasPermission(final Context context, final String permission) {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
 

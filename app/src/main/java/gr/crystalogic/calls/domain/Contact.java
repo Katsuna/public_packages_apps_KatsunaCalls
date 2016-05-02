@@ -15,7 +15,7 @@ public class Contact {
         photoUri = contact.getPhotoUri();
     }
 
-    public long getId() {
+    private long getId() {
         return id;
     }
 

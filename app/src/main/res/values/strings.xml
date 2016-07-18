@@ -20,4 +20,22 @@
     <string name="search_label">Search calls</string>
     <string name="search_hint">Search</string>
     <string name="no_calls">No calls found.</string>
+
+    <string name="title_activity_settings">Settings</string>
+    <string name="select_profile">Select profile</string>
+
+    <string-array name="array_profiles">
+        <item>Auto</item>
+        <item>Simple</item>
+        <item>Intermediate</item>
+        <item>Advanced</item>
+    </string-array>
+
+    <string-array name="array_profiles_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
 </resources>

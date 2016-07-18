@@ -6,15 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -46,9 +45,11 @@ import gr.crystalogic.calls.ui.adapters.CallsAdapter;
 import gr.crystalogic.calls.ui.listeners.ICallInteractionListener;
 import gr.crystalogic.calls.utils.Constants;
 import gr.crystalogic.calls.utils.Device;
+import gr.crystalogic.commons.entities.Profile;
+import gr.crystalogic.commons.entities.ProfileType;
+import gr.crystalogic.commons.utils.ProfileReader;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
     private static final int REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION = 2;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity
     private SearchView mSearchView;
     private TextView mNoResultsView;
     private List<Call> mModels;
+    private DrawerLayout mDrawerLayout;
+    private Profile mProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,6 @@ public class MainActivity extends AppCompatActivity
 
         FloatingActionButton fabDial = (FloatingActionButton) findViewById(R.id.fabDial);
         assert fabDial != null;
-        fabDial.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green)));
         fabDial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -123,11 +125,8 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        assert navigationView != null;
-        navigationView.setNavigationItemSelectedListener(this);
-
         initControls();
+        setupDrawerLayout();
     }
 
     private void showContactsAppInstallationDialog() {
@@ -157,35 +156,33 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-/*        int id = item.getItemId();
-
-        if (id == R.id.drawer_settings) {
-            // Handle the camera action
-        } else if (id == R.id.drawer_help) {
-
-        } else if (id == R.id.drawer_info) {
-
-        } */
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        assert drawer != null;
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        loadCalls();
+
+
+        boolean profileChanged;
+        Profile freshProfileFromContentProvider = ProfileReader.getProfile(this);
+        Profile profileFromPreferences = getProfileFromPreferences();
+        if (freshProfileFromContentProvider == null) {
+            profileChanged = setSelectedProfile(profileFromPreferences);
+        } else {
+            if (profileFromPreferences.getType() == ProfileType.AUTO.getNumVal()) {
+                profileChanged = setSelectedProfile(freshProfileFromContentProvider);
+            } else {
+                profileChanged = setSelectedProfile(profileFromPreferences);
+            }
+        }
+
+        if (isChanged() || profileChanged) {
+            loadCalls();
+        }
     }
 
     private void initControls() {
         mRecyclerView = (RecyclerView) findViewById(R.id.calls_list);
         mNoResultsView = (TextView) findViewById(R.id.no_results);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
     private void loadCalls() {
@@ -232,7 +229,7 @@ public class MainActivity extends AppCompatActivity
                     showContactsAppInstallationDialog();
                 }
             }
-        }, mSelectedCallPosition);
+        }, mSelectedCallPosition, mProfile);
 
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -388,4 +385,63 @@ public class MainActivity extends AppCompatActivity
 
         ((LinearLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(position, offsetInt);
     }
+
+    private void setupDrawerLayout() {
+        NavigationView view = (NavigationView) findViewById(R.id.nav_view);
+        assert view != null;
+        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                mDrawerLayout.closeDrawers();
+
+                switch (menuItem.getItemId()) {
+                    case R.id.drawer_settings:
+                        markChanged();
+                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                        break;
+                    case R.id.drawer_help:
+                        break;
+                    case R.id.drawer_info:
+                        break;
+                }
+
+                return true;
+            }
+        });
+    }
+
+    private void markChanged() {
+        mModels = null;
+    }
+
+    private boolean isChanged() {
+        return mModels == null;
+    }
+
+    private boolean setSelectedProfile(Profile profile) {
+        boolean profileChanged = false;
+        if (mProfile == null) {
+            mProfile = profile;
+            profileChanged = true;
+        } else {
+            if (mProfile.getType() != profile.getType()) {
+                profileChanged = true;
+                mProfile.setType(profile.getType());
+            }
+        }
+        return profileChanged;
+    }
+
+    private Profile getProfileFromPreferences() {
+        Profile profile = new Profile();
+        int profileType = PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt(Constants.PROFILE_KEY, ProfileType.INTERMEDIATE.getNumVal());
+
+        profile.setType(profileType);
+
+        return profile;
+    }
+
+
 }

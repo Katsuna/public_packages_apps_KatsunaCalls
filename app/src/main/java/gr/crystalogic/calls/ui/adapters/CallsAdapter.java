@@ -13,6 +13,7 @@ import gr.crystalogic.calls.ui.listeners.ICallInteractionListener;
 import gr.crystalogic.calls.ui.viewholders.CallSelectedViewHolder;
 import gr.crystalogic.calls.ui.viewholders.CallViewHolder;
 import gr.crystalogic.calls.utils.Constants;
+import gr.crystalogic.commons.entities.Profile;
 
 public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -24,6 +25,7 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
     private final View.OnClickListener mOnClickListener;
     private final ICallInteractionListener mListener;
+    private final Profile mProfile;
 
     @Override
     public int getItemViewType(int position) {
@@ -34,11 +36,12 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return viewType;
     }
 
-    public CallsAdapter(List<Call> models, View.OnClickListener onClickListener, ICallInteractionListener listener, int selectedCallPosition) {
+    public CallsAdapter(List<Call> models, View.OnClickListener onClickListener, ICallInteractionListener listener, int selectedCallPosition, Profile profile) {
         mModels = models;
         mOnClickListener = onClickListener;
         mListener = listener;
         mSelectedCallPosition = selectedCallPosition;
+        mProfile = profile;
     }
 
     @Override
@@ -47,12 +50,12 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         switch (viewType) {
             case CALL_NOT_SELECTED:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call, parent, false);
-                viewHolder = new CallViewHolder(view);
+                viewHolder = new CallViewHolder(view, mProfile);
                 view.setOnClickListener(mOnClickListener);
                 break;
             case CALL_SELECTED:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_selected, parent, false);
-                viewHolder = new CallSelectedViewHolder(view, mListener);
+                viewHolder = new CallSelectedViewHolder(view, mListener, mProfile);
                 break;
         }
 

@@ -1,30 +1,32 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/grey300</item>
+        <item name="colorAccent">@color/teala40087</item>
         <item name="colorButtonNormal">@color/green</item>
         <item name="android:textColor">@color/colorPrimaryText</item>
         <item name="android:textColorSecondary">@color/colorSecondaryText</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <!-- ToolBar -->
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/grey100</item>
+        <item name="android:textColorPrimary">@color/black87</item>
+        <item name="android:textColorSecondary">@color/black87</item>
+        <item name="actionMenuTextColor">@color/black87</item>
     </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="drawer">
         <item name="android:textSize">20sp</item>
     </style>
 
     <style name="SelectCallStyle">
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@color/grey50</item>
+    </style>
+
+    <style name="SelectCallStyleHighlight">
+        <item name="android:background">@color/grey800</item>
     </style>
 
 </resources>

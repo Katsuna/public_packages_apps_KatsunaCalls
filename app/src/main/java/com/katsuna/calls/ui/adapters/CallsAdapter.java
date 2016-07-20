@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.ui.adapters;
+package com.katsuna.calls.ui.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,13 +7,13 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import gr.crystalogic.calls.R;
-import gr.crystalogic.calls.domain.Call;
-import gr.crystalogic.calls.ui.listeners.ICallInteractionListener;
-import gr.crystalogic.calls.ui.viewholders.CallSelectedViewHolder;
-import gr.crystalogic.calls.ui.viewholders.CallViewHolder;
-import gr.crystalogic.calls.utils.Constants;
-import gr.crystalogic.commons.entities.Profile;
+import com.katsuna.calls.R;
+import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.ui.listeners.ICallInteractionListener;
+import com.katsuna.calls.ui.viewholders.CallSelectedViewHolder;
+import com.katsuna.calls.ui.viewholders.CallViewHolder;
+import com.katsuna.calls.utils.Constants;
+import com.katsuna.commons.entities.Profile;
 
 public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

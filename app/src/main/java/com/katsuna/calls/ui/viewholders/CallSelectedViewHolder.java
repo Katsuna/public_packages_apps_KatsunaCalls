@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.ui.viewholders;
+package com.katsuna.calls.ui.viewholders;
 
 import android.graphics.Typeface;
 import android.provider.CallLog;
@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import gr.crystalogic.calls.R;
-import gr.crystalogic.calls.domain.Call;
-import gr.crystalogic.calls.ui.listeners.ICallInteractionListener;
-import gr.crystalogic.commons.entities.Profile;
-import gr.crystalogic.commons.entities.ProfileType;
+import com.katsuna.calls.R;
+import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.ui.listeners.ICallInteractionListener;
+import com.katsuna.commons.entities.Profile;
+import com.katsuna.commons.entities.ProfileType;
 
 public class CallSelectedViewHolder extends CallBaseViewHolder {
 

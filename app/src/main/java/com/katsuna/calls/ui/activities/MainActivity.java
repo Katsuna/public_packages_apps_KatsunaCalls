@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.ui.activities;
+package com.katsuna.calls.ui.activities;
 
 import android.Manifest;
 import android.app.SearchManager;
@@ -38,16 +38,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import gr.crystalogic.calls.R;
-import gr.crystalogic.calls.domain.Call;
-import gr.crystalogic.calls.providers.CallsProvider;
-import gr.crystalogic.calls.ui.adapters.CallsAdapter;
-import gr.crystalogic.calls.ui.listeners.ICallInteractionListener;
-import gr.crystalogic.calls.utils.Constants;
-import gr.crystalogic.calls.utils.Device;
-import gr.crystalogic.commons.entities.Profile;
-import gr.crystalogic.commons.entities.ProfileType;
-import gr.crystalogic.commons.utils.ProfileReader;
+import com.katsuna.calls.R;
+import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.providers.CallsProvider;
+import com.katsuna.calls.ui.adapters.CallsAdapter;
+import com.katsuna.calls.ui.listeners.ICallInteractionListener;
+import com.katsuna.calls.utils.Constants;
+import com.katsuna.calls.utils.Device;
+import com.katsuna.commons.entities.Profile;
+import com.katsuna.commons.entities.ProfileType;
+import com.katsuna.commons.utils.ProfileReader;
 
 public class MainActivity extends AppCompatActivity {
 

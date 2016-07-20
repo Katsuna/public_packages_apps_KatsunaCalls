@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.providers;
+package com.katsuna.calls.providers;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import gr.crystalogic.calls.domain.Call;
-import gr.crystalogic.calls.domain.Contact;
-import gr.crystalogic.calls.providers.metadata.CallColumns;
+import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.domain.Contact;
+import com.katsuna.calls.providers.metadata.CallColumns;
 
 @SuppressWarnings("ResourceType")
 public class CallsProvider {

@@ -1,7 +1,7 @@
-package gr.crystalogic.calls;
+package com.katsuna.calls;
 
-import gr.crystalogic.commons.framework.BaseApplication;
-import gr.crystalogic.commons.utils.Log;
+import com.katsuna.commons.framework.BaseApplication;
+import com.katsuna.commons.utils.Log;
 
 public class CallsApplication extends BaseApplication {
 

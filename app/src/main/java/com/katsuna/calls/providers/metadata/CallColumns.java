@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.providers.metadata;
+package com.katsuna.calls.providers.metadata;
 
 import android.provider.CallLog;
 

@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.ui.behaviors;
+package com.katsuna.calls.ui.behaviors;
 
 import android.content.Context;
 import android.os.Handler;

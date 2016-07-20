@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.utils;
+package com.katsuna.calls.utils;
 
 import android.app.Activity;
 import android.content.Context;

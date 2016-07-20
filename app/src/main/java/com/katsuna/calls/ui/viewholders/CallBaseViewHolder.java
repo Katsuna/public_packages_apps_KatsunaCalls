@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.ui.viewholders;
+package com.katsuna.calls.ui.viewholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -7,9 +7,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import gr.crystalogic.calls.R;
-import gr.crystalogic.calls.domain.Call;
-import gr.crystalogic.calls.utils.DateFormatter;
+import com.katsuna.calls.R;
+import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.utils.DateFormatter;
 
 abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
 

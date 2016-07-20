@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.utils;
+package com.katsuna.calls.utils;
 
 import android.content.Context;
 
@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Interval;
 
-import gr.crystalogic.calls.R;
+import com.katsuna.calls.R;
 
 public class DateFormatter {
 

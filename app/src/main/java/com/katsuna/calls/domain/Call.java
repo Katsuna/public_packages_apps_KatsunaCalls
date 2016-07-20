@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.domain;
+package com.katsuna.calls.domain;
 
 @SuppressWarnings("WeakerAccess")
 public class Call {

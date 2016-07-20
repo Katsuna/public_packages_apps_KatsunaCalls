@@ -1,4 +1,4 @@
-package gr.crystalogic.calls.ui.activities;
+package com.katsuna.calls.ui.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,9 +10,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
-import gr.crystalogic.calls.R;
-import gr.crystalogic.calls.utils.Constants;
-import gr.crystalogic.commons.entities.ProfileType;
+import com.katsuna.calls.R;
+import com.katsuna.calls.utils.Constants;
+import com.katsuna.commons.entities.ProfileType;
 
 public class SettingsActivity extends AppCompatActivity {
 

@@ -35,9 +35,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.providers.CallsProvider;
@@ -45,9 +42,13 @@ import com.katsuna.calls.ui.adapters.CallsAdapter;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.Device;
+import com.katsuna.commons.KatsunaConstants;
 import com.katsuna.commons.entities.Profile;
 import com.katsuna.commons.entities.ProfileType;
 import com.katsuna.commons.utils.ProfileReader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -436,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
     private Profile getProfileFromPreferences() {
         Profile profile = new Profile();
         int profileType = PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt(Constants.PROFILE_KEY, ProfileType.INTERMEDIATE.getNumVal());
+                .getInt(KatsunaConstants.PROFILE_KEY, ProfileType.INTERMEDIATE.getNumVal());
 
         profile.setType(profileType);
 

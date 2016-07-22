@@ -49,11 +49,11 @@
 
             <TextView
                 android:id="@+id/displayName"
+                style="@style/RobotoBold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
                 android:singleLine="true"
-                android:textColor="@color/white"
+                android:textColor="@color/black87"
                 android:textSize="20sp" />
 
             <TextView
@@ -62,14 +62,15 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@color/white"
+                android:textColor="@color/black87"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/dateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white" />
+                android:textColor="@color/black87"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
@@ -93,13 +94,15 @@
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/action_button"
-            android:drawableStart="@drawable/ic_call_grey50_24dp"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
+            android:drawablePadding="-30dp"
+            android:drawableStart="@drawable/ic_call_black87_24dp"
+            android:paddingEnd="0dp"
+            android:paddingStart="30dp"
             android:text="@string/call"
             android:textAllCaps="false"
-            android:textColor="@color/grey50"
-            android:textSize="20sp" />
+            android:textColor="@color/black87"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/message_button"
@@ -109,13 +112,15 @@
             android:layout_gravity="start"
             android:layout_weight="1"
             android:background="@drawable/action_button"
-            android:drawableStart="@drawable/ic_message_grey50_24dp"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
+            android:drawablePadding="-10dp"
+            android:drawableStart="@drawable/ic_message_black87_24dp"
+            android:paddingEnd="0dp"
+            android:paddingStart="10dp"
             android:text="@string/message"
             android:textAllCaps="false"
-            android:textColor="@color/grey50"
-            android:textSize="20sp" />
+            android:textColor="@color/black87"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

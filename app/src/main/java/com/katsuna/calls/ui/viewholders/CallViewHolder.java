@@ -42,12 +42,10 @@ public class CallViewHolder extends CallBaseViewHolder {
     void adjustDisplayForNameAndNumber(Call call) {
         if (call.getType() == CallLog.Calls.MISSED_TYPE) {
             mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
-            mDisplayName.setTypeface(null, Typeface.BOLD);
             mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
             mNumber.setTypeface(null, Typeface.BOLD);
         } else {
             mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black));
-            mDisplayName.setTypeface(null, Typeface.NORMAL);
             mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black));
             mNumber.setTypeface(null, Typeface.NORMAL);
         }

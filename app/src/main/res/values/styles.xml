@@ -26,7 +26,12 @@
     </style>
 
     <style name="SelectCallStyleHighlight">
-        <item name="android:background">@color/grey800</item>
+        <item name="android:background">@color/grey200</item>
+    </style>
+
+    <style name="RobotoBold">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

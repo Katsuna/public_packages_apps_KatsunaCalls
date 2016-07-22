@@ -1,8 +1,6 @@
 package com.katsuna.calls.ui.activities;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,8 +9,9 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.katsuna.calls.R;
-import com.katsuna.calls.utils.Constants;
+import com.katsuna.commons.KatsunaConstants;
 import com.katsuna.commons.entities.ProfileType;
+import com.katsuna.commons.utils.SettingsManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -37,12 +36,12 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void initControls() {
         Spinner mProfileTypes = (Spinner) findViewById(R.id.profiles);
-        int profileSetting = readSetting(Constants.PROFILE_KEY, ProfileType.INTERMEDIATE.getNumVal());
+        int profileSetting = SettingsManager.readSetting(this, KatsunaConstants.PROFILE_KEY, ProfileType.INTERMEDIATE.getNumVal());
         mProfileTypes.setSelection(profileSetting);
         mProfileTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setSetting(Constants.PROFILE_KEY, i);
+                SettingsManager.setSetting(SettingsActivity.this, KatsunaConstants.PROFILE_KEY, i);
             }
 
             @Override
@@ -51,18 +50,4 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
-
-
-    private void setSetting(String key, int value) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(key, value);
-        editor.apply();
-    }
-
-    private int readSetting(String key, int defaultValue) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        return settings.getInt(key, defaultValue);
-    }
-
 }

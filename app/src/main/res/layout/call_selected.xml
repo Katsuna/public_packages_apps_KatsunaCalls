@@ -30,13 +30,13 @@
 
         <ImageView
             android:id="@+id/createContact"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:layout_margin="5dp"
-            android:background="@drawable/ic_mode_edit_pink_500_18dp"
+            android:background="@drawable/ic_edit_black87_24dp"
             android:visibility="invisible"
             tools:ignore="ContentDescription" />
 

@@ -160,23 +160,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setupProfile();
+        loadCalls();
+    }
 
-
-        boolean profileChanged;
+    private void setupProfile() {
         Profile freshProfileFromContentProvider = ProfileReader.getProfile(this);
         Profile profileFromPreferences = getProfileFromPreferences();
         if (freshProfileFromContentProvider == null) {
-            profileChanged = setSelectedProfile(profileFromPreferences);
+            setSelectedProfile(profileFromPreferences);
         } else {
             if (profileFromPreferences.getType() == ProfileType.AUTO.getNumVal()) {
-                profileChanged = setSelectedProfile(freshProfileFromContentProvider);
+                setSelectedProfile(freshProfileFromContentProvider);
             } else {
-                profileChanged = setSelectedProfile(profileFromPreferences);
+                setSelectedProfile(profileFromPreferences);
             }
-        }
-
-        if (isChanged() || profileChanged) {
-            loadCalls();
         }
     }
 
@@ -398,7 +396,6 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.drawer_settings:
-                        markChanged();
                         startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                         break;
                     case R.id.drawer_help:
@@ -410,14 +407,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    private void markChanged() {
-        mModels = null;
-    }
-
-    private boolean isChanged() {
-        return mModels == null;
     }
 
     private boolean setSelectedProfile(Profile profile) {

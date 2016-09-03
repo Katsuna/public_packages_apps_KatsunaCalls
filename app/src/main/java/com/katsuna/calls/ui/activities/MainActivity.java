@@ -390,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
         assert view != null;
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
                 mDrawerLayout.closeDrawers();
 

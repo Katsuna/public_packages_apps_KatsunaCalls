@@ -15,7 +15,6 @@ LOCAL_STATIC_JAVA_LIBRARIES := android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-appcompat
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-recyclerview
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-design
-LOCAL_STATIC_JAVA_AAR_LIBRARIES += roundedimageview
 
 LOCAL_AAPT_INCLUDE_ALL_RESOURCES := true
 LOCAL_AAPT_FLAGS := --auto-add-overlay
@@ -38,9 +37,5 @@ include packages/apps/KatsunaCommon/common.mk
 include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)
-
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES += roundedimageview:app/libs/roundedimageview-2.2.1.aar
-
-include $(BUILD_MULTI_PREBUILT)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))

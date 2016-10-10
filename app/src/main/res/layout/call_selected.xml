@@ -52,7 +52,7 @@
                 style="@style/RobotoBold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:textColor="@color/black87"
                 android:textSize="20sp" />
 

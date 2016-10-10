@@ -66,6 +66,9 @@ public class CallsProvider {
     }
 
     private Contact getContactByNumber(String number) {
+
+        Log.d(TAG, "getContactByNumber: number=" + number);
+
         Contact contact = null;
 
         String[] projection = {

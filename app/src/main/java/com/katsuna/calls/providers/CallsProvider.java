@@ -8,13 +8,13 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.domain.Contact;
 import com.katsuna.calls.providers.metadata.CallColumns;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @SuppressWarnings("ResourceType")
 public class CallsProvider {
@@ -42,18 +42,22 @@ public class CallsProvider {
                 call.setType(cursor.getInt(cursor.getColumnIndex(CallColumns.TYPE)));
                 call.setName(cursor.getString(cursor.getColumnIndex(CallColumns.NAME)));
                 call.setNumber(cursor.getString(cursor.getColumnIndex(CallColumns.NUMBER)));
+                call.setNumberPresentation(cursor.getInt(cursor.getColumnIndex(CallColumns.NUMBER_PRESENTATION)));
                 call.setDate(cursor.getLong(cursor.getColumnIndex(CallColumns.DATE)));
                 call.setIsRead(cursor.getInt(cursor.getColumnIndex(CallColumns.IS_READ)));
                 call.setIsNew(cursor.getInt(cursor.getColumnIndex(CallColumns.NEW)));
                 call.setDuration(cursor.getLong(cursor.getColumnIndex(CallColumns.DURATION)));
 
-                //use map to store already found contacts for better perfomance
-                Contact contact = map.get(call.getNumber());
-                if (contact == null) {
-                    contact = getContactByNumber(call.getNumber());
-                    map.put(call.getNumber(), contact);
+                // search for contact if number presentation is allowed
+                if (call.getNumberPresentation() == CallLog.Calls.PRESENTATION_ALLOWED) {
+                    //use map to store already found contacts for better perfomance
+                    Contact contact = map.get(call.getNumber());
+                    if (contact == null) {
+                        contact = getContactByNumber(call.getNumber());
+                        map.put(call.getNumber(), contact);
+                    }
+                    call.setContact(contact);
                 }
-                call.setContact(contact);
                 calls.add(call);
 
                 //showCursor(cursor);

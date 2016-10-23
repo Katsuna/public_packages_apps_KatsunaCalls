@@ -1,15 +1,15 @@
 package com.katsuna.calls.ui.viewholders;
 
+import android.provider.CallLog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.utils.DateFormatter;
+import com.squareup.picasso.Picasso;
 
 abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
 
@@ -40,7 +40,10 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
             mDisplayName.setText(call.getContact().getName());
         }
 
-        mNumber.setText(call.getNumber());
+        if (call.getNumberPresentation() == CallLog.Calls.PRESENTATION_ALLOWED) {
+            mNumber.setText(call.getNumber());
+        }
+
         mDateTime.setText(DateFormatter.format(itemView.getContext(), call.getDate()));
 
         adjustDisplayForNameAndNumber(call);

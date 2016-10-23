@@ -24,6 +24,8 @@
     <string name="title_activity_settings">Settings</string>
     <string name="select_profile">Select profile</string>
 
+    <string name="hidden_number">Action unavailable for hidden numbers.</string>
+
     <string-array name="array_profiles">
         <item>Auto</item>
         <item>Simple</item>

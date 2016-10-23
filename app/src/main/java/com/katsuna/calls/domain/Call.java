@@ -6,6 +6,7 @@ public class Call {
     private long id;
     private int type;
     private String number;
+    private int numberPresentation;
     private String name;
     private long date;
     private long duration;
@@ -13,12 +14,14 @@ public class Call {
     private int isRead;
     private Contact contact;
 
-    public Call() {}
+    public Call() {
+    }
 
     public Call(Call call) {
         id = call.getId();
         type = call.getType();
         number = call.getNumber();
+        numberPresentation = call.getNumberPresentation();
         name = call.getName();
         date = call.getDate();
         duration = call.getDuration();
@@ -50,6 +53,14 @@ public class Call {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public int getNumberPresentation() {
+        return numberPresentation;
+    }
+
+    public void setNumberPresentation(int numberPresentation) {
+        this.numberPresentation = numberPresentation;
     }
 
     public long getDate() {

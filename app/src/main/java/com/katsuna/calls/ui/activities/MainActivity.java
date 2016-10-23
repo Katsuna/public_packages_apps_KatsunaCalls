@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.CallLog;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -35,6 +36,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
@@ -206,16 +208,31 @@ public class MainActivity extends AppCompatActivity {
         }, new ICallInteractionListener() {
             @Override
             public void callContact(Call call) {
+                if (call.getNumberPresentation() != CallLog.Calls.PRESENTATION_ALLOWED) {
+                    showMessageForHiddenNumber();
+                    return;
+                }
+
                 MainActivity.this.callContact(call.getNumber());
             }
 
             @Override
             public void sendSMS(Call call) {
+                if (call.getNumberPresentation() != CallLog.Calls.PRESENTATION_ALLOWED) {
+                    showMessageForHiddenNumber();
+                    return;
+                }
+
                 MainActivity.this.sendSMS(call.getNumber());
             }
 
             @Override
             public void createContact(Call call) {
+                if (call.getNumberPresentation() != CallLog.Calls.PRESENTATION_ALLOWED) {
+                    showMessageForHiddenNumber();
+                    return;
+                }
+
                 mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
 
                 Intent i = new Intent(Constants.CREATE_CONTACT_ACTION);
@@ -234,6 +251,10 @@ public class MainActivity extends AppCompatActivity {
         }, mSelectedCallPosition, mProfile);
 
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void showMessageForHiddenNumber() {
+        Toast.makeText(this, R.string.hidden_number, Toast.LENGTH_SHORT).show();
     }
 
     @Override

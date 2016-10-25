@@ -91,11 +91,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(final View view) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                alert.setTitle(R.string.select_phone);
+                alert.setTitle(R.string.common_select_phone_number);
                 final EditText input = new EditText(MainActivity.this);
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
                 alert.setView(input);
-                alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String number = input.getText().toString();
                         if (!TextUtils.isEmpty(number)) {
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-                alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         //Put actions for CANCEL button here, or leave in blank
                     }
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.common_navigation_drawer_open, R.string.common_navigation_drawer_close);
         assert drawer != null;
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -138,12 +138,12 @@ public class MainActivity extends AppCompatActivity {
     private void showContactsAppInstallationDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
         alert.setTitle(R.string.missing_app);
-        alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 Device.goToMarket(MainActivity.this, Constants.CONTACTS_APP);
             }
         });
-        alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //Put actions for CANCEL button here, or leave in blank
             }

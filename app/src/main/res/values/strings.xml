@@ -1,43 +1,16 @@
 <resources>
+
     <string name="app_name">Calls</string>
+    <!-- AndroidManifest doesn't work with common_ strings, so use this workaround -->
+    <string name="title_activity_settings">@string/common_settings</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="settings">Settings</string>
-    <string name="help">Help</string>
-    <string name="info">Info</string>
     <string name="unknown">Unknown</string>
-    <string name="call">call</string>
-    <string name="message">message</string>
-    <string name="today">Today</string>
-    <string name="yesterday">Yesterday</string>
-    <string name="select_phone">Select phone number</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
+
     <string name="missing_app">You need to install Contacts application.</string>
-    <string name="action_search">Search</string>
-    <string name="search_label">Search calls</string>
-    <string name="search_hint">Search</string>
+
+    <string name="search_calls">Search calls</string>
     <string name="no_calls">No calls found.</string>
 
-    <string name="title_activity_settings">Settings</string>
-    <string name="select_profile">Select profile</string>
-
     <string name="hidden_number">Action unavailable for hidden numbers.</string>
-
-    <string-array name="array_profiles">
-        <item>Auto</item>
-        <item>Simple</item>
-        <item>Intermediate</item>
-        <item>Advanced</item>
-    </string-array>
-
-    <string-array name="array_profiles_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
 
 </resources>

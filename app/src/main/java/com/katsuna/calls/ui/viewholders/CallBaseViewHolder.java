@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
-import com.katsuna.calls.utils.DateFormatter;
+import com.katsuna.commons.utils.DateFormatter;
 import com.squareup.picasso.Picasso;
 
 abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
@@ -44,7 +44,7 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
             mNumber.setText(call.getNumber());
         }
 
-        mDateTime.setText(DateFormatter.format(itemView.getContext(), call.getDate()));
+        mDateTime.setText(DateFormatter.format(call.getDate()));
 
         adjustDisplayForNameAndNumber(call);
     }

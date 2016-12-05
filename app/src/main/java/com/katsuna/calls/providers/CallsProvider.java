@@ -3,23 +3,15 @@ package com.katsuna.calls.providers;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.CallLog;
-import android.provider.ContactsContract;
-import android.util.Log;
 
 import com.katsuna.calls.domain.Call;
-import com.katsuna.calls.domain.Contact;
-import com.katsuna.calls.providers.metadata.CallColumns;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 @SuppressWarnings("ResourceType")
 public class CallsProvider {
-
-    private static final String TAG = "CallsProvider";
 
     private final ContentResolver cr;
 
@@ -32,35 +24,20 @@ public class CallsProvider {
         List<Call> calls = new ArrayList<>();
         String orderBy = CallLog.Calls.DATE + " DESC";
 
-        LinkedHashMap<String, Contact> map = new LinkedHashMap<>();
-
-        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, orderBy);
+        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, CallLogQuery._PROJECTION, null, null, orderBy);
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 Call call = new Call();
-                call.setId(cursor.getLong(cursor.getColumnIndex(CallColumns.ID)));
-                call.setType(cursor.getInt(cursor.getColumnIndex(CallColumns.TYPE)));
-                call.setName(cursor.getString(cursor.getColumnIndex(CallColumns.NAME)));
-                call.setNumber(cursor.getString(cursor.getColumnIndex(CallColumns.NUMBER)));
-                call.setNumberPresentation(cursor.getInt(cursor.getColumnIndex(CallColumns.NUMBER_PRESENTATION)));
-                call.setDate(cursor.getLong(cursor.getColumnIndex(CallColumns.DATE)));
-                call.setIsRead(cursor.getInt(cursor.getColumnIndex(CallColumns.IS_READ)));
-                call.setIsNew(cursor.getInt(cursor.getColumnIndex(CallColumns.NEW)));
-                call.setDuration(cursor.getLong(cursor.getColumnIndex(CallColumns.DURATION)));
-
-                // search for contact if number presentation is allowed
-                if (call.getNumberPresentation() == CallLog.Calls.PRESENTATION_ALLOWED) {
-                    //use map to store already found contacts for better perfomance
-                    Contact contact = map.get(call.getNumber());
-                    if (contact == null) {
-                        contact = getContactByNumber(call.getNumber());
-                        map.put(call.getNumber(), contact);
-                    }
-                    call.setContact(contact);
-                }
+                call.setId(cursor.getLong(CallLogQuery.ID));
+                call.setType(cursor.getInt(CallLogQuery.TYPE));
+                call.setName(cursor.getString(CallLogQuery.CACHED_NAME));
+                call.setNumber(cursor.getString(CallLogQuery.NUMBER));
+                call.setNumberPresentation(cursor.getInt(CallLogQuery.NUMBER_PRESENTATION));
+                call.setIsRead(cursor.getInt(CallLogQuery.IS_READ));
+                call.setDate(cursor.getLong(CallLogQuery.DATE));
+                call.setIsNew(cursor.getInt(CallLogQuery.NEW));
+                call.setDuration(cursor.getLong(CallLogQuery.DURATION));
                 calls.add(call);
-
-                //showCursor(cursor);
             } while (cursor.moveToNext());
 
             cursor.close();
@@ -68,48 +45,4 @@ public class CallsProvider {
 
         return calls;
     }
-
-    private Contact getContactByNumber(String number) {
-
-        Log.d(TAG, "getContactByNumber: number=" + number);
-
-        Contact contact = null;
-
-        String[] projection = {
-                ContactsContract.PhoneLookup._ID,
-                ContactsContract.PhoneLookup.DISPLAY_NAME,
-                ContactsContract.PhoneLookup.NUMBER,
-                ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI
-        };
-
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
-
-        Cursor cursor = cr.query(uri, projection, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            contact = new Contact();
-            contact.setId(cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID)));
-            contact.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME)));
-            contact.setPhotoUri(cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI)));
-
-            cursor.close();
-        }
-        return contact;
-    }
-
-    private void showCursor(Cursor cursor) {
-        int l = cursor.getColumnCount();
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < l; i++) {
-            buf.append(i).append(":");
-            buf.append(cursor.getColumnName(i));
-            buf.append("=");
-            buf.append(cursor.getString(i));
-            buf.append(" type=");
-            buf.append(cursor.getType(i));
-            buf.append(" | ");
-        }
-        Log.e(TAG, buf.toString());
-    }
-
-
 }

@@ -26,7 +26,6 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,9 +39,12 @@ import android.widget.Toast;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.domain.Contact;
 import com.katsuna.calls.providers.CallsProvider;
+import com.katsuna.calls.providers.ContactInfoHelper;
 import com.katsuna.calls.ui.adapters.CallsAdapter;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
+import com.katsuna.calls.ui.listeners.IContactProvider;
 import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.Device;
 import com.katsuna.commons.KatsunaConstants;
@@ -50,10 +52,10 @@ import com.katsuna.commons.entities.Profile;
 import com.katsuna.commons.entities.ProfileType;
 import com.katsuna.commons.utils.ProfileReader;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IContactProvider {
 
     private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
     private static final int REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION = 2;
@@ -66,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
     private List<Call> mModels;
     private DrawerLayout mDrawerLayout;
     private Profile mProfile;
+    private LinkedHashMap<String, Contact> mContactCache;
+    private ContactInfoHelper mContactInfoHelper;
+    private int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
+    private LinkedHashMap<String, Boolean> mContactSearchedMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
 
         initControls();
         setupDrawerLayout();
+
+        mContactCache = new LinkedHashMap<>();
+        mContactSearchedMap = new LinkedHashMap<>();
+        mContactInfoHelper = new ContactInfoHelper(this);
     }
 
     private void showContactsAppInstallationDialog() {
@@ -198,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         CallsProvider callsProvider = new CallsProvider(this);
         mModels = callsProvider.getCalls();
-        mAdapter = new CallsAdapter(getDeepCopy(mModels), new View.OnClickListener() {
+        mAdapter = new CallsAdapter(mModels, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = mRecyclerView.getChildAdapterPosition(v);
@@ -248,9 +258,17 @@ public class MainActivity extends AppCompatActivity {
                     showContactsAppInstallationDialog();
                 }
             }
-        }, mSelectedCallPosition, mProfile);
+        }, mSelectedCallPosition, mProfile, this);
 
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                showNoResultsView();
+            }
+        });
+
     }
 
     private void showMessageForHiddenNumber() {
@@ -310,8 +328,7 @@ public class MainActivity extends AppCompatActivity {
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                mAdapter.animateTo(getDeepCopy(mModels));
-                showNoResultsView();
+                mAdapter.resetFilter();
                 return false;
             }
         });
@@ -334,16 +351,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void search(String query) {
-        Log.e("search", query);
-
         if (TextUtils.isEmpty(query)) {
-            mAdapter.animateTo(getDeepCopy(mModels));
+            mAdapter.resetFilter();
         } else {
-            final List<Call> filteredModelList = filter(getDeepCopy(mModels), query);
-            mAdapter.animateTo(filteredModelList);
-            mRecyclerView.scrollToPosition(0);
+            mAdapter.getFilter().filter(query);
         }
-        showNoResultsView();
     }
 
     private void showNoResultsView() {
@@ -355,35 +367,6 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.setVisibility(View.GONE);
         }
     }
-
-    private List<Call> getDeepCopy(List<Call> calls) {
-        List<Call> output = new ArrayList<>();
-        for (Call model : calls) {
-            output.add(new Call(model));
-        }
-        return output;
-    }
-
-    private List<Call> filter(List<Call> models, String query) {
-        query = query.toLowerCase();
-
-        final List<Call> filteredModelList = new ArrayList<>();
-        for (Call model : models) {
-            String text;
-            if (model.getContact() == null) {
-                text = model.getNumber();
-            } else {
-                text = model.getContact().getName().toLowerCase();
-            }
-
-            if (text.contains(query) || model.getNumber().contains(query)) {
-                filteredModelList.add(model);
-            }
-        }
-        return filteredModelList;
-    }
-
-    private int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -457,5 +440,30 @@ public class MainActivity extends AppCompatActivity {
         return profile;
     }
 
+    @Override
+    public Contact getCallContact(Call call) {
+        if (call.getContact() != null) {
+            return call.getContact();
+        }
 
+        Contact contact = null;
+        // search for contact if number presentation is allowed
+        if (call.getNumberPresentation() == CallLog.Calls.PRESENTATION_ALLOWED) {
+            //search from cache
+            contact = mContactCache.get(call.getNumber());
+            if (contact != null) return contact;
+
+            // if not found in cache check if content provider is already asked
+            if (mContactSearchedMap.get(call.getNumber()) != null &&
+                    mContactSearchedMap.get(call.getNumber())) {
+                return null;
+            }
+
+            // last resort. Check with mContactInfoHelper
+            contact = mContactInfoHelper.getContactFromNumber(call.getNumber());
+            mContactCache.put(call.getNumber(), contact);
+            mContactSearchedMap.put(call.getNumber(), true);
+        }
+        return contact;
+    }
 }

@@ -4,28 +4,47 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.List;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.domain.Contact;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
+import com.katsuna.calls.ui.listeners.IContactProvider;
 import com.katsuna.calls.ui.viewholders.CallSelectedViewHolder;
 import com.katsuna.calls.ui.viewholders.CallViewHolder;
 import com.katsuna.calls.utils.Constants;
 import com.katsuna.commons.entities.Profile;
 
-public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+        implements Filterable {
 
     private static final int CALL_NOT_SELECTED = 1;
     private static final int CALL_SELECTED = 2;
-
-    private final List<Call> mModels;
-
-    private int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
     private final View.OnClickListener mOnClickListener;
     private final ICallInteractionListener mListener;
     private final Profile mProfile;
+    private List<Call> mOriginalCalls = null;
+    private List<Call> mFilteredCalls = null;
+    private int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
+    private final IContactProvider mContactProvider;
+    private final CallFilter mFilter = new CallFilter();
+
+    public CallsAdapter(List<Call> models, View.OnClickListener onClickListener,
+                        ICallInteractionListener listener, int selectedCallPosition,
+                        Profile profile, IContactProvider contactProvider) {
+        mOriginalCalls = models;
+        mFilteredCalls = models;
+        mOnClickListener = onClickListener;
+        mListener = listener;
+        mSelectedCallPosition = selectedCallPosition;
+        mProfile = profile;
+        mContactProvider = contactProvider;
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -34,14 +53,6 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             viewType = CALL_SELECTED;
         }
         return viewType;
-    }
-
-    public CallsAdapter(List<Call> models, View.OnClickListener onClickListener, ICallInteractionListener listener, int selectedCallPosition, Profile profile) {
-        mModels = models;
-        mOnClickListener = onClickListener;
-        mListener = listener;
-        mSelectedCallPosition = selectedCallPosition;
-        mProfile = profile;
     }
 
     @Override
@@ -64,7 +75,10 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        Call model = mModels.get(position);
+        Call model = mFilteredCalls.get(position);
+        if (model.getContact() == null) {
+            model.setContact(mContactProvider.getCallContact(model));
+        }
 
         switch (viewHolder.getItemViewType()) {
             case CALL_NOT_SELECTED:
@@ -81,7 +95,7 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return mModels.size();
+        return mFilteredCalls.size();
     }
 
     public void selectCallAtPosition(int position) {
@@ -89,54 +103,50 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyItemChanged(position);
     }
 
-    public void animateTo(List<Call> models) {
-        applyAndAnimateRemovals(models);
-        applyAndAnimateAdditions(models);
-        applyAndAnimateMovedItems(models);
+    @Override
+    public Filter getFilter() {
+        return mFilter;
     }
 
-    private void applyAndAnimateRemovals(List<Call> newModels) {
-        for (int i = mModels.size() - 1; i >= 0; i--) {
-            final Call model = mModels.get(i);
-            if (!newModels.contains(model)) {
-                removeItem(i);
+    public void resetFilter() {
+        mFilteredCalls = mOriginalCalls;
+        notifyDataSetChanged();
+    }
+
+    private class CallFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            String filterString = constraint.toString().toLowerCase();
+
+            List<Call> filteredCalls = new ArrayList<>();
+
+            for (Call call : mOriginalCalls) {
+                Contact contact = mContactProvider.getCallContact(call);
+                String text;
+                if (contact == null) {
+                    text = call.getNumber();
+                } else {
+                    text = contact.getName().toLowerCase();
+                }
+
+                if (text.contains(filterString) || call.getNumber().contains(filterString)) {
+                    filteredCalls.add(call);
+                }
             }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredCalls;
+            results.count = filteredCalls.size();
+
+            return results;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mFilteredCalls = (ArrayList<Call>) results.values;
+            notifyDataSetChanged();
         }
     }
-
-    private void applyAndAnimateAdditions(List<Call> newModels) {
-        for (int i = 0, count = newModels.size(); i < count; i++) {
-            final Call model = newModels.get(i);
-            if (!mModels.contains(model)) {
-                addItem(i, model);
-            }
-        }
-    }
-
-    private void applyAndAnimateMovedItems(List<Call> newModels) {
-        for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
-            final Call model = newModels.get(toPosition);
-            final int fromPosition = mModels.indexOf(model);
-            if (fromPosition >= 0 && fromPosition != toPosition) {
-                moveItem(fromPosition, toPosition);
-            }
-        }
-    }
-
-    private void removeItem(int position) {
-        mModels.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    private void addItem(int position, Call model) {
-        mModels.add(position, model);
-        notifyItemInserted(position);
-    }
-
-    private void moveItem(int fromPosition, int toPosition) {
-        final Call model = mModels.remove(fromPosition);
-        mModels.add(toPosition, model);
-        notifyItemMoved(fromPosition, toPosition);
-    }
-
 }

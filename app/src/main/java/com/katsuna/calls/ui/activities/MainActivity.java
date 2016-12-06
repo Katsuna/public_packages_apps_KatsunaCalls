@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements IContactProvider 
                 showNoResultsView();
             }
         });
-
+        showNoResultsView();
     }
 
     private void showMessageForHiddenNumber() {

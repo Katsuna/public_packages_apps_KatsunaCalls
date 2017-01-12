@@ -17,6 +17,9 @@ LOCAL_STATIC_JAVA_LIBRARIES := KatsunaCommon
 # Include KatsunaCommon resources
 LOCAL_RESOURCE_DIR += frameworks/KatsunaCommon/commons/src/main/res
 
+# Set KatsunaCalls as a default dialer for the ROM
+LOCAL_REQUIRED_MODULES := preferred-dialer.xml
+
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-appcompat
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-recyclerview
@@ -49,5 +52,12 @@ LOCAL_PROGUARD_ENABLED := disabled
 include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)
+
+LOCAL_MODULE := preferred-dialer.xml
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)/preferred-apps
+LOCAL_SRC_FILES := aosp/etc/$(LOCAL_MODULE)
+
+include $(BUILD_PREBUILT)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))

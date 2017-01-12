@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <preferred-activities>
+      <item name="com.katsuna.calls/.ui.activities.MainActivity" match="200000" always="true" set="2">
+         <set name="com.katsuna.calls/.ui.activities.MainActivity" />
+         <set name="com.android.dialer/.DialtactsActivity" />
+         <filter>
+            <action name="android.intent.action.DIAL" />
+            <cat name="android.intent.category.DEFAULT" />
+         </filter>
+     </item>
+   </preferred-activities>

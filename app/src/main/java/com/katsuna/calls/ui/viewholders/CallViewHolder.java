@@ -19,14 +19,23 @@ public class CallViewHolder extends CallBaseViewHolder {
     private final ICallInteractionListener mListener;
     private final UserProfileContainer mUserProfileContainer;
     private final View mCallContainer;
+    private final View mOpacityLayer;
 
     public CallViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView);
         mCallTypeImage = (ImageView) itemView.findViewById(R.id.callTypeImage);
         mCallContainer = itemView.findViewById(R.id.call_container);
+        mOpacityLayer = itemView.findViewById(R.id.opacity_layer);
         mListener = listener;
         mUserProfileContainer = mListener.getUserProfileContainer();
         adjustProfile();
+    }
+
+    public void bindGreyed(Call call, final int position) {
+        bind(call, position);
+        if (mOpacityLayer != null) {
+            mOpacityLayer.setVisibility(View.VISIBLE);
+        }
     }
 
     public void bind(Call call, final int position) {
@@ -59,6 +68,9 @@ public class CallViewHolder extends CallBaseViewHolder {
         mPhoto.setOnClickListener(focusContact);
         mDisplayName.setOnClickListener(focusContact);
 
+        if (mOpacityLayer != null) {
+            mOpacityLayer.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

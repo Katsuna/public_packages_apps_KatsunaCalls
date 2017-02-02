@@ -5,6 +5,7 @@
     android:id="@+id/call_selected_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:elevation="@dimen/common_selection_elevation"
     android:orientation="vertical"
     android:paddingBottom="4dp"
     android:paddingEnd="16dp"

@@ -45,11 +45,8 @@ import com.katsuna.calls.ui.adapters.CallsAdapter;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.Device;
-import com.katsuna.commons.entities.ColorProfile;
-import com.katsuna.commons.entities.ColorProfileKey;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.ui.KatsunaActivity;
-import com.katsuna.commons.utils.ColorCalc;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -148,6 +145,7 @@ public class MainActivity extends KatsunaActivity implements
 
     private void initControls() {
         mRecyclerView = (RecyclerView) findViewById(R.id.calls_list);
+        mRecyclerView.setItemAnimator(null);
         mNoResultsView = (TextView) findViewById(R.id.no_results);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mLastTouchTimestamp = System.currentTimeMillis();
@@ -442,7 +440,6 @@ public class MainActivity extends KatsunaActivity implements
         mAdapter.deselectContact();
         tintFabs(false);
         adjustFabPosition(true);
-        mRecyclerView.setBackground(null);
     }
 
     private int getCenter() {
@@ -467,11 +464,6 @@ public class MainActivity extends KatsunaActivity implements
 
         adjustFabPosition(false);
         mCallSelected = true;
-
-        // set contact list background
-        ColorProfile colorProfile1 = this.mUserProfileContainer.getColorProfile();
-        int color1 = ColorCalc.getColor(this, ColorProfileKey.DISABLED_TEXT_OPACITY, colorProfile1);
-        mRecyclerView.setBackgroundColor(color1);
     }
 
     @Override

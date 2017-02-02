@@ -1,66 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/call_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="4dp"
-    android:paddingEnd="16dp"
-    android:paddingStart="16dp"
-    android:paddingTop="4dp">
+    android:layout_height="wrap_content">
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/photo"
-        android:layout_width="@dimen/contact_photo_size_intemediate"
-        android:layout_height="@dimen/contact_photo_size_intemediate"
-        android:layout_gravity="center"
-        android:layout_marginEnd="5dp"
-        android:layout_marginStart="56dp"
-        android:background="@drawable/ic_person_grey_50px"
-        app:riv_corner_radius="50dp"
-        app:riv_mutate_background="true"
-        app:riv_oval="false"
-        app:riv_tile_mode="repeat" />
-
-    <ImageView
-        android:id="@+id/callTypeImage"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
-        tools:ignore="ContentDescription" />
-
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/call_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/photo"
-        android:layout_toStartOf="@id/callTypeImage"
-        android:orientation="vertical">
+        android:paddingBottom="4dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="4dp">
 
-        <TextView
-            android:id="@+id/displayName"
-            style="@style/CommonRobotoBold"
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/photo"
+            android:layout_width="@dimen/contact_photo_size_intemediate"
+            android:layout_height="@dimen/contact_photo_size_intemediate"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="56dp"
+            android:background="@drawable/ic_person_grey_50px"
+            app:riv_corner_radius="50dp"
+            app:riv_mutate_background="true"
+            app:riv_oval="false"
+            app:riv_tile_mode="repeat" />
+
+        <ImageView
+            android:id="@+id/callTypeImage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            tools:ignore="ContentDescription" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textColor="@color/common_black87"
-            android:textSize="20sp" />
+            android:layout_toEndOf="@id/photo"
+            android:layout_toStartOf="@id/callTypeImage"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@color/common_black87"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/displayName"
+                style="@style/CommonRobotoBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="@color/common_black87"
+                android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/dateTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/common_black87"
+                android:textSize="18sp" />
 
-    </LinearLayout>
-</RelativeLayout>
+            <TextView
+                android:id="@+id/dateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/opacity_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/common_white38"
+        android:visibility="invisible" />
+
+</FrameLayout>
+

@@ -23,6 +23,7 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private static final int CALL_NOT_SELECTED = 1;
     private static final int CALL_SELECTED = 2;
+    private static final int CALL_GREYED = 3;
     private final ICallInteractionListener mListener;
     private List<Call> mOriginalCalls = null;
     private List<Call> mFilteredCalls = null;
@@ -40,7 +41,10 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         int viewType = CALL_NOT_SELECTED;
         if (position == mSelectedCallPosition) {
             viewType = CALL_SELECTED;
+        } else if (mSelectedCallPosition != Constants.NOT_SELECTED_CALL_VALUE) {
+            viewType = CALL_GREYED;
         }
+
         return viewType;
     }
 
@@ -49,6 +53,7 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         RecyclerView.ViewHolder viewHolder = null;
         switch (viewType) {
             case CALL_NOT_SELECTED:
+            case CALL_GREYED:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call, parent, false);
                 viewHolder = new CallViewHolder(view, mListener);
                 break;
@@ -73,7 +78,10 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 CallViewHolder callViewHolder = (CallViewHolder) viewHolder;
                 callViewHolder.bind(model, position);
                 break;
-
+            case CALL_GREYED:
+                CallViewHolder callGreyedViewHolder = (CallViewHolder) viewHolder;
+                callGreyedViewHolder.bindGreyed(model, position);
+                break;
             case CALL_SELECTED:
                 CallSelectedViewHolder callSelectedViewHolder = (CallSelectedViewHolder) viewHolder;
                 callSelectedViewHolder.bind(model);

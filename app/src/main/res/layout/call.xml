@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/SelectCallStyle"
+    android:id="@+id/call_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="4dp"
@@ -15,7 +15,8 @@
         android:layout_width="@dimen/contact_photo_size_intemediate"
         android:layout_height="@dimen/contact_photo_size_intemediate"
         android:layout_gravity="center"
-        android:layout_margin="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="56dp"
         android:background="@drawable/ic_person_grey_50px"
         app:riv_corner_radius="50dp"
         app:riv_mutate_background="true"
@@ -40,12 +41,12 @@
 
         <TextView
             android:id="@+id/displayName"
-            style="@style/RobotoBold"
+            style="@style/CommonRobotoBold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black87"
-            android:textSize="20sp"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textColor="@color/common_black87"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/number"
@@ -53,7 +54,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/black87"
+            android:textColor="@color/common_black87"
             android:textSize="18sp" />
 
         <TextView

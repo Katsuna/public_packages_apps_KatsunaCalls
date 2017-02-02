@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -19,21 +17,22 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,18 +43,19 @@ import com.katsuna.calls.providers.CallsProvider;
 import com.katsuna.calls.providers.ContactInfoHelper;
 import com.katsuna.calls.ui.adapters.CallsAdapter;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
-import com.katsuna.calls.ui.listeners.IContactProvider;
 import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.Device;
-import com.katsuna.commons.KatsunaConstants;
-import com.katsuna.commons.entities.Profile;
-import com.katsuna.commons.entities.ProfileType;
-import com.katsuna.commons.utils.ProfileReader;
+import com.katsuna.commons.entities.ColorProfile;
+import com.katsuna.commons.entities.ColorProfileKey;
+import com.katsuna.commons.entities.UserProfileContainer;
+import com.katsuna.commons.ui.KatsunaActivity;
+import com.katsuna.commons.utils.ColorCalc;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IContactProvider {
+public class MainActivity extends KatsunaActivity implements
+        ICallInteractionListener {
 
     private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
     private static final int REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION = 2;
@@ -65,80 +65,20 @@ public class MainActivity extends AppCompatActivity implements IContactProvider 
     private CallsAdapter mAdapter;
     private SearchView mSearchView;
     private TextView mNoResultsView;
-    private List<Call> mModels;
     private DrawerLayout mDrawerLayout;
-    private Profile mProfile;
     private LinkedHashMap<String, Contact> mContactCache;
     private ContactInfoHelper mContactInfoHelper;
-    private int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
     private LinkedHashMap<String, Boolean> mContactSearchedMap;
+    private FrameLayout mPopupFrame;
+    private boolean mCallSelected;
+    private String mCallNumberFocus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabContacts);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!Device.openApp(MainActivity.this, Constants.CONTACTS_APP)) {
-                    showContactsAppInstallationDialog();
-                }
-            }
-        });
-
-        FloatingActionButton fabDial = (FloatingActionButton) findViewById(R.id.fabDial);
-        assert fabDial != null;
-        fabDial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                alert.setTitle(R.string.common_select_phone_number);
-                final EditText input = new EditText(MainActivity.this);
-                input.setInputType(InputType.TYPE_CLASS_PHONE);
-                alert.setView(input);
-                alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String number = input.getText().toString();
-                        if (!TextUtils.isEmpty(number)) {
-                            callContact(number);
-                        }
-                    }
-                });
-                alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        //Put actions for CANCEL button here, or leave in blank
-                    }
-                });
-                final AlertDialog dialog = alert.show();
-
-                //focus on input
-                input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        if (hasFocus) {
-                            Window window = dialog.getWindow();
-                            if (window != null)
-                                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                        }
-                    }
-                });
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.common_navigation_drawer_open, R.string.common_navigation_drawer_close);
-        assert drawer != null;
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
         initControls();
-        setupDrawerLayout();
 
         mContactCache = new LinkedHashMap<>();
         mContactSearchedMap = new LinkedHashMap<>();
@@ -175,21 +115,34 @@ public class MainActivity extends AppCompatActivity implements IContactProvider 
     @Override
     protected void onResume() {
         super.onResume();
-        setupProfile();
         loadCalls();
+
+        showPopup(false);
+        if (mCallNumberFocus != null && !mCallNumberFocus.isEmpty()) {
+            int position = mAdapter.getPositionByNumber(mCallNumberFocus);
+            focusCall(position);
+            mCallNumberFocus = null;
+        } else {
+            deselectContact();
+        }
     }
 
-    private void setupProfile() {
-        Profile freshProfileFromContentProvider = ProfileReader.getProfile(this);
-        Profile profileFromPreferences = getProfileFromPreferences();
-        if (freshProfileFromContentProvider == null) {
-            setSelectedProfile(profileFromPreferences);
-        } else {
-            if (profileFromPreferences.getType() == ProfileType.AUTO.getNumVal()) {
-                setSelectedProfile(freshProfileFromContentProvider);
-            } else {
-                setSelectedProfile(profileFromPreferences);
+    @Override
+    protected void showPopup(boolean show) {
+        if (show) {
+            //don't show popup if menu drawer is open or a call is selected.
+            if (!mDrawerLayout.isDrawerOpen(GravityCompat.START) && !mCallSelected) {
+                mPopupFrame.setVisibility(View.VISIBLE);
+                mPopupButton1.setVisibility(View.VISIBLE);
+                mPopupButton2.setVisibility(View.VISIBLE);
+                mPopupVisible = true;
             }
+        } else {
+            mPopupFrame.setVisibility(View.GONE);
+            mPopupButton1.setVisibility(View.GONE);
+            mPopupButton2.setVisibility(View.GONE);
+            mPopupVisible = false;
+            mLastTouchTimestamp = System.currentTimeMillis();
         }
     }
 
@@ -197,6 +150,112 @@ public class MainActivity extends AppCompatActivity implements IContactProvider 
         mRecyclerView = (RecyclerView) findViewById(R.id.calls_list);
         mNoResultsView = (TextView) findViewById(R.id.no_results);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mLastTouchTimestamp = System.currentTimeMillis();
+        initPopupActionHandler();
+
+        initToolbar();
+        initDrawer();
+        initFabs();
+
+        mPopupFrame = (FrameLayout) findViewById(R.id.popup_frame);
+        mPopupFrame.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                showPopup(false);
+                return true;
+            }
+        });
+
+    }
+
+    private void initDrawer() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, mToolbar, R.string.common_navigation_drawer_open,
+                R.string.common_navigation_drawer_close);
+        assert drawer != null;
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        setupDrawerLayout();
+    }
+
+    private void initFabs() {
+        mFabContainer = (LinearLayout) findViewById(R.id.fab_container);
+
+        mButtonsContainer1 = (LinearLayout) findViewById(R.id.search_buttons_container);
+        mPopupButton1 = (Button) findViewById(R.id.search_button);
+        mPopupButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openContactsApp();
+            }
+        });
+
+        mFab1 = (FloatingActionButton) findViewById(R.id.fabContacts);
+        mFab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openContactsApp();
+            }
+        });
+
+        mButtonsContainer2 = (LinearLayout) findViewById(R.id.dial_buttons_container);
+        mPopupButton2 = (Button) findViewById(R.id.dial_button);
+        mPopupButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dial();
+            }
+        });
+
+        mFab2 = (FloatingActionButton) findViewById(R.id.fabDial);
+        mFab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                dial();
+            }
+        });
+    }
+
+    private void openContactsApp() {
+        if (!Device.openApp(MainActivity.this, Constants.CONTACTS_APP)) {
+            showContactsAppInstallationDialog();
+        }
+    }
+
+    private void dial() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        alert.setTitle(R.string.common_select_phone_number);
+        final EditText input = new EditText(MainActivity.this);
+        input.setInputType(InputType.TYPE_CLASS_PHONE);
+        alert.setView(input);
+        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String number = input.getText().toString();
+                if (!TextUtils.isEmpty(number)) {
+                    callContact(number);
+                }
+            }
+        });
+        alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //Put actions for CANCEL button here, or leave in blank
+            }
+        });
+        final AlertDialog dialog = alert.show();
+
+        //focus on input
+        input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    Window window = dialog.getWindow();
+                    if (window != null)
+                        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+            }
+        });
     }
 
     private void loadCalls() {
@@ -207,58 +266,8 @@ public class MainActivity extends AppCompatActivity implements IContactProvider 
         }
 
         CallsProvider callsProvider = new CallsProvider(this);
-        mModels = callsProvider.getCalls();
-        mAdapter = new CallsAdapter(mModels, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = mRecyclerView.getChildAdapterPosition(v);
-                mAdapter.selectCallAtPosition(position);
-                centerOnCall(position);
-            }
-        }, new ICallInteractionListener() {
-            @Override
-            public void callContact(Call call) {
-                if (call.getNumberPresentation() != CallLog.Calls.PRESENTATION_ALLOWED) {
-                    showMessageForHiddenNumber();
-                    return;
-                }
-
-                MainActivity.this.callContact(call.getNumber());
-            }
-
-            @Override
-            public void sendSMS(Call call) {
-                if (call.getNumberPresentation() != CallLog.Calls.PRESENTATION_ALLOWED) {
-                    showMessageForHiddenNumber();
-                    return;
-                }
-
-                MainActivity.this.sendSMS(call.getNumber());
-            }
-
-            @Override
-            public void createContact(Call call) {
-                if (call.getNumberPresentation() != CallLog.Calls.PRESENTATION_ALLOWED) {
-                    showMessageForHiddenNumber();
-                    return;
-                }
-
-                mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
-
-                Intent i = new Intent(Constants.CREATE_CONTACT_ACTION);
-                i.putExtra("number", call.getNumber());
-
-                PackageManager packageManager = getPackageManager();
-                List activities = packageManager.queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
-                boolean isIntentSafe = activities.size() > 0;
-
-                if (isIntentSafe) {
-                    startActivityForResult(i, CREATE_CONTACT_REQUEST);
-                } else {
-                    showContactsAppInstallationDialog();
-                }
-            }
-        }, mSelectedCallPosition, mProfile, this);
+        List<Call> mModels = callsProvider.getCalls();
+        mAdapter = new CallsAdapter(mModels, this);
 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -368,30 +377,6 @@ public class MainActivity extends AppCompatActivity implements IContactProvider 
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CREATE_CONTACT_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                //noinspection ConstantConditions
-                String number = data.getExtras().get("number").toString();
-                for (int i = 0; i < mModels.size(); i++) {
-                    if (mModels.get(i).getNumber().equals(number)) {
-                        mSelectedCallPosition = i;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    private void centerOnCall(int position) {
-        Resources r = getResources();
-        float offset = (mRecyclerView.getHeight() / 2) - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 275, r.getDisplayMetrics()) / 2;
-        int offsetInt = Math.round(offset);
-
-        ((LinearLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(position, offsetInt);
-    }
-
     private void setupDrawerLayout() {
         NavigationView view = (NavigationView) findViewById(R.id.nav_view);
         assert view != null;
@@ -414,30 +399,6 @@ public class MainActivity extends AppCompatActivity implements IContactProvider 
                 return true;
             }
         });
-    }
-
-    private boolean setSelectedProfile(Profile profile) {
-        boolean profileChanged = false;
-        if (mProfile == null) {
-            mProfile = profile;
-            profileChanged = true;
-        } else {
-            if (mProfile.getType() != profile.getType()) {
-                profileChanged = true;
-                mProfile.setType(profile.getType());
-            }
-        }
-        return profileChanged;
-    }
-
-    private Profile getProfileFromPreferences() {
-        Profile profile = new Profile();
-        int profileType = PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt(KatsunaConstants.PROFILE_KEY, ProfileType.INTERMEDIATE.getNumVal());
-
-        profile.setType(profileType);
-
-        return profile;
     }
 
     @Override
@@ -465,5 +426,99 @@ public class MainActivity extends AppCompatActivity implements IContactProvider 
             mContactSearchedMap.put(call.getNumber(), true);
         }
         return contact;
+    }
+
+    @Override
+    public void selectCall(int position) {
+        if (mCallSelected) {
+            deselectContact();
+        } else {
+            focusOnCall(position, getCenter());
+        }
+    }
+
+    private void deselectContact() {
+        mCallSelected = false;
+        mAdapter.deselectContact();
+        tintFabs(false);
+        adjustFabPosition(true);
+        mRecyclerView.setBackground(null);
+    }
+
+    private int getCenter() {
+        return (mRecyclerView.getHeight() / 2) - 170;
+    }
+
+    private void scrollToPositionWithOffset(int position, int offset) {
+        ((LinearLayoutManager) mRecyclerView.getLayoutManager())
+                .scrollToPositionWithOffset(position, offset);
+    }
+
+    @Override
+    public void focusCall(int position) {
+        focusOnCall(position, getCenter());
+    }
+
+    private void focusOnCall(int position, int offset) {
+        mAdapter.selectCallAtPosition(position);
+        scrollToPositionWithOffset(position, offset);
+
+        tintFabs(true);
+
+        adjustFabPosition(false);
+        mCallSelected = true;
+
+        // set contact list background
+        ColorProfile colorProfile1 = this.mUserProfileContainer.getColorProfile();
+        int color1 = ColorCalc.getColor(this, ColorProfileKey.DISABLED_TEXT_OPACITY, colorProfile1);
+        mRecyclerView.setBackgroundColor(color1);
+    }
+
+    @Override
+    public void callContact(Call call) {
+        if (call.getNumberPresentation() != CallLog.Calls.PRESENTATION_ALLOWED) {
+            showMessageForHiddenNumber();
+            return;
+        }
+        callContact(call.getNumber());
+    }
+
+    @Override
+    public void sendSMS(Call call) {
+        if (call.getNumberPresentation() != CallLog.Calls.PRESENTATION_ALLOWED) {
+            showMessageForHiddenNumber();
+            return;
+        }
+
+        sendSMS(call.getNumber());
+    }
+
+    @Override
+    public void createContact(Call call) {
+        if (call.getNumberPresentation() != CallLog.Calls.PRESENTATION_ALLOWED) {
+            showMessageForHiddenNumber();
+            return;
+        }
+
+        Intent i = new Intent(Constants.CREATE_CONTACT_ACTION);
+        i.putExtra("number", call.getNumber());
+
+        PackageManager packageManager = getPackageManager();
+        List activities = packageManager.queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+        boolean isIntentSafe = activities.size() > 0;
+
+        if (isIntentSafe) {
+            startActivityForResult(i, CREATE_CONTACT_REQUEST);
+            mCallNumberFocus = call.getNumber();
+            //clear it from cache to enable fetching the fresh contact
+            mContactSearchedMap.remove(mCallNumberFocus);
+        } else {
+            showContactsAppInstallationDialog();
+        }
+    }
+
+    @Override
+    public UserProfileContainer getUserProfileContainer() {
+        return mUserProfileContainer;
     }
 }

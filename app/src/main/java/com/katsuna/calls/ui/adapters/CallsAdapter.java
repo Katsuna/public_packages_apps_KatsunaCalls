@@ -11,11 +11,9 @@ import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.domain.Contact;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
-import com.katsuna.calls.ui.listeners.IContactProvider;
 import com.katsuna.calls.ui.viewholders.CallSelectedViewHolder;
 import com.katsuna.calls.ui.viewholders.CallViewHolder;
 import com.katsuna.calls.utils.Constants;
-import com.katsuna.commons.entities.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,25 +23,16 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private static final int CALL_NOT_SELECTED = 1;
     private static final int CALL_SELECTED = 2;
-    private final View.OnClickListener mOnClickListener;
     private final ICallInteractionListener mListener;
-    private final Profile mProfile;
     private List<Call> mOriginalCalls = null;
     private List<Call> mFilteredCalls = null;
     private int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
-    private final IContactProvider mContactProvider;
     private final CallFilter mFilter = new CallFilter();
 
-    public CallsAdapter(List<Call> models, View.OnClickListener onClickListener,
-                        ICallInteractionListener listener, int selectedCallPosition,
-                        Profile profile, IContactProvider contactProvider) {
+    public CallsAdapter(List<Call> models, ICallInteractionListener listener) {
         mOriginalCalls = models;
         mFilteredCalls = models;
-        mOnClickListener = onClickListener;
         mListener = listener;
-        mSelectedCallPosition = selectedCallPosition;
-        mProfile = profile;
-        mContactProvider = contactProvider;
     }
 
     @Override
@@ -61,12 +50,11 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         switch (viewType) {
             case CALL_NOT_SELECTED:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call, parent, false);
-                viewHolder = new CallViewHolder(view, mProfile);
-                view.setOnClickListener(mOnClickListener);
+                viewHolder = new CallViewHolder(view, mListener);
                 break;
             case CALL_SELECTED:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_selected, parent, false);
-                viewHolder = new CallSelectedViewHolder(view, mListener, mProfile);
+                viewHolder = new CallSelectedViewHolder(view, mListener);
                 break;
         }
 
@@ -77,13 +65,13 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         Call model = mFilteredCalls.get(position);
         if (model.getContact() == null) {
-            model.setContact(mContactProvider.getCallContact(model));
+            model.setContact(mListener.getCallContact(model));
         }
 
         switch (viewHolder.getItemViewType()) {
             case CALL_NOT_SELECTED:
                 CallViewHolder callViewHolder = (CallViewHolder) viewHolder;
-                callViewHolder.bind(model);
+                callViewHolder.bind(model, position);
                 break;
 
             case CALL_SELECTED:
@@ -101,6 +89,23 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void selectCallAtPosition(int position) {
         mSelectedCallPosition = position;
         notifyItemChanged(position);
+    }
+
+    public void deselectContact() {
+        selectCallAtPosition(Constants.NOT_SELECTED_CALL_VALUE);
+    }
+
+    public int getPositionByNumber(String number) {
+        int position = Constants.NOT_SELECTED_CALL_VALUE;
+        for (int i = 0; i < mFilteredCalls.size(); i++) {
+            //don't focus on premium contacts
+            Call call = mFilteredCalls.get(i);
+            if (call.getNumber().equals(number)) {
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 
     @Override
@@ -122,7 +127,7 @@ public class CallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             List<Call> filteredCalls = new ArrayList<>();
 
             for (Call call : mOriginalCalls) {
-                Contact contact = mContactProvider.getCallContact(call);
+                Contact contact = mListener.getCallContact(call);
                 String text;
                 if (contact == null) {
                     text = call.getNumber();

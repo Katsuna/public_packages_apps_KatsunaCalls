@@ -9,22 +9,27 @@ import android.widget.ImageView;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
-import com.katsuna.commons.entities.Profile;
+import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.commons.entities.ProfileType;
+import com.katsuna.commons.entities.UserProfileContainer;
 
 public class CallViewHolder extends CallBaseViewHolder {
 
     private final ImageView mCallTypeImage;
-    private final Profile mProfile;
+    private final ICallInteractionListener mListener;
+    private final UserProfileContainer mUserProfileContainer;
+    private final View mCallContainer;
 
-    public CallViewHolder(View itemView, Profile profile) {
+    public CallViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView);
         mCallTypeImage = (ImageView) itemView.findViewById(R.id.callTypeImage);
-        mProfile = profile;
+        mCallContainer = itemView.findViewById(R.id.call_container);
+        mListener = listener;
+        mUserProfileContainer = mListener.getUserProfileContainer();
         adjustProfile();
     }
 
-    public void bind(Call call) {
+    public void bind(Call call, final int position) {
         super.bind(call);
 
         if (call.getType() == CallLog.Calls.INCOMING_TYPE) {
@@ -36,6 +41,24 @@ public class CallViewHolder extends CallBaseViewHolder {
         } else {
             mCallTypeImage.setImageBitmap(null);
         }
+
+        mCallContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.selectCall(position);
+            }
+        });
+
+        // direct focus on non selected contact if photo or name is clicked
+        View.OnClickListener focusContact = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.focusCall(position);
+            }
+        };
+        mPhoto.setOnClickListener(focusContact);
+        mDisplayName.setOnClickListener(focusContact);
+
     }
 
     @Override
@@ -45,24 +68,25 @@ public class CallViewHolder extends CallBaseViewHolder {
             mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
             mNumber.setTypeface(null, Typeface.BOLD);
         } else {
-            mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black));
-            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black));
+            mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(),
+                    R.color.common_black));
+            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(),
+                    R.color.common_black));
             mNumber.setTypeface(null, Typeface.NORMAL);
         }
     }
 
     private void adjustProfile() {
-        if (mProfile != null) {
-            int size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_intemediate);
-            if (mProfile.getType() == ProfileType.ADVANCED.getNumVal()) {
-                size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_advanced);
-            } else if (mProfile.getType() == ProfileType.SIMPLE.getNumVal()) {
-                size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_simple);
-            }
-            ViewGroup.LayoutParams layoutParams = mPhoto.getLayoutParams();
-            layoutParams.height = size;
-            layoutParams.width = size;
-            mPhoto.setLayoutParams(layoutParams);
+        ProfileType sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
+        int size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_intemediate);
+        if (sizeProfile == ProfileType.ADVANCED) {
+            size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_advanced);
+        } else if (sizeProfile == ProfileType.SIMPLE) {
+            size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_simple);
         }
+        ViewGroup.LayoutParams layoutParams = mPhoto.getLayoutParams();
+        layoutParams.height = size;
+        layoutParams.width = size;
+        mPhoto.setLayoutParams(layoutParams);
     }
 }

@@ -1,37 +1,3 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimaryDark">@color/grey300</item>
-        <item name="colorAccent">@color/teala40087</item>
-        <item name="colorButtonNormal">@color/green</item>
-        <item name="android:textColor">@color/colorPrimaryText</item>
-        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
-    </style>
-
-    <!-- ToolBar -->
-    <style name="ToolBarStyle" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/grey100</item>
-        <item name="android:textColorPrimary">@color/black87</item>
-        <item name="android:textColorSecondary">@color/black87</item>
-        <item name="actionMenuTextColor">@color/black87</item>
-    </style>
-
-    <style name="drawer">
-        <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="SelectCallStyle">
-        <item name="android:background">@color/grey50</item>
-    </style>
-
-    <style name="SelectCallStyleHighlight">
-        <item name="android:background">@color/grey200</item>
-    </style>
-
-    <style name="RobotoBold">
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
 </resources>

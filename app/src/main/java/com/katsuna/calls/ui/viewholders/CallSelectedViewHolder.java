@@ -6,29 +6,35 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
-import com.katsuna.commons.entities.Profile;
+import com.katsuna.commons.entities.ColorProfile;
+import com.katsuna.commons.entities.ColorProfileKey;
 import com.katsuna.commons.entities.ProfileType;
+import com.katsuna.commons.entities.UserProfileContainer;
+import com.katsuna.commons.utils.ColorCalc;
+import com.katsuna.commons.utils.Shape;
 
 public class CallSelectedViewHolder extends CallBaseViewHolder {
 
     private final ICallInteractionListener mListener;
     private final Button mCallButton;
     private final Button mMessageButton;
-    private final ImageView mCreateContact;
-    private final Profile mProfile;
+    private final ImageButton mCreateContact;
+    private final UserProfileContainer mUserProfileContainer;
+    private final View mCallSelectedContainer;
 
-    public CallSelectedViewHolder(View itemView, ICallInteractionListener listener, Profile profile) {
+    public CallSelectedViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView);
         mCallButton = (Button) itemView.findViewById(R.id.call_button);
         mMessageButton = (Button) itemView.findViewById(R.id.message_button);
-        mCreateContact = (ImageView) itemView.findViewById(R.id.createContact);
+        mCreateContact = (ImageButton) itemView.findViewById(R.id.createContact);
+        mCallSelectedContainer = itemView.findViewById(R.id.call_selected_container);
         mListener = listener;
-        mProfile = profile;
+        mUserProfileContainer = mListener.getUserProfileContainer();
         adjustProfile();
     }
 
@@ -69,37 +75,60 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
             mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
             mNumber.setTypeface(null, Typeface.BOLD);
         } else {
-            mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black87));
-            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black87));
+            mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(),
+                    R.color.common_black87));
+            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(),
+                    R.color.common_black87));
             mNumber.setTypeface(null, Typeface.NORMAL);
         }
     }
 
     private void adjustProfile() {
-        if (mProfile != null) {
-            int photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_intemediate);
-            int actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_intemediate);
+        ProfileType sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
 
-            if (mProfile.getType() == ProfileType.ADVANCED.getNumVal()) {
-                photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_advanced);
-                actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_advanced);
-            } else if (mProfile.getType() == ProfileType.SIMPLE.getNumVal()) {
-                photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_simple);
-                actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_simple);
-            }
-            ViewGroup.LayoutParams layoutParams = mPhoto.getLayoutParams();
-            layoutParams.height = photoSize;
-            layoutParams.width = photoSize;
-            mPhoto.setLayoutParams(layoutParams);
+        //default values
+        int photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_intemediate);
+        int actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_intemediate);
 
-            ViewGroup.LayoutParams callButtonParams = mCallButton.getLayoutParams();
-            callButtonParams.height = actionButtonHeight;
-
-            ViewGroup.LayoutParams messageButtonParams = mMessageButton.getLayoutParams();
-            messageButtonParams.height = actionButtonHeight;
-
-            mCallButton.setLayoutParams(callButtonParams);
-            mMessageButton.setLayoutParams(messageButtonParams);
+        if (sizeProfile == ProfileType.ADVANCED) {
+            photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_advanced);
+            actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_advanced);
+        } else if (sizeProfile == ProfileType.SIMPLE) {
+            photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_simple);
+            actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_simple);
         }
+        ViewGroup.LayoutParams layoutParams = mPhoto.getLayoutParams();
+        layoutParams.height = photoSize;
+        layoutParams.width = photoSize;
+        mPhoto.setLayoutParams(layoutParams);
+
+        ViewGroup.LayoutParams callButtonParams = mCallButton.getLayoutParams();
+        callButtonParams.height = actionButtonHeight;
+
+        ViewGroup.LayoutParams messageButtonParams = mMessageButton.getLayoutParams();
+        messageButtonParams.height = actionButtonHeight;
+
+        mCallButton.setLayoutParams(callButtonParams);
+        mMessageButton.setLayoutParams(messageButtonParams);
+
+        adjustColorProfile();
+    }
+
+    private void adjustColorProfile() {
+        ColorProfile colorProfile = mUserProfileContainer.getColorProfile();
+        // set action buttons background color
+        int color1 = ColorCalc.getColor(itemView.getContext(),
+                ColorProfileKey.ACCENT1_COLOR, colorProfile);
+        Shape.setRoundedBackground(mCallButton, color1);
+
+        int color2 = ColorCalc.getColor(itemView.getContext(), ColorProfileKey.ACCENT2_COLOR,
+                colorProfile);
+        Shape.setRoundedBackground(mMessageButton, color2);
+
+        // set background color
+        int bgColor = ColorCalc.getColor(itemView.getContext(), ColorProfileKey.POP_UP_COLOR,
+                colorProfile);
+        mCallSelectedContainer.setBackgroundColor(bgColor);
+        mCreateContact.setBackgroundColor(bgColor);
     }
 }

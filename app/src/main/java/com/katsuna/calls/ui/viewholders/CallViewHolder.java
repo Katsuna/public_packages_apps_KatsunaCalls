@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
+import com.katsuna.commons.entities.ColorProfileKey;
 import com.katsuna.commons.entities.ProfileType;
 import com.katsuna.commons.entities.UserProfileContainer;
+import com.katsuna.commons.utils.ColorCalc;
 
 public class CallViewHolder extends CallBaseViewHolder {
 
@@ -76,13 +78,12 @@ public class CallViewHolder extends CallBaseViewHolder {
     @Override
     void adjustDisplayForNameAndNumber(Call call) {
         if (call.getType() == CallLog.Calls.MISSED_TYPE) {
-            mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
-            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
+            int textColor = ColorCalc.getColor(itemView.getContext(), ColorProfileKey.ACCENT1_COLOR,
+                    mUserProfileContainer.getColorProfile());
+            mDisplayName.setTextColor(textColor);
             mNumber.setTypeface(null, Typeface.BOLD);
         } else {
             mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(),
-                    R.color.common_black));
-            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(),
                     R.color.common_black));
             mNumber.setTypeface(null, Typeface.NORMAL);
         }

@@ -71,14 +71,13 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     @Override
     void adjustDisplayForNameAndNumber(Call call) {
         if (call.getType() == CallLog.Calls.MISSED_TYPE) {
-            mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
-            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
+            int textColor = ColorCalc.getColor(itemView.getContext(), ColorProfileKey.ACCENT1_COLOR,
+                    mUserProfileContainer.getColorProfile());
+            mDisplayName.setTextColor(textColor);
             mNumber.setTypeface(null, Typeface.BOLD);
         } else {
             mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(),
-                    R.color.common_black87));
-            mNumber.setTextColor(ContextCompat.getColor(itemView.getContext(),
-                    R.color.common_black87));
+                    R.color.common_black));
             mNumber.setTypeface(null, Typeface.NORMAL);
         }
     }

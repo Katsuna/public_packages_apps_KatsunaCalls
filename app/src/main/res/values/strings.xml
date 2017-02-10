@@ -3,7 +3,8 @@
     <!-- Name of the app -->
     <string name="app_name">Calls</string>
 
-    <!-- AndroidManifest doesn't work with common_ strings, so use this workaround --> <skip />
+    <!-- AndroidManifest doesn't work with common_ strings, so use this workaround -->
+    <skip />
     <string name="title_activity_settings" translatable="false">@string/common_settings</string>
 
     <!-- Title name of an unknown caller -->
@@ -20,5 +21,11 @@
 
     <!-- Message shown when the user tries to use a disabled action for unknown/hidden numbers -->
     <string name="hidden_number">Action unavailable for hidden numbers.</string>
+
+    <string name="delete_calls">Delete calls</string>
+    <string name="no_calls_selected">No calls selected.</string>
+
+    <string name="calls_deleted">Deletion succeeded.</string>
+    <string name="delete_calls_approval">Are you sure you want to delete the selected calls?</string>
 
 </resources>

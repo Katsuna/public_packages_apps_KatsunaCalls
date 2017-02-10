@@ -112,15 +112,17 @@ public class MainActivity extends KatsunaActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        loadCalls();
+        boolean callsLoaded = loadCalls();
 
-        showPopup(false);
-        if (mCallNumberFocus != null && !mCallNumberFocus.isEmpty()) {
-            int position = mAdapter.getPositionByNumber(mCallNumberFocus);
-            focusCall(position);
-            mCallNumberFocus = null;
-        } else {
-            deselectContact();
+        if (callsLoaded) {
+            showPopup(false);
+            if (mCallNumberFocus != null && !mCallNumberFocus.isEmpty()) {
+                int position = mAdapter.getPositionByNumber(mCallNumberFocus);
+                focusCall(position);
+                mCallNumberFocus = null;
+            } else {
+                deselectContact();
+            }
         }
     }
 
@@ -256,16 +258,16 @@ public class MainActivity extends KatsunaActivity implements
         });
     }
 
-    private void loadCalls() {
+    private boolean loadCalls() {
         String[] permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
         if (!Device.hasAllPermissions(this, permissions)) {
             Device.requestPermissions(this, permissions, REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION);
-            return;
+            return false;
         }
 
         CallsProvider callsProvider = new CallsProvider(this);
         List<Call> mModels = callsProvider.getCalls();
-        mAdapter = new CallsAdapter(mModels, this);
+        mAdapter = new CallsAdapter(mModels, this, this);
 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -276,6 +278,8 @@ public class MainActivity extends KatsunaActivity implements
             }
         });
         showNoResultsView();
+
+        return true;
     }
 
     private void showMessageForHiddenNumber() {
@@ -437,7 +441,7 @@ public class MainActivity extends KatsunaActivity implements
 
     private void deselectContact() {
         mCallSelected = false;
-        mAdapter.deselectContact();
+        mAdapter.deselectCall();
         tintFabs(false);
         adjustFabPosition(true);
     }

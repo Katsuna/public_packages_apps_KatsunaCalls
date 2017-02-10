@@ -1,10 +1,9 @@
 package com.katsuna.calls.ui.listeners;
 
 import com.katsuna.calls.domain.Call;
-import com.katsuna.calls.domain.Contact;
 import com.katsuna.commons.entities.UserProfileContainer;
 
-public interface ICallInteractionListener {
+public interface ICallInteractionListener extends IContactResolver {
 
     void selectCall(int position);
 
@@ -15,8 +14,6 @@ public interface ICallInteractionListener {
     void sendSMS(Call call);
 
     void createContact(Call call);
-
-    Contact getCallContact(Call call);
 
     UserProfileContainer getUserProfileContainer();
 }

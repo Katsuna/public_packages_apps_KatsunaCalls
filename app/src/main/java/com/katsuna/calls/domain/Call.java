@@ -13,6 +13,7 @@ public class Call {
     private int isNew;
     private int isRead;
     private Contact contact;
+    private boolean selected;
 
     public long getId() {
         return id;
@@ -92,5 +93,13 @@ public class Call {
 
     public void setContact(Contact contact) {
         this.contact = contact;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

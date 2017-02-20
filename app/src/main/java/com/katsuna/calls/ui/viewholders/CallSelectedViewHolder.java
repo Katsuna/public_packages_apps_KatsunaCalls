@@ -74,10 +74,12 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
             int textColor = ColorCalc.getColor(itemView.getContext(), ColorProfileKey.ACCENT1_COLOR,
                     mUserProfileContainer.getColorProfile());
             mDisplayName.setTextColor(textColor);
+            mDisplayName.setTypeface(null, Typeface.BOLD);
             mNumber.setTypeface(null, Typeface.BOLD);
         } else {
             mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(),
                     R.color.common_black));
+            mDisplayName.setTypeface(null, Typeface.NORMAL);
             mNumber.setTypeface(null, Typeface.NORMAL);
         }
     }

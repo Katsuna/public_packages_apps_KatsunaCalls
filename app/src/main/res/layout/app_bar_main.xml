@@ -69,7 +69,7 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/common_search"
+                    android:text="@string/common_contacts"
                     android:textAllCaps="false"
                     android:textColor="@color/common_black87"
                     android:textSize="18sp"

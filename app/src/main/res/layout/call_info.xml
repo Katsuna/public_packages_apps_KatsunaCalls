@@ -5,33 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/callTypeImage"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        tools:ignore="ContentDescription" />
+
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/photo"
         android:layout_width="@dimen/contact_photo_size_intemediate"
         android:layout_height="@dimen/contact_photo_size_intemediate"
         android:layout_gravity="center"
         android:layout_marginEnd="5dp"
-        android:layout_marginStart="56dp"
+        android:layout_marginStart="12dp"
+        android:layout_toEndOf="@id/callTypeImage"
         android:background="@drawable/ic_person_grey_50px"
         app:riv_corner_radius="50dp"
         app:riv_mutate_background="true"
         app:riv_oval="false"
         app:riv_tile_mode="repeat" />
 
-    <ImageView
-        android:id="@+id/callTypeImage"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
-        tools:ignore="ContentDescription" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/photo"
-        android:layout_toStartOf="@id/callTypeImage"
         android:orientation="vertical">
 
         <TextView

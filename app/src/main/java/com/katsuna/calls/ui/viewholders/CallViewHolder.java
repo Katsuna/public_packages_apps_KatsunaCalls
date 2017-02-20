@@ -1,6 +1,9 @@
 package com.katsuna.calls.ui.viewholders;
 
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.provider.CallLog;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -34,7 +37,7 @@ public class CallViewHolder extends CallBaseViewHolder {
     }
 
     public void bindGreyed(Call call, final int position) {
-        bind(call, position);
+        this.bind(call, position);
         if (mOpacityLayer != null) {
             mOpacityLayer.setVisibility(View.VISIBLE);
         }
@@ -43,15 +46,24 @@ public class CallViewHolder extends CallBaseViewHolder {
     public void bind(Call call, final int position) {
         super.bind(call);
 
+        // style based on call type
+        Drawable callTypeDrawable = null;
         if (call.getType() == CallLog.Calls.INCOMING_TYPE) {
-            mCallTypeImage.setImageResource(R.drawable.ic_call_received_black_24dp);
+            callTypeDrawable = ContextCompat.getDrawable(itemView.getContext(),
+                    R.drawable.ic_call_received_black_24dp);
         } else if (call.getType() == CallLog.Calls.OUTGOING_TYPE) {
-            mCallTypeImage.setImageResource(R.drawable.ic_call_made_black_24dp);
+            callTypeDrawable = ContextCompat.getDrawable(itemView.getContext(),
+                    R.drawable.ic_call_made_black_24dp);
         } else if (call.getType() == CallLog.Calls.MISSED_TYPE) {
-            mCallTypeImage.setImageResource(R.drawable.ic_call_missed_red_500_24dp);
-        } else {
-            mCallTypeImage.setImageBitmap(null);
+            callTypeDrawable = ContextCompat.getDrawable(itemView.getContext(),
+                    R.drawable.ic_call_missed_red_500_24dp);
+
+            int bgColor = ColorCalc.getColor(itemView.getContext(),
+                    ColorProfileKey.ACCENT1_COLOR, mUserProfileContainer.getColorProfile());
+            callTypeDrawable.setColorFilter(new PorterDuffColorFilter(bgColor,
+                    PorterDuff.Mode.SRC_ATOP));
         }
+        mCallTypeImage.setImageDrawable(callTypeDrawable);
 
         mCallContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,10 +93,12 @@ public class CallViewHolder extends CallBaseViewHolder {
             int textColor = ColorCalc.getColor(itemView.getContext(), ColorProfileKey.ACCENT1_COLOR,
                     mUserProfileContainer.getColorProfile());
             mDisplayName.setTextColor(textColor);
+            mDisplayName.setTypeface(null, Typeface.BOLD);
             mNumber.setTypeface(null, Typeface.BOLD);
         } else {
             mDisplayName.setTextColor(ContextCompat.getColor(itemView.getContext(),
                     R.color.common_black));
+            mDisplayName.setTypeface(null, Typeface.NORMAL);
             mNumber.setTypeface(null, Typeface.NORMAL);
         }
     }

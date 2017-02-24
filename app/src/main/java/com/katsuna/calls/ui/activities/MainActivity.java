@@ -46,12 +46,12 @@ import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.Device;
 import com.katsuna.commons.entities.UserProfileContainer;
-import com.katsuna.commons.ui.KatsunaActivity;
+import com.katsuna.commons.ui.SearchBarActivity;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MainActivity extends KatsunaActivity implements
+public class MainActivity extends SearchBarActivity implements
         ICallInteractionListener {
 
     private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
@@ -67,7 +67,6 @@ public class MainActivity extends KatsunaActivity implements
     private ContactInfoHelper mContactInfoHelper;
     private LinkedHashMap<String, Boolean> mContactSearchedMap;
     private FrameLayout mPopupFrame;
-    private boolean mCallSelected;
     private String mCallNumberFocus;
 
     @Override
@@ -121,7 +120,7 @@ public class MainActivity extends KatsunaActivity implements
                 focusCall(position);
                 mCallNumberFocus = null;
             } else {
-                deselectContact();
+                deselectItem();
             }
         }
     }
@@ -130,7 +129,7 @@ public class MainActivity extends KatsunaActivity implements
     protected void showPopup(boolean show) {
         if (show) {
             //don't show popup if menu drawer is open or a call is selected.
-            if (!mDrawerLayout.isDrawerOpen(GravityCompat.START) && !mCallSelected) {
+            if (!mDrawerLayout.isDrawerOpen(GravityCompat.START) && !mItemSelected) {
                 mPopupFrame.setVisibility(View.VISIBLE);
                 mPopupButton1.setVisibility(View.VISIBLE);
                 mPopupButton2.setVisibility(View.VISIBLE);
@@ -152,6 +151,7 @@ public class MainActivity extends KatsunaActivity implements
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mLastTouchTimestamp = System.currentTimeMillis();
         initPopupActionHandler();
+        initDeselectionActionHandler();
 
         initToolbar();
         initDrawer();
@@ -432,18 +432,20 @@ public class MainActivity extends KatsunaActivity implements
 
     @Override
     public void selectCall(int position) {
-        if (mCallSelected) {
-            deselectContact();
+        if (mItemSelected) {
+            deselectItem();
         } else {
             focusOnCall(position, getCenter());
         }
     }
 
-    private void deselectContact() {
-        mCallSelected = false;
+    @Override
+    protected void deselectItem() {
+        mItemSelected = false;
         mAdapter.deselectCall();
         tintFabs(false);
         adjustFabPosition(true);
+        refreshLastTouchTimestamp();
     }
 
     private int getCenter() {
@@ -467,7 +469,8 @@ public class MainActivity extends KatsunaActivity implements
         tintFabs(true);
 
         adjustFabPosition(false);
-        mCallSelected = true;
+        mItemSelected = true;
+        refreshLastSelectionTimestamp();
     }
 
     @Override
@@ -511,6 +514,11 @@ public class MainActivity extends KatsunaActivity implements
         } else {
             showContactsAppInstallationDialog();
         }
+    }
+
+    @Override
+    public void selectItemByStartingLetter(String s) {
+        // no search bar so nothing to be done here
     }
 
     @Override

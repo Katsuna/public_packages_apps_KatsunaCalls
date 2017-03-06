@@ -54,7 +54,10 @@
                     android:id="@+id/fabDial"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/common_fab_margin"
+                    android:layout_marginBottom="@dimen/common_fab_vertical_margin"
+                    android:layout_marginEnd="@dimen/common_fab_margin"
+                    android:layout_marginStart="@dimen/common_fab_margin"
+                    android:layout_marginTop="@dimen/common_fab_vertical_margin"
                     android:src="@drawable/common_ic_dialpad_grey50_24dp" />
 
             </LinearLayout>
@@ -79,7 +82,10 @@
                     android:id="@+id/fabContacts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/common_fab_margin"
+                    android:layout_marginBottom="@dimen/common_fab_vertical_margin"
+                    android:layout_marginEnd="@dimen/common_fab_margin"
+                    android:layout_marginStart="@dimen/common_fab_margin"
+                    android:layout_marginTop="@dimen/common_fab_vertical_margin"
                     android:src="@drawable/ic_person_black87_24dp" />
 
             </LinearLayout>

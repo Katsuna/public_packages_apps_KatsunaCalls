@@ -108,8 +108,8 @@ public class SelectCallsActivity extends KatsunaActivity implements IContactReso
     private void initControls() {
         initToolbar();
 
-        mFab2 = (FloatingActionButton) findViewById(R.id.fab);
-        mFab2.setOnClickListener(new View.OnClickListener() {
+        mFab1 = (FloatingActionButton) findViewById(R.id.fab);
+        mFab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final List<Call> selectedCalls = getSelectedCalls();

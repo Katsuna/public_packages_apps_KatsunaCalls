@@ -2,7 +2,6 @@ package com.katsuna.calls.ui.viewholders;
 
 import android.graphics.Typeface;
 import android.provider.CallLog;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,6 +23,7 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     private final Button mCallButton;
     private final Button mMessageButton;
     private final ImageButton mCreateContact;
+    private final ImageButton mDeleteCallButton;
     private final UserProfileContainer mUserProfileContainer;
     private final View mCallSelectedContainer;
 
@@ -33,6 +33,7 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         mMessageButton = (Button) itemView.findViewById(R.id.message_button);
         mCreateContact = (ImageButton) itemView.findViewById(R.id.createContact);
         mCallSelectedContainer = itemView.findViewById(R.id.call_selected_container);
+        mDeleteCallButton = (ImageButton) itemView.findViewById(R.id.delete_call_button);
         mListener = listener;
         mUserProfileContainer = mListener.getUserProfileContainer();
         adjustProfile();
@@ -66,6 +67,13 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         } else {
             mCreateContact.setVisibility(View.GONE);
         }
+
+        mDeleteCallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.deleteCall(call);
+            }
+        });
     }
 
     @Override

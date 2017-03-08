@@ -84,4 +84,32 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
         }
     }
 
+    public void removeItem(Call call) {
+        int filteredPosition = -1;
+        for (int i = 0; i < mFilteredCalls.size(); i++) {
+            if (mFilteredCalls.get(i).getId() == call.getId()) {
+                filteredPosition = i;
+                break;
+            }
+        }
+        //position found
+        if (filteredPosition > -1) {
+            mFilteredCalls.remove(filteredPosition);
+            notifyItemRemoved(filteredPosition);
+        }
+
+        //remove also from original list
+        int originalListPosition = -1;
+        for (int i = 0; i < mOriginalCalls.size(); i++) {
+            if (mOriginalCalls.get(i).getId() == call.getId()) {
+                originalListPosition = i;
+                break;
+            }
+        }
+        if (originalListPosition > -1) {
+            mOriginalCalls.remove(originalListPosition);
+        }
+    }
+
+
 }

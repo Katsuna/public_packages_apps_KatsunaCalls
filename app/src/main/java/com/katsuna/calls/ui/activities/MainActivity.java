@@ -47,6 +47,7 @@ import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.Device;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.ui.SearchBarActivity;
+import com.katsuna.commons.utils.KatsunaAlertBuilder;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -514,6 +515,38 @@ public class MainActivity extends SearchBarActivity implements
         } else {
             showContactsAppInstallationDialog();
         }
+    }
+
+    @Override
+    public void deleteCall(final Call call) {
+        if (!checkPermission()) {
+            return;
+        }
+
+        KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
+        builder.setTitle(R.string.delete_calls);
+        builder.setMessage(R.string.delete_call_approval);
+        builder.setView(R.layout.common_katsuna_alert);
+        builder.setUserProfileContainer(mUserProfileContainer);
+        builder.setOkListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CallsProvider callsProvider = new CallsProvider(MainActivity.this);
+                callsProvider.deleteCall(call);
+                mAdapter.removeItem(call);
+                Toast.makeText(MainActivity.this, R.string.calls_deleted, Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+        builder.create().show();
+    }
+
+    private boolean checkPermission() {
+        if (!Device.hasPermission(this, Manifest.permission.WRITE_CALL_LOG)) {
+            Device.requestPermission(this, Manifest.permission.WRITE_CALL_LOG, 0);
+            return false;
+        }
+        return true;
     }
 
     @Override

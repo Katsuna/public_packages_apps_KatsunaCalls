@@ -2,6 +2,7 @@ package com.katsuna.calls.ui.viewholders;
 
 import android.provider.CallLog;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +17,8 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
     final ImageView mPhoto;
     final TextView mDisplayName;
     final TextView mNumber;
+    private final View mDayContainer;
+    private final TextView mDayInfo;
     private final TextView mDateTime;
 
     CallBaseViewHolder(View itemView) {
@@ -24,6 +27,8 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
         mDisplayName = (TextView) itemView.findViewById(R.id.displayName);
         mNumber = (TextView) itemView.findViewById(R.id.number);
         mDateTime = (TextView) itemView.findViewById(R.id.dateTime);
+        mDayContainer = itemView.findViewById(R.id.day_info_container);
+        mDayInfo = (TextView) itemView.findViewById(R.id.day_info);
     }
 
     void bind(Call call) {
@@ -45,6 +50,14 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
         }
 
         mDateTime.setText(DateFormatter.format(call.getDate()));
+        if (mDayContainer != null) {
+            if (TextUtils.isEmpty(call.getDayInfo())) {
+                mDayContainer.setVisibility(View.GONE);
+            } else {
+                mDayContainer.setVisibility(View.VISIBLE);
+            }
+            mDayInfo.setText(call.getDayInfo());
+        }
 
         adjustDisplayForNameAndNumber(call);
     }

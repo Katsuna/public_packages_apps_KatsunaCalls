@@ -28,5 +28,6 @@
     <string name="calls_deleted">Deletion succeeded.</string>
     <string name="delete_calls_approval">Are you sure you want to delete the selected calls?</string>
     <string name="delete_call_approval">Are you sure you want to delete the selected call?</string>
+    <string name="day_info_older">Older</string>
 
 </resources>

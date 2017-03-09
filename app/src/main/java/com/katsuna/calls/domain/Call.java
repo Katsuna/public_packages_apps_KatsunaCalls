@@ -14,6 +14,7 @@ public class Call {
     private int isRead;
     private Contact contact;
     private boolean selected;
+    private String dayInfo;
 
     public long getId() {
         return id;
@@ -101,5 +102,13 @@ public class Call {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getDayInfo() {
+        return dayInfo;
+    }
+
+    public void setDayInfo(String dayInfo) {
+        this.dayInfo = dayInfo;
     }
 }

@@ -6,13 +6,29 @@
     <RelativeLayout
         android:id="@+id/call_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="4dp">
+        android:layout_height="wrap_content">
 
-        <include layout="@layout/call_info" />
+        <include
+            android:id="@+id/day_info_container"
+            layout="@layout/day_info"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/day_info_container"
+            android:paddingBottom="4dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="4dp">
+
+            <include
+                layout="@layout/call_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
     </RelativeLayout>
 

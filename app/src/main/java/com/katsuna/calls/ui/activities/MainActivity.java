@@ -44,6 +44,7 @@ import com.katsuna.calls.providers.ContactInfoHelper;
 import com.katsuna.calls.ui.adapters.CallsAdapter;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.utils.Constants;
+import com.katsuna.calls.utils.DayInfoFormatter;
 import com.katsuna.calls.utils.Device;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.ui.SearchBarActivity;
@@ -268,6 +269,9 @@ public class MainActivity extends SearchBarActivity implements
 
         CallsProvider callsProvider = new CallsProvider(this);
         List<Call> mModels = callsProvider.getCalls();
+
+        DayInfoFormatter.calculateDateInfo(this, mModels);
+
         mAdapter = new CallsAdapter(mModels, this, this);
 
         mRecyclerView.setAdapter(mAdapter);
@@ -533,7 +537,7 @@ public class MainActivity extends SearchBarActivity implements
             public void onClick(View v) {
                 CallsProvider callsProvider = new CallsProvider(MainActivity.this);
                 callsProvider.deleteCall(call);
-                mAdapter.removeItem(call);
+                loadCalls();
                 Toast.makeText(MainActivity.this, R.string.calls_deleted, Toast.LENGTH_LONG)
                         .show();
             }

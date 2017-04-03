@@ -12,7 +12,7 @@ import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.commons.entities.ColorProfile;
 import com.katsuna.commons.entities.ColorProfileKey;
-import com.katsuna.commons.entities.ProfileType;
+import com.katsuna.commons.entities.SizeProfile;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.utils.ColorCalc;
 import com.katsuna.commons.utils.Shape;
@@ -88,16 +88,16 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     }
 
     private void adjustProfile() {
-        ProfileType sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
+        SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
 
         //default values
         int photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_intemediate);
         int actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_intemediate);
 
-        if (sizeProfile == ProfileType.ADVANCED) {
+        if (sizeProfile == SizeProfile.ADVANCED) {
             photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_advanced);
             actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_advanced);
-        } else if (sizeProfile == ProfileType.SIMPLE) {
+        } else if (sizeProfile == SizeProfile.SIMPLE) {
             photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_simple);
             actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_simple);
         }

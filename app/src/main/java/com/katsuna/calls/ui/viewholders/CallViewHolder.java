@@ -14,7 +14,7 @@ import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.commons.entities.ColorProfileKey;
-import com.katsuna.commons.entities.ProfileType;
+import com.katsuna.commons.entities.SizeProfile;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.utils.ColorCalc;
 
@@ -99,11 +99,11 @@ public class CallViewHolder extends CallBaseViewHolder {
     }
 
     private void adjustProfile() {
-        ProfileType sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
+        SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
         int size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_intemediate);
-        if (sizeProfile == ProfileType.ADVANCED) {
+        if (sizeProfile == SizeProfile.ADVANCED) {
             size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_advanced);
-        } else if (sizeProfile == ProfileType.SIMPLE) {
+        } else if (sizeProfile == SizeProfile.SIMPLE) {
             size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_simple);
         }
         ViewGroup.LayoutParams layoutParams = mPhoto.getLayoutParams();

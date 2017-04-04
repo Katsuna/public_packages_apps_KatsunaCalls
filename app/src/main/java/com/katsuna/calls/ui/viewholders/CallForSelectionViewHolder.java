@@ -7,18 +7,19 @@ import android.widget.ImageView;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 
 public class CallForSelectionViewHolder extends CallBaseViewHolder {
 
     private final ImageView mCallTypeImage;
     private final CheckBox mCheckBox;
 
-    public CallForSelectionViewHolder(View itemView) {
-        super(itemView);
+    public CallForSelectionViewHolder(View itemView, ICallInteractionListener listener) {
+        super(itemView, listener);
 
         mCallTypeImage = (ImageView) itemView.findViewById(R.id.callTypeImage);
         mCheckBox = (CheckBox) itemView.findViewById(R.id.checkbox);
-
+        adjustProfile();
     }
 
     public void bind(final Call call) {
@@ -45,10 +46,4 @@ public class CallForSelectionViewHolder extends CallBaseViewHolder {
             }
         });
     }
-
-    @Override
-    void adjustDisplayForNameAndNumber(Call call) {
-
-    }
-
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.ui.listeners.IContactResolver;
 import com.katsuna.calls.ui.viewholders.CallForSelectionViewHolder;
 
@@ -14,17 +15,21 @@ import java.util.List;
 
 public class CallsSelectionAdapter extends CallsAdapterBase {
 
-    public CallsSelectionAdapter(List<Call> calls, IContactResolver listener) {
+    private final ICallInteractionListener mCallInteractionListener;
+
+    public CallsSelectionAdapter(List<Call> calls, IContactResolver listener,
+                                 ICallInteractionListener callInteractionListener) {
         super(listener);
         mOriginalCalls = calls;
         mFilteredCalls = calls;
+        mCallInteractionListener = callInteractionListener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_for_selection,
                 parent, false);
-        return new CallForSelectionViewHolder(view);
+        return new CallForSelectionViewHolder(view, mCallInteractionListener);
     }
 
     @Override

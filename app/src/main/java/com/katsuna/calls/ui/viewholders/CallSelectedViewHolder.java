@@ -1,9 +1,6 @@
 package com.katsuna.calls.ui.viewholders;
 
-import android.graphics.Typeface;
-import android.provider.CallLog;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -12,30 +9,29 @@ import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.commons.entities.ColorProfile;
 import com.katsuna.commons.entities.ColorProfileKey;
+import com.katsuna.commons.entities.OpticalParams;
 import com.katsuna.commons.entities.SizeProfile;
-import com.katsuna.commons.entities.UserProfileContainer;
+import com.katsuna.commons.entities.SizeProfileKey;
 import com.katsuna.commons.utils.ColorCalc;
 import com.katsuna.commons.utils.Shape;
+import com.katsuna.commons.utils.SizeAdjuster;
+import com.katsuna.commons.utils.SizeCalc;
 
 public class CallSelectedViewHolder extends CallBaseViewHolder {
 
-    private final ICallInteractionListener mListener;
     private final Button mCallButton;
     private final Button mMessageButton;
     private final ImageButton mCreateContact;
     private final ImageButton mDeleteCallButton;
-    private final UserProfileContainer mUserProfileContainer;
     private final View mCallSelectedContainer;
 
     public CallSelectedViewHolder(View itemView, ICallInteractionListener listener) {
-        super(itemView);
+        super(itemView, listener);
         mCallButton = (Button) itemView.findViewById(R.id.call_button);
         mMessageButton = (Button) itemView.findViewById(R.id.message_button);
         mCreateContact = (ImageButton) itemView.findViewById(R.id.createContact);
         mCallSelectedContainer = itemView.findViewById(R.id.call_selected_container);
         mDeleteCallButton = (ImageButton) itemView.findViewById(R.id.delete_call_button);
-        mListener = listener;
-        mUserProfileContainer = mListener.getUserProfileContainer();
         adjustProfile();
     }
 
@@ -74,46 +70,23 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
                 mListener.deleteCall(call);
             }
         });
+
+        adjustProfile();
+        adjustDisplayForNameAndNumber(call);
     }
 
-    @Override
-    void adjustDisplayForNameAndNumber(Call call) {
-        if (call.getType() == CallLog.Calls.MISSED_TYPE) {
-            mDisplayName.setTypeface(null, Typeface.BOLD);
-            mNumber.setTypeface(null, Typeface.BOLD);
-        } else {
-            mDisplayName.setTypeface(null, Typeface.NORMAL);
-            mNumber.setTypeface(null, Typeface.NORMAL);
-        }
-    }
-
-    private void adjustProfile() {
+    void adjustProfile() {
+        super.adjustProfile();
         SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
 
-        //default values
-        int photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_intemediate);
-        int actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_intemediate);
+        // adjust buttons
+        OpticalParams opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.ACTION_BUTTON,
+                sizeProfile);
+        SizeAdjuster.adjustText(itemView.getContext(), mCallButton, opticalParams);
+        SizeAdjuster.adjustText(itemView.getContext(), mMessageButton, opticalParams);
 
-        if (sizeProfile == SizeProfile.ADVANCED) {
-            photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_advanced);
-            actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_advanced);
-        } else if (sizeProfile == SizeProfile.SIMPLE) {
-            photoSize = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_simple);
-            actionButtonHeight = itemView.getResources().getDimensionPixelSize(R.dimen.action_button_height_simple);
-        }
-        ViewGroup.LayoutParams layoutParams = mPhoto.getLayoutParams();
-        layoutParams.height = photoSize;
-        layoutParams.width = photoSize;
-        mPhoto.setLayoutParams(layoutParams);
-
-        ViewGroup.LayoutParams callButtonParams = mCallButton.getLayoutParams();
-        callButtonParams.height = actionButtonHeight;
-
-        ViewGroup.LayoutParams messageButtonParams = mMessageButton.getLayoutParams();
-        messageButtonParams.height = actionButtonHeight;
-
-        mCallButton.setLayoutParams(callButtonParams);
-        mMessageButton.setLayoutParams(messageButtonParams);
+        SizeAdjuster.adjustButton(itemView.getContext(), mCallButton, opticalParams);
+        SizeAdjuster.adjustButton(itemView.getContext(), mMessageButton, opticalParams);
 
         adjustColorProfile();
     }

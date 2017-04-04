@@ -21,8 +21,10 @@ import com.katsuna.calls.domain.Contact;
 import com.katsuna.calls.providers.CallsProvider;
 import com.katsuna.calls.providers.ContactInfoHelper;
 import com.katsuna.calls.ui.adapters.CallsSelectionAdapter;
+import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.ui.listeners.IContactResolver;
 import com.katsuna.calls.utils.Device;
+import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.ui.KatsunaActivity;
 import com.katsuna.commons.utils.KatsunaAlertBuilder;
 
@@ -30,7 +32,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class SelectCallsActivity extends KatsunaActivity implements IContactResolver {
+public class SelectCallsActivity extends KatsunaActivity implements IContactResolver,
+        ICallInteractionListener {
 
     private RecyclerView mRecyclerView;
     private TextView mNoResultsView;
@@ -87,7 +90,6 @@ public class SelectCallsActivity extends KatsunaActivity implements IContactReso
 
         return true;
     }
-
 
     private void search(String query) {
         if (TextUtils.isEmpty(query)) {
@@ -175,7 +177,7 @@ public class SelectCallsActivity extends KatsunaActivity implements IContactReso
         CallsProvider callsProvider = new CallsProvider(this);
         mModels = callsProvider.getCalls();
 
-        mAdapter = new CallsSelectionAdapter(mModels, this);
+        mAdapter = new CallsSelectionAdapter(mModels, this, this);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -224,4 +226,38 @@ public class SelectCallsActivity extends KatsunaActivity implements IContactReso
         return contact;
     }
 
+    @Override
+    public void selectCall(int position) {
+        // no op
+    }
+
+    @Override
+    public void focusCall(int position) {
+        // no op
+    }
+
+    @Override
+    public void callContact(Call call) {
+        // no op
+    }
+
+    @Override
+    public void sendSMS(Call call) {
+        // no op
+    }
+
+    @Override
+    public void createContact(Call call) {
+        // no op
+    }
+
+    @Override
+    public void deleteCall(Call call) {
+        // no op
+    }
+
+    @Override
+    public UserProfileContainer getUserProfileContainer() {
+        return mUserProfileContainer;
+    }
 }

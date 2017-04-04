@@ -2,38 +2,29 @@ package com.katsuna.calls.ui.viewholders;
 
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.provider.CallLog;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.commons.entities.ColorProfileKey;
-import com.katsuna.commons.entities.SizeProfile;
-import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.utils.ColorCalc;
 
 public class CallViewHolder extends CallBaseViewHolder {
 
     private final ImageView mCallTypeImage;
-    private final ICallInteractionListener mListener;
-    private final UserProfileContainer mUserProfileContainer;
     private final View mCallContainer;
     private final View mOpacityLayer;
 
     public CallViewHolder(View itemView, ICallInteractionListener listener) {
-        super(itemView);
+        super(itemView, listener);
         mCallTypeImage = (ImageView) itemView.findViewById(R.id.callTypeImage);
         mCallContainer = itemView.findViewById(R.id.call_container);
         mOpacityLayer = itemView.findViewById(R.id.opacity_layer);
-        mListener = listener;
-        mUserProfileContainer = mListener.getUserProfileContainer();
-        adjustProfile();
     }
 
     public void bindGreyed(Call call, final int position) {
@@ -85,30 +76,8 @@ public class CallViewHolder extends CallBaseViewHolder {
         if (mOpacityLayer != null) {
             mOpacityLayer.setVisibility(View.INVISIBLE);
         }
-    }
 
-    @Override
-    void adjustDisplayForNameAndNumber(Call call) {
-        if (call.getType() == CallLog.Calls.MISSED_TYPE) {
-            mDisplayName.setTypeface(null, Typeface.BOLD);
-            mNumber.setTypeface(null, Typeface.BOLD);
-        } else {
-            mDisplayName.setTypeface(null, Typeface.NORMAL);
-            mNumber.setTypeface(null, Typeface.NORMAL);
-        }
-    }
-
-    private void adjustProfile() {
-        SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
-        int size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_intemediate);
-        if (sizeProfile == SizeProfile.ADVANCED) {
-            size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_advanced);
-        } else if (sizeProfile == SizeProfile.SIMPLE) {
-            size = itemView.getResources().getDimensionPixelSize(R.dimen.contact_photo_size_simple);
-        }
-        ViewGroup.LayoutParams layoutParams = mPhoto.getLayoutParams();
-        layoutParams.height = size;
-        layoutParams.width = size;
-        mPhoto.setLayoutParams(layoutParams);
+        adjustProfile();
+        adjustDisplayForNameAndNumber(call);
     }
 }

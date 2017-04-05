@@ -20,6 +20,8 @@ import com.katsuna.commons.utils.SizeCalc;
 public class CallSelectedViewHolder extends CallBaseViewHolder {
 
     private final Button mCallButton;
+    private final View mCallButtonContainer;
+    private final View mMessageButtonContainer;
     private final Button mMessageButton;
     private final ImageButton mCreateContact;
     private final ImageButton mDeleteCallButton;
@@ -28,7 +30,9 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     public CallSelectedViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView, listener);
         mCallButton = (Button) itemView.findViewById(R.id.call_button);
+        mCallButtonContainer = itemView.findViewById(R.id.call_button_container);
         mMessageButton = (Button) itemView.findViewById(R.id.message_button);
+        mMessageButtonContainer = itemView.findViewById(R.id.message_button_container);
         mCreateContact = (ImageButton) itemView.findViewById(R.id.createContact);
         mCallSelectedContainer = itemView.findViewById(R.id.call_selected_container);
         mDeleteCallButton = (ImageButton) itemView.findViewById(R.id.delete_call_button);
@@ -44,7 +48,19 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
                 mListener.callContact(call);
             }
         });
+        mCallButtonContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.callContact(call);
+            }
+        });
         mMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.sendSMS(call);
+            }
+        });
+        mMessageButtonContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.sendSMS(call);
@@ -85,8 +101,10 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         SizeAdjuster.adjustText(itemView.getContext(), mCallButton, opticalParams);
         SizeAdjuster.adjustText(itemView.getContext(), mMessageButton, opticalParams);
 
-        SizeAdjuster.adjustButton(itemView.getContext(), mCallButton, opticalParams);
-        SizeAdjuster.adjustButton(itemView.getContext(), mMessageButton, opticalParams);
+        SizeAdjuster.adjustButtonContainer(itemView.getContext(), mCallButtonContainer,
+                opticalParams);
+        SizeAdjuster.adjustButtonContainer(itemView.getContext(), mMessageButtonContainer,
+                opticalParams);
 
         adjustColorProfile();
     }
@@ -96,11 +114,11 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         // set action buttons background color
         int color1 = ColorCalc.getColor(itemView.getContext(),
                 ColorProfileKey.ACCENT1_COLOR, colorProfile);
-        Shape.setRoundedBackground(mCallButton, color1);
+        Shape.setRoundedBackground(mCallButtonContainer, color1);
 
         int color2 = ColorCalc.getColor(itemView.getContext(), ColorProfileKey.ACCENT2_COLOR,
                 colorProfile);
-        Shape.setRoundedBackground(mMessageButton, color2);
+        Shape.setRoundedBackground(mMessageButtonContainer, color2);
 
         // set background color
         int bgColor = ColorCalc.getColor(itemView.getContext(), ColorProfileKey.POP_UP_COLOR,

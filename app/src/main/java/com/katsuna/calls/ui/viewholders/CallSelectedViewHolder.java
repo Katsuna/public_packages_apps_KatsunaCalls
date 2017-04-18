@@ -2,7 +2,7 @@ package com.katsuna.calls.ui.viewholders;
 
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
@@ -23,8 +23,8 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     private final View mCallButtonContainer;
     private final View mMessageButtonContainer;
     private final Button mMessageButton;
-    private final ImageButton mCreateContact;
-    private final ImageButton mDeleteCallButton;
+    private final ImageView mCreateContact;
+    private final ImageView mDeleteCallButton;
     private final View mCallSelectedContainer;
 
     public CallSelectedViewHolder(View itemView, ICallInteractionListener listener) {
@@ -33,10 +33,9 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         mCallButtonContainer = itemView.findViewById(R.id.call_button_container);
         mMessageButton = (Button) itemView.findViewById(R.id.message_button);
         mMessageButtonContainer = itemView.findViewById(R.id.message_button_container);
-        mCreateContact = (ImageButton) itemView.findViewById(R.id.createContact);
+        mCreateContact = (ImageView) itemView.findViewById(R.id.createContact);
         mCallSelectedContainer = itemView.findViewById(R.id.call_selected_container);
-        mDeleteCallButton = (ImageButton) itemView.findViewById(R.id.delete_call_button);
-        adjustProfile();
+        mDeleteCallButton = (ImageView) itemView.findViewById(R.id.delete_call_button);
     }
 
     public void bind(final Call call) {
@@ -94,6 +93,23 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     void adjustProfile() {
         super.adjustProfile();
         SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
+
+        int callButtonDrawable = R.drawable.common_ic_call_black_24dp;
+        int messageButtonDrawable = R.drawable.common_ic_message_white_24dp;
+        int deleteButtonDrawable = R.drawable.common_ic_delete_black54_24dp;
+        int editButtonDrawable = R.drawable.common_ic_edit_black54_24dp;
+
+        if (sizeProfile == SizeProfile.SIMPLE) {
+            callButtonDrawable = R.drawable.common_ic_call_black_28dp;
+            messageButtonDrawable = R.drawable.common_ic_message_white_28dp;
+            deleteButtonDrawable = R.drawable.common_ic_delete_black54_28dp;
+            editButtonDrawable = R.drawable.common_ic_edit_black54_28dp;
+        }
+
+        mCallButton.setCompoundDrawablesWithIntrinsicBounds(callButtonDrawable, 0, 0,0);
+        mMessageButton.setCompoundDrawablesWithIntrinsicBounds(messageButtonDrawable, 0, 0,0);
+        mDeleteCallButton.setImageResource(deleteButtonDrawable);
+        mCreateContact.setImageResource(editButtonDrawable);
 
         // adjust buttons
         OpticalParams opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.ACTION_BUTTON,

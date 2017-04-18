@@ -16,14 +16,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/delete_call_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:layout_marginStart="2dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/common_ic_delete_black_24dp"
+            android:src="@drawable/common_ic_delete_black54_24dp"
             tools:ignore="ContentDescription" />
 
         <include
@@ -34,17 +35,15 @@
             android:layout_marginStart="30dp"
             android:layout_toEndOf="@id/delete_call_button" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/createContact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_gravity="center"
             android:layout_marginStart="2dp"
-            android:background="@color/common_white"
             android:padding="10dp"
-            android:src="@drawable/ic_edit_black87_24dp"
+            android:src="@drawable/common_ic_edit_black54_24dp"
             android:visibility="invisible"
             tools:ignore="ContentDescription" />
 
@@ -106,14 +105,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:drawablePadding="6dp"
-                android:drawableStart="@drawable/common_ic_call_black87_24dp"
+                android:drawableStart="@drawable/common_ic_call_black_24dp"
                 android:padding="4dp"
                 android:text="@string/common_call"
                 android:textAllCaps="false"
-                android:textColor="@color/common_black87"
+                android:textColor="@color/common_black"
                 android:textSize="20sp" />
 
         </FrameLayout>
@@ -132,11 +130,11 @@
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
                 android:drawablePadding="6dp"
-                android:drawableStart="@drawable/common_ic_message_grey50_24dp"
+                android:drawableStart="@drawable/common_ic_message_white_24dp"
                 android:padding="4dp"
                 android:text="@string/common_message"
                 android:textAllCaps="false"
-                android:textColor="@color/common_grey50"
+                android:textColor="@color/common_white"
                 android:textSize="20sp" />
 
         </FrameLayout>

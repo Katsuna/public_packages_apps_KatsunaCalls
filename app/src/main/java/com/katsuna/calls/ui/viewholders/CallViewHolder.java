@@ -6,12 +6,14 @@ import android.graphics.drawable.Drawable;
 import android.provider.CallLog;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.commons.entities.ColorProfileKey;
+import com.katsuna.commons.entities.SizeProfile;
 import com.katsuna.commons.utils.ColorCalc;
 
 public class CallViewHolder extends CallBaseViewHolder {
@@ -76,6 +78,19 @@ public class CallViewHolder extends CallBaseViewHolder {
         if (mOpacityLayer != null) {
             mOpacityLayer.setVisibility(View.INVISIBLE);
         }
+
+        //
+        SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
+        int size = itemView.getResources()
+                .getDimensionPixelSize(R.dimen.common_icon_h_intermediate);
+        if (sizeProfile == SizeProfile.SIMPLE) {
+            size = itemView.getResources().getDimensionPixelSize(R.dimen.common_icon_h_simple);
+        }
+
+        ViewGroup.LayoutParams layoutParams = mCallTypeImage.getLayoutParams();
+        layoutParams.height = size;
+        layoutParams.width = size;
+        mCallTypeImage.setLayoutParams(layoutParams);
 
         adjustProfile();
         adjustDisplayForNameAndNumber(call);

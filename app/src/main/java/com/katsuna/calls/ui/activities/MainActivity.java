@@ -46,6 +46,7 @@ import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.DayInfoFormatter;
 import com.katsuna.calls.utils.Device;
+import com.katsuna.calls.utils.TelecomUtils;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.ui.SearchBarActivity;
 import com.katsuna.commons.utils.KatsunaAlertBuilder;
@@ -123,6 +124,15 @@ public class MainActivity extends SearchBarActivity implements
                 mCallNumberFocus = null;
             } else {
                 deselectItem();
+            }
+
+            // mark miss called as read
+            CallsProvider callsProvider = new CallsProvider(this);
+            callsProvider.markMissedCallsAsRead();
+
+            // clear missed calls notifications
+            if (TelecomUtils.hasModifyPhoneStatePermission(this)) {
+                TelecomUtils.cancelMissedCallsNotification(this);
             }
         }
     }

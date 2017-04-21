@@ -66,4 +66,33 @@ public class CallsProvider {
             Log.e(TAG, e.getMessage());
         }
     }
+
+    /** Updates all missed calls to mark them as read. */
+    public void markMissedCallsAsRead() {
+        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
+
+        ops.add(ContentProviderOperation.newUpdate(CallLog.Calls.CONTENT_URI)
+                .withSelection(getUnreadMissedCallsQuery(), null)
+                .withValue(CallLog.Calls.IS_READ, "1")
+                .build());
+
+        try {
+            cr.applyBatch(CallLog.AUTHORITY, ops);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+
+    /**
+     * @return Query string to get all unread missed calls.
+     */
+    private String getUnreadMissedCallsQuery() {
+        StringBuilder where = new StringBuilder();
+        where.append(CallLog.Calls.IS_READ).append(" = 0 OR ").append(CallLog.Calls.IS_READ).append(" IS NULL");
+        where.append(" AND ");
+        where.append(CallLog.Calls.TYPE).append(" = ").append(CallLog.Calls.MISSED_TYPE);
+        return where.toString();
+    }
+
 }

@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -455,6 +456,7 @@ public class MainActivity extends SearchBarActivity implements
 
     @Override
     protected void deselectItem() {
+        mDrawerLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.common_grey50));
         mItemSelected = false;
         mAdapter.deselectCall();
         tintFabs(false);
@@ -477,6 +479,7 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void focusOnCall(int position, int offset) {
+        mDrawerLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.common_black07));
         mAdapter.selectCallAtPosition(position);
         scrollToPositionWithOffset(position, offset);
 

@@ -21,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.telephony.PhoneNumberUtils;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -237,10 +238,15 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void dial() {
+        dial("");
+    }
+
+    private void dial(String number) {
         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
         alert.setTitle(R.string.common_select_phone_number);
         final EditText input = new EditText(MainActivity.this);
         input.setInputType(InputType.TYPE_CLASS_PHONE);
+        input.setText(number);
         alert.setView(input);
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -365,12 +371,17 @@ public class MainActivity extends SearchBarActivity implements
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         setIntent(intent);
         handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        String action = intent.getAction();
+        if (Intent.ACTION_VIEW.equals(action)) {
+            String number = PhoneNumberUtils.getNumberFromIntent(intent, this);
+            dial(number);
+        } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             mSearchView.setQuery(query, false);
         }

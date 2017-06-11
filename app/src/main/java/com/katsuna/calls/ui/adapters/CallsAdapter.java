@@ -46,14 +46,25 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
+        boolean isRightHanded = mListener.getUserProfileContainer().isRightHanded();
+        View view;
+
         switch (viewType) {
             case CALL_NOT_SELECTED:
             case CALL_GREYED:
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call, parent, false);
+                if (isRightHanded) {
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call, parent, false);
+                } else {
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_lh, parent, false);
+                }
                 viewHolder = new CallViewHolder(view, mListener);
                 break;
             case CALL_SELECTED:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_selected, parent, false);
+                if (isRightHanded) {
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_selected, parent, false);
+                } else {
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_selected_lh, parent, false);
+                }
                 viewHolder = new CallSelectedViewHolder(view, mListener);
                 break;
         }

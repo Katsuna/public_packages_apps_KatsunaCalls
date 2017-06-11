@@ -27,8 +27,15 @@ public class CallsSelectionAdapter extends CallsAdapterBase {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_for_selection,
-                parent, false);
+        View view;
+        if (mCallInteractionListener.getUserProfileContainer().isRightHanded()) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_for_selection,
+                    parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_for_selection_lh,
+                    parent, false);
+        }
+
         return new CallForSelectionViewHolder(view, mCallInteractionListener);
     }
 

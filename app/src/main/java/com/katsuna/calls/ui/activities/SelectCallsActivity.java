@@ -50,11 +50,16 @@ public class SelectCallsActivity extends KatsunaActivity implements IContactReso
         setContentView(R.layout.activity_select_calls);
 
         initControls();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
 
         mContactCache = new LinkedHashMap<>();
         mContactSearchedMap = new LinkedHashMap<>();
         mContactInfoHelper = new ContactInfoHelper(this);
-
         loadCalls();
     }
 

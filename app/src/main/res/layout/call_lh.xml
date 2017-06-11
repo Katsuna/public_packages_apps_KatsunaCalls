@@ -27,7 +27,7 @@
             android:paddingTop="4dp">
 
             <include
-                layout="@layout/call_info"
+                layout="@layout/call_info_lh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

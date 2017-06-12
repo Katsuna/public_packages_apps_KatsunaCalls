@@ -15,4 +15,10 @@
   <string name="no_calls">No calls found.</string>
   <!-- Message shown when the user tries to use a disabled action for unknown/hidden numbers -->
   <string name="hidden_number">Action unavailable for hidden numbers.</string>
+  <string name="delete_calls">Delete calls</string>
+  <string name="no_calls_selected">No calls selected.</string>
+  <string name="calls_deleted">Deletion succeeded.</string>
+  <string name="delete_calls_approval">Are you sure you want to delete the selected calls?</string>
+  <string name="delete_call_approval">Are you sure you want to delete the selected call?</string>
+  <string name="day_info_older">Older</string>
 </resources>

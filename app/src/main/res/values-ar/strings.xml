@@ -8,11 +8,17 @@
   <!-- Title name of an unknown caller -->
   <string name="unknown">مجهول</string>
   <!-- Message shown when the user tries to open the Contacts app from the FAB button -->
-  <string name="missing_app">You need to install the Contacts application.</string>
+  <string name="missing_app">تحتاج إلى تركيب تطبيق جهات الاتصال (الأشخاص).</string>
   <!-- Hint shown inside the text field when the user taps the Search button -->
-  <string name="search_calls">Search calls</string>
+  <string name="search_calls">بحث عن اتصالات</string>
   <!-- Shown on the main background when the call list is empty -->
   <string name="no_calls">لم يتم العثور على مكالمات.</string>
   <!-- Message shown when the user tries to use a disabled action for unknown/hidden numbers -->
-  <string name="hidden_number">Action unavailable for hidden numbers.</string>
+  <string name="hidden_number">هذه الخدمة غير متوفرة للأرقام المخفية.</string>
+  <string name="delete_calls">حذف المكالمات</string>
+  <string name="no_calls_selected">لم يتم اختيار مكالمات.</string>
+  <string name="calls_deleted">تم الحذف.</string>
+  <string name="delete_calls_approval">هل أنت متأكد من أنك تريد حذف المكالمات المحددة؟</string>
+  <string name="delete_call_approval">هل أنت متأكد من أنك تريد حذف المكالمة المحددة؟</string>
+  <string name="day_info_older">أقدَم</string>
 </resources>

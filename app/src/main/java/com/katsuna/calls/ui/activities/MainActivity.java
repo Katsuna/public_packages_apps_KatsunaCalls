@@ -1,6 +1,7 @@
 package com.katsuna.calls.ui.activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,22 +18,17 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.telephony.PhoneNumberUtils;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -242,38 +238,28 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void dial(String number) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-        alert.setTitle(R.string.common_select_phone_number);
-        final EditText input = new EditText(MainActivity.this);
-        input.setInputType(InputType.TYPE_CLASS_PHONE);
-        input.setText(number);
-        alert.setView(input);
-        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String number = input.getText().toString();
+        KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
+        builder.setTitle(R.string.common_dial_instruction);
+        builder.setMessage(0);
+        builder.setView(R.layout.common_katsuna_dialer);
+        builder.setUserProfileContainer(mUserProfileContainer);
+        builder.setOkListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        builder.setTextSelected(new KatsunaAlertBuilder.KatsunaAlertText() {
+            @Override
+            public void textSelected(String number) {
                 if (!TextUtils.isEmpty(number)) {
                     callContact(number);
                 }
             }
         });
-        alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //Put actions for CANCEL button here, or leave in blank
-            }
-        });
-        final AlertDialog dialog = alert.show();
 
-        //focus on input
-        input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    Window window = dialog.getWindow();
-                    if (window != null)
-                        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                }
-            }
-        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private boolean loadCalls() {

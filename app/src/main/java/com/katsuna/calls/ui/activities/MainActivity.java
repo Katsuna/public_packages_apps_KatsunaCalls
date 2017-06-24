@@ -196,37 +196,37 @@ public class MainActivity extends SearchBarActivity implements
     private void initFabs() {
         mFabContainer = (LinearLayout) findViewById(R.id.fab_container);
 
-        mButtonsContainer1 = (LinearLayout) findViewById(R.id.search_buttons_container);
-        mPopupButton1 = (Button) findViewById(R.id.search_button);
+        mButtonsContainer1 = (LinearLayout) findViewById(R.id.dial_buttons_container);
+        mPopupButton1 = (Button) findViewById(R.id.dial_button);
         mPopupButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openContactsApp();
-            }
-        });
-
-        mFab1 = (FloatingActionButton) findViewById(R.id.fabContacts);
-        mFab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openContactsApp();
-            }
-        });
-
-        mButtonsContainer2 = (LinearLayout) findViewById(R.id.dial_buttons_container);
-        mPopupButton2 = (Button) findViewById(R.id.dial_button);
-        mPopupButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 dial();
             }
         });
 
-        mFab2 = (FloatingActionButton) findViewById(R.id.fabDial);
-        mFab2.setOnClickListener(new View.OnClickListener() {
+        mFab1 = (FloatingActionButton) findViewById(R.id.fabDial);
+        mFab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
                 dial();
+            }
+        });
+
+        mButtonsContainer2 = (LinearLayout) findViewById(R.id.search_buttons_container);
+        mPopupButton2 = (Button) findViewById(R.id.search_button);
+        mPopupButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openContactsApp();
+            }
+        });
+
+        mFab2 = (FloatingActionButton) findViewById(R.id.fabContacts);
+        mFab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openContactsApp();
             }
         });
     }

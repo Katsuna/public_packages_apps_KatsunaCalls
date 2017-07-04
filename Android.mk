@@ -43,9 +43,9 @@ LOCAL_PACKAGE_NAME := KatsunaCalls
 LOCAL_CERTIFICATE := shared
 LOCAL_PRIVILEGED_MODULE := true
 
-#LOCAL_PROGUARD_FLAG_FILES := app/proguard-rules.pro
-
-LOCAL_PROGUARD_ENABLED := disabled
+LOCAL_PROGUARD_FLAG_FILES := app/proguard-rules.pro
+LOCAL_PROGUARD_FLAGS := -ignorewarnings -include build/core/proguard_basic_keeps.flags
+LOCAL_PROGUARD_ENABLED := nosystem
 
 include $(BUILD_PACKAGE)
 

@@ -1,6 +1,5 @@
 package com.katsuna.calls.ui.viewholders;
 
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,8 +14,6 @@ import com.katsuna.commons.entities.SizeProfile;
 import com.katsuna.commons.entities.SizeProfileKey;
 import com.katsuna.commons.utils.ColorAdjuster;
 import com.katsuna.commons.utils.ColorCalc;
-import com.katsuna.commons.utils.DrawUtils;
-import com.katsuna.commons.utils.Shape;
 import com.katsuna.commons.utils.SizeAdjuster;
 import com.katsuna.commons.utils.SizeCalc;
 

@@ -39,4 +39,8 @@
 
     <!-- Call date description separator -->
     <string name="day_info_older">Older</string>
+
+    <!-- Delete call label at settings activity -->
+    <string name="delele_call_from_list">Delete call from the list</string>
+
 </resources>

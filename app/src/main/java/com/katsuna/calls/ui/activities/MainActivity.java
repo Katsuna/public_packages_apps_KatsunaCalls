@@ -45,6 +45,7 @@ import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.DayInfoFormatter;
 import com.katsuna.calls.utils.Device;
 import com.katsuna.calls.utils.TelecomUtils;
+import com.katsuna.commons.entities.UserProfile;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.ui.SearchBarActivity;
 import com.katsuna.commons.utils.KatsunaAlertBuilder;
@@ -568,5 +569,10 @@ public class MainActivity extends SearchBarActivity implements
     @Override
     public UserProfileContainer getUserProfileContainer() {
         return mUserProfileContainer;
+    }
+
+    @Override
+    public UserProfile getUserProfile() {
+        return mUserProfileContainer.getActiveUserProfile();
     }
 }

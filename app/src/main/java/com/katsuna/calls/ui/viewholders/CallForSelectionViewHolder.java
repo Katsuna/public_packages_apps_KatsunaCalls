@@ -30,7 +30,7 @@ public class CallForSelectionViewHolder extends CallBaseViewHolder {
         } else if (call.getType() == CallLog.Calls.OUTGOING_TYPE) {
             mCallTypeImage.setImageResource(R.drawable.ic_call_made_black_24dp);
         } else if (call.getType() == CallLog.Calls.MISSED_TYPE) {
-            mCallTypeImage.setImageResource(R.drawable.ic_call_missed_red_500_24dp);
+            mCallTypeImage.setImageResource(R.drawable.ic_call_missed_black_24dp);
         } else {
             mCallTypeImage.setImageBitmap(null);
         }

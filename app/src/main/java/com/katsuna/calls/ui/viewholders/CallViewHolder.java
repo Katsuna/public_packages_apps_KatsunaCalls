@@ -49,12 +49,7 @@ public class CallViewHolder extends CallBaseViewHolder {
                     R.drawable.ic_call_made_black_24dp);
         } else if (call.getType() == CallLog.Calls.MISSED_TYPE) {
             callTypeDrawable = ContextCompat.getDrawable(itemView.getContext(),
-                    R.drawable.ic_call_missed_red_500_24dp);
-
-            int bgColor = ColorCalc.getColor(itemView.getContext(),
-                    ColorProfileKey.ACCENT1_COLOR, mUserProfileContainer.getColorProfile());
-            callTypeDrawable.setColorFilter(new PorterDuffColorFilter(bgColor,
-                    PorterDuff.Mode.SRC_ATOP));
+                    R.drawable.ic_call_missed_black_24dp);
         }
         mCallTypeImage.setImageDrawable(callTypeDrawable);
 

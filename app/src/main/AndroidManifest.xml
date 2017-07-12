@@ -76,6 +76,11 @@
                 android:resource="@xml/searchable" />
 
         </activity>
+        <activity
+            android:name=".ui.activities.InfoActivity"
+            android:label="@string/common_app_info"
+            android:parentActivityName=".ui.activities.MainActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -15,10 +15,18 @@
   <string name="no_calls">Nessuna chiamata trovata.</string>
   <!-- Message shown when the user tries to use a disabled action for unknown/hidden numbers -->
   <string name="hidden_number">Azione non disponibile per i numeri nascosti.</string>
+  <!-- Delete calls label for activity title, alert dialog title and settings button label.-->
   <string name="delete_calls">Delete calls</string>
+  <!-- Warning when no calls are selected for deletion -->
   <string name="no_calls_selected">No calls selected.</string>
+  <!-- Deletion result message -->
   <string name="calls_deleted">Deletion succeeded.</string>
+  <!-- Deletion approval message for multiple calls. -->
   <string name="delete_calls_approval">Are you sure you want to delete the selected calls?</string>
+  <!-- Deletion approval message for one call. -->
   <string name="delete_call_approval">Are you sure you want to delete the selected call?</string>
+  <!-- Call date description separator -->
   <string name="day_info_older">Older</string>
+  <!-- Delete call label at settings activity -->
+  <string name="delele_call_from_list">Delete call from the list</string>
 </resources>

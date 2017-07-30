@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="call_type_circle_size">36dp</dimen>
+    <dimen name="call_type_icon_size_diff">4dp</dimen>
+</resources>

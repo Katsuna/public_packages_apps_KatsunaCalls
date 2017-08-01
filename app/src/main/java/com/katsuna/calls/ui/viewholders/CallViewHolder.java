@@ -90,6 +90,5 @@ public class CallViewHolder extends CallBaseViewHolder {
         mCallTypeImage.setLayoutParams(layoutParams);
 
         adjustProfile();
-        adjustDisplayForNameAndNumber(call);
     }
 }

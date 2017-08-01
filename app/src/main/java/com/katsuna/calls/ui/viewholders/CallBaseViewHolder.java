@@ -73,16 +73,6 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    void adjustDisplayForNameAndNumber(Call call) {
-        if (call.getType() == CallLog.Calls.MISSED_TYPE) {
-            mDisplayName.setTypeface(mDisplayName.getTypeface(), Typeface.BOLD);
-            mNumber.setTypeface(mNumber.getTypeface(), Typeface.BOLD);
-        } else {
-            mDisplayName.setTypeface(mDisplayName.getTypeface(), Typeface.NORMAL);
-            mNumber.setTypeface(mNumber.getTypeface(), Typeface.NORMAL);
-        }
-    }
-
     void adjustProfile() {
         SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
         int size = itemView.getResources()

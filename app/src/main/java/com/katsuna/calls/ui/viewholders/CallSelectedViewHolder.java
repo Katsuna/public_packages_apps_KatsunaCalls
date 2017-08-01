@@ -87,7 +87,6 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         });
 
         adjustProfile();
-        adjustDisplayForNameAndNumber(call);
     }
 
     void adjustProfile() {

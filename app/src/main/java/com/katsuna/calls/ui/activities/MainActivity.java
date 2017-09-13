@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -59,6 +60,7 @@ public class MainActivity extends SearchBarActivity implements
     private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
     private static final int REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION = 2;
     private static final int CREATE_CONTACT_REQUEST = 3;
+    private static final String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
     private CallsAdapter mAdapter;
@@ -264,9 +266,7 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private boolean loadCalls() {
-        String[] permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
-        if (!Device.hasAllPermissions(this, permissions)) {
-            Device.requestPermissions(this, permissions, REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION);
+        if (!readContactsPermissionGranted()) {
             return false;
         }
 
@@ -290,6 +290,26 @@ public class MainActivity extends SearchBarActivity implements
         return true;
     }
 
+    private boolean mDontAskForPermissions;
+
+    private boolean readContactsPermissionGranted() {
+        boolean output;
+        String[] permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
+        if (!Device.hasAllPermissions(this, permissions)) {
+            if (mDontAskForPermissions) {
+                Toast.makeText(MainActivity.this, R.string.common_go_to_settings_permissions,
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Device.requestPermissions(this, permissions, REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION);
+            }
+            output = false;
+        } else {
+            output = true;
+        }
+
+        return output;
+    }
+
     private void showMessageForHiddenNumber() {
         Toast.makeText(this, R.string.hidden_number, Toast.LENGTH_SHORT).show();
     }
@@ -298,9 +318,16 @@ public class MainActivity extends SearchBarActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission Granted
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "read contacts and calls permissions granted");
                     loadCalls();
+                } else if (!shouldShowRequestPermissionRationale(permissions[0]) ||
+                        !shouldShowRequestPermissionRationale(permissions[1])) {
+                    Log.d(TAG, "read contacts or calls permissions set to never ask again");
+                    mDontAskForPermissions = true;
+                } else {
+                    Log.d(TAG, "read contacts permission denied");
                 }
                 break;
             default:
@@ -347,7 +374,9 @@ public class MainActivity extends SearchBarActivity implements
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                mAdapter.resetFilter();
+                if (mAdapter != null) {
+                    mAdapter.resetFilter();
+                }
                 return false;
             }
         });
@@ -375,6 +404,7 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void search(String query) {
+        if (mAdapter == null) return;
         if (TextUtils.isEmpty(query)) {
             mAdapter.resetFilter();
         } else {
@@ -403,7 +433,9 @@ public class MainActivity extends SearchBarActivity implements
 
                 switch (menuItem.getItemId()) {
                     case R.id.drawer_settings:
-                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                        if (readContactsPermissionGranted()) {
+                            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                        }
                         break;
                     case R.id.drawer_info:
                         startActivity(new Intent(MainActivity.this, InfoActivity.class));

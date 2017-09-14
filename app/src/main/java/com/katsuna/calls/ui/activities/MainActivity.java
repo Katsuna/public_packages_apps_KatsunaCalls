@@ -50,6 +50,7 @@ import com.katsuna.commons.entities.UserProfile;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.ui.SearchBarActivity;
 import com.katsuna.commons.utils.KatsunaAlertBuilder;
+import com.katsuna.commons.utils.KatsunaUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -90,7 +91,7 @@ public class MainActivity extends SearchBarActivity implements
         alert.setTitle(R.string.missing_app);
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                Device.goToMarket(MainActivity.this, Constants.CONTACTS_APP);
+                KatsunaUtils.goToGooglePlay(MainActivity.this, Constants.CONTACTS_APP);
             }
         });
         alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

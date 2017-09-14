@@ -61,10 +61,4 @@ public class Device {
         return notGrantedPermissions.toArray(new String[notGrantedPermissions.size()]);
     }
 
-    public static void goToMarket(Context context, String app) {
-        Uri uri = Uri.parse("market://details?id=" + app);
-        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-        context.startActivity(goToMarket);
-    }
-
 }

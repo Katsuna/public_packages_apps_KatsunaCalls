@@ -46,6 +46,7 @@ import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.DayInfoFormatter;
 import com.katsuna.calls.utils.Device;
 import com.katsuna.calls.utils.TelecomUtils;
+import com.katsuna.commons.entities.KatsunaConstants;
 import com.katsuna.commons.entities.UserProfile;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.ui.SearchBarActivity;
@@ -346,8 +347,10 @@ public class MainActivity extends SearchBarActivity implements
         startActivity(i);
     }
 
-    private void sendSMS(String number) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
+    private void sendSMS(String number, String name) {
+        Intent i  = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null));
+        i.putExtra(KatsunaConstants.EXTRA_DISPLAY_NAME, name);
+        startActivity(i);
     }
 
     @Override
@@ -536,7 +539,13 @@ public class MainActivity extends SearchBarActivity implements
             return;
         }
 
-        sendSMS(call.getNumber());
+        String name = null;
+        Contact contact = call.getContact();
+        if (contact != null) {
+            name = contact.getName();
+        }
+
+        sendSMS(call.getNumber(), name);
     }
 
     @Override

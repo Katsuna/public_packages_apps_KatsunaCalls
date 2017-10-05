@@ -41,6 +41,7 @@ LOCAL_AAPT_FLAGS += --extra-packages com.makeramen.roundedimageview
 
 LOCAL_PACKAGE_NAME := KatsunaCalls
 LOCAL_PRIVILEGED_MODULE := true
+LOCAL_CERTIFICATE := platform
 
 LOCAL_PROGUARD_FLAG_FILES := app/proguard-rules.pro
 LOCAL_PROGUARD_FLAGS := -ignorewarnings -include build/core/proguard_basic_keeps.flags

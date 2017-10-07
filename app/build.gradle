@@ -19,7 +19,7 @@ android {
 
     signingConfigs {
         katsunaConfig {
-            storeFile file(keystoreProperties['storeFile'])
+            storeFile rootProject.file("../../../vendor/keys/katsuna.keystore");
             storePassword keystoreProperties['storePassword']
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']

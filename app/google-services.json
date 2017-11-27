@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "275873858837",
+    "firebase_url": "https://katsuna-calls.firebaseio.com",
+    "project_id": "katsuna-calls",
+    "storage_bucket": "katsuna-calls.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275873858837:android:a335e427dcbfb99d",
+        "android_client_info": {
+          "package_name": "com.katsuna.calls"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "275873858837-sn3hhb5t26qbl1pj8gi75sq46iuae1hm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.katsuna.calls",
+            "certificate_hash": "a4b16c796eb20f609379f32a8ae7a9b74a7f9947"
+          }
+        },
+        {
+          "client_id": "275873858837-7mn9djafmlekvcefaeo15348725vgvhc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArqHqk3KS-UrDO1xcsP_oAfQRYOM0mqQ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "275873858837-7mn9djafmlekvcefaeo15348725vgvhc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

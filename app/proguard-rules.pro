@@ -36,3 +36,4 @@
 -keep class io.codetail.** { *; }
 -keep class com.makeramen.** { *; }
 -keep class com.squareup.** { *; }
+-keep class com.google.** { *; }

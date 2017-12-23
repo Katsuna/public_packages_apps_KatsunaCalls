@@ -61,9 +61,9 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
                 break;
             case CALL_SELECTED:
                 if (isRightHanded) {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_selected, parent, false);
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call, parent, false);
                 } else {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_selected_lh, parent, false);
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_lh, parent, false);
                 }
                 viewHolder = new CallSelectedViewHolder(view, mListener);
                 break;

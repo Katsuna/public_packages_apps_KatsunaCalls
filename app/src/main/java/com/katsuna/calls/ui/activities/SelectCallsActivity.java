@@ -5,7 +5,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.provider.CallLog;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -115,7 +114,7 @@ public class SelectCallsActivity extends KatsunaActivity implements IContactReso
     private void initControls() {
         initToolbar();
 
-        mFab1 = (FloatingActionButton) findViewById(R.id.fab);
+        mFab1 = findViewById(R.id.fab);
         mFab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,8 +128,8 @@ public class SelectCallsActivity extends KatsunaActivity implements IContactReso
             }
         });
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.calls_list);
-        mNoResultsView = (TextView) findViewById(R.id.no_results);
+        mRecyclerView = findViewById(R.id.calls_list);
+        mNoResultsView = findViewById(R.id.no_results);
     }
 
     private void deleteCalls(final List<Call> selectedCalls) {
@@ -253,6 +252,11 @@ public class SelectCallsActivity extends KatsunaActivity implements IContactReso
 
     @Override
     public void createContact(Call call) {
+        // no op
+    }
+
+    @Override
+    public void editContact(Call call) {
         // no op
     }
 

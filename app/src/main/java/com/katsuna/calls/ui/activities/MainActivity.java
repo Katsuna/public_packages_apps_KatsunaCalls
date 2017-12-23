@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -29,9 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +53,8 @@ import com.katsuna.commons.utils.KatsunaUtils;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static com.katsuna.commons.utils.Constants.CREATE_CONTACT_ACTION;
+import static com.katsuna.commons.utils.Constants.EDIT_CONTACT_ACTION;
 import static com.katsuna.commons.utils.Constants.KATSUNA_PRIVACY_URL;
 
 public class MainActivity extends SearchBarActivity implements
@@ -64,6 +63,7 @@ public class MainActivity extends SearchBarActivity implements
     private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
     private static final int REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION = 2;
     private static final int CREATE_CONTACT_REQUEST = 3;
+    private static final int EDIT_CONTACT_REQUEST = 4;
     private static final String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
@@ -76,6 +76,7 @@ public class MainActivity extends SearchBarActivity implements
     private LinkedHashMap<String, Boolean> mContactSearchedMap;
     private FrameLayout mPopupFrame;
     private String mCallNumberFocus;
+    private boolean mDontAskForPermissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,7 @@ public class MainActivity extends SearchBarActivity implements
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -161,10 +162,10 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void initControls() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.calls_list);
+        mRecyclerView = findViewById(R.id.calls_list);
         mRecyclerView.setItemAnimator(null);
-        mNoResultsView = (TextView) findViewById(R.id.no_results);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNoResultsView = findViewById(R.id.no_results);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mLastTouchTimestamp = System.currentTimeMillis();
         initPopupActionHandler();
         initDeselectionActionHandler();
@@ -173,7 +174,7 @@ public class MainActivity extends SearchBarActivity implements
         initDrawer();
         initFabs();
 
-        mPopupFrame = (FrameLayout) findViewById(R.id.popup_frame);
+        mPopupFrame = findViewById(R.id.popup_frame);
         mPopupFrame.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -185,7 +186,7 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void initDrawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, mToolbar, R.string.common_navigation_drawer_open,
                 R.string.common_navigation_drawer_close);
@@ -197,10 +198,10 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void initFabs() {
-        mFabContainer = (LinearLayout) findViewById(R.id.fab_container);
+        mFabContainer = findViewById(R.id.fab_container);
 
-        mButtonsContainer1 = (LinearLayout) findViewById(R.id.dial_buttons_container);
-        mPopupButton1 = (Button) findViewById(R.id.dial_button);
+        mButtonsContainer1 = findViewById(R.id.dial_buttons_container);
+        mPopupButton1 = findViewById(R.id.dial_button);
         mPopupButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,7 +209,7 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
-        mFab1 = (FloatingActionButton) findViewById(R.id.fabDial);
+        mFab1 = findViewById(R.id.fabDial);
         mFab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -216,8 +217,8 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
-        mButtonsContainer2 = (LinearLayout) findViewById(R.id.search_buttons_container);
-        mPopupButton2 = (Button) findViewById(R.id.search_button);
+        mButtonsContainer2 = findViewById(R.id.search_buttons_container);
+        mPopupButton2 = findViewById(R.id.search_button);
         mPopupButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,7 +226,7 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
-        mFab2 = (FloatingActionButton) findViewById(R.id.fabContacts);
+        mFab2 = findViewById(R.id.fabContacts);
         mFab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -294,8 +295,6 @@ public class MainActivity extends SearchBarActivity implements
         return true;
     }
 
-    private boolean mDontAskForPermissions;
-
     private boolean readContactsPermissionGranted() {
         boolean output;
         String[] permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
@@ -350,7 +349,7 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void sendSMS(String number, String name) {
-        Intent i  = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null));
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null));
         i.putExtra(KatsunaConstants.EXTRA_DISPLAY_NAME, name);
         startActivity(i);
     }
@@ -429,7 +428,7 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void setupDrawerLayout() {
-        NavigationView view = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView view = findViewById(R.id.nav_view);
         assert view != null;
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -561,7 +560,7 @@ public class MainActivity extends SearchBarActivity implements
             return;
         }
 
-        Intent i = new Intent(Constants.CREATE_CONTACT_ACTION);
+        Intent i = new Intent(CREATE_CONTACT_ACTION);
         i.putExtra("number", call.getNumber());
 
         PackageManager packageManager = getPackageManager();
@@ -570,6 +569,26 @@ public class MainActivity extends SearchBarActivity implements
 
         if (isIntentSafe) {
             startActivityForResult(i, CREATE_CONTACT_REQUEST);
+            mCallNumberFocus = call.getNumber();
+            //clear it from cache to enable fetching the fresh contact
+            mContactSearchedMap.remove(mCallNumberFocus);
+        } else {
+            showContactsAppInstallationDialog();
+        }
+    }
+
+    @Override
+    public void editContact(Call call) {
+        Intent i = new Intent(EDIT_CONTACT_ACTION);
+        i.putExtra("number", call.getNumber());
+        i.putExtra("contactId", call.getContact().getId());
+
+        PackageManager packageManager = getPackageManager();
+        List activities = packageManager.queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+        boolean isIntentSafe = activities.size() > 0;
+
+        if (isIntentSafe) {
+            startActivityForResult(i, EDIT_CONTACT_REQUEST);
             mCallNumberFocus = call.getNumber();
             //clear it from cache to enable fetching the fresh contact
             mContactSearchedMap.remove(mCallNumberFocus);
@@ -623,5 +642,15 @@ public class MainActivity extends SearchBarActivity implements
     @Override
     public UserProfile getUserProfile() {
         return mUserProfileContainer.getActiveUserProfile();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_CONTACT_REQUEST || requestCode == CREATE_CONTACT_REQUEST) {
+            mContactCache.clear();
+            loadCalls();
+        }
     }
 }

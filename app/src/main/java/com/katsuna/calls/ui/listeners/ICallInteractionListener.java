@@ -15,6 +15,8 @@ public interface ICallInteractionListener extends IContactResolver {
 
     void createContact(Call call);
 
+    void editContact(Call call);
+
     void deleteCall(Call call);
 
     UserProfileContainer getUserProfileContainer();

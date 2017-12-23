@@ -19,8 +19,8 @@ public class CallForSelectionViewHolder extends CallBaseViewHolder {
     public CallForSelectionViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView, listener);
 
-        mCallTypeImage = (ImageView) itemView.findViewById(R.id.callTypeImage);
-        mCheckBox = (CheckBox) itemView.findViewById(R.id.checkbox);
+        mCallTypeImage = itemView.findViewById(R.id.call_type_image);
+        mCheckBox = itemView.findViewById(R.id.checkbox);
         adjustProfile();
     }
 

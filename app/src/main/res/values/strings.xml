@@ -43,4 +43,14 @@
     <!-- Delete call label at settings activity -->
     <string name="delele_call_from_list">Delete call from the list</string>
 
+    <string name="outgoing_call">Outgoing call</string>
+
+    <string name="incoming_call">Incoming call</string>
+
+    <string name="missed_call">Missed call</string>
+
+    <string name="add_contact">Add New Contact</string>
+
+    <string name="edit_contact">Edit Contact</string>
+
 </resources>

@@ -5,8 +5,9 @@ public class Contact {
     private long id;
     private String name;
     private String photoUri;
+    private String description;
 
-    private long getId() {
+    public long getId() {
         return id;
     }
 
@@ -28,5 +29,13 @@ public class Contact {
 
     public void setPhotoUri(String photoUri) {
         this.photoUri = photoUri;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

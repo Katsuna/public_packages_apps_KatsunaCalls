@@ -304,7 +304,7 @@ public class MainActivity extends SearchBarActivity implements
                 Toast.makeText(MainActivity.this, R.string.common_go_to_settings_permissions,
                         Toast.LENGTH_SHORT).show();
             } else {
-                Device.requestPermissions(this, permissions, REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION);
+                ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION);
             }
             output = false;
         } else {

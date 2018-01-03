@@ -25,7 +25,6 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
     final UserProfileContainer mUserProfileContainer;
     final TextView mDisplayName;
     final TextView mContactDesc;
-    private final View mDayContainer;
     private final TextView mDayInfo;
     private final TextView mCallDetails;
     private final CardView mCallContainer;
@@ -36,7 +35,6 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         mDisplayName = itemView.findViewById(R.id.display_name);
         mContactDesc = itemView.findViewById(R.id.contact_desc);
-        mDayContainer = itemView.findViewById(R.id.day_info_container);
         mDayInfo = itemView.findViewById(R.id.day_info);
         mListener = listener;
         mUserProfileContainer = mListener.getUserProfileContainer();
@@ -62,15 +60,6 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
         callDetails += ", " + DateFormatter.format(call.getDate());
         mCallDetails.setText(callDetails);
 
-
-        if (mDayContainer != null) {
-            if (TextUtils.isEmpty(call.getDayInfo())) {
-                mDayContainer.setVisibility(View.GONE);
-            } else {
-                mDayContainer.setVisibility(View.VISIBLE);
-            }
-            mDayInfo.setText(call.getDayInfo());
-        }
 
         adjustColorBasedOnCallType(call.getType());
     }

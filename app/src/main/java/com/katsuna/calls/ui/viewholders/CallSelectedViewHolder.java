@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,10 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     private final View mMoreActionsContainer;
     private final LinearLayout mCreateContactContainer;
     private final LinearLayout mEditContactContainer;
+    private final ImageView mCreateContactIcon;
+    private final TextView mCreateContactText;
+    private final ImageView mEditContactIcon;
+    private final TextView mEditContactText;
 
     public CallSelectedViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView, listener);
@@ -40,6 +45,10 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         mMoreActionsContainer = itemView.findViewById(R.id.more_actions_container);
         mCreateContactContainer = itemView.findViewById(R.id.create_contact_container);
         mEditContactContainer = itemView.findViewById(R.id.edit_contact_container);
+        mCreateContactIcon = itemView.findViewById(R.id.create_contact_icon);
+        mCreateContactText = itemView.findViewById(R.id.create_contact_text);
+        mEditContactIcon = itemView.findViewById(R.id.edit_contact_icon);
+        mEditContactText = itemView.findViewById(R.id.edit_contact_text);
     }
 
     public void bind(final Call call) {
@@ -141,10 +150,27 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
 
         // adjust buttons
-        OpticalParams opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.ACTION_BUTTON,
+        OpticalParams opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.ACTION_BUTTON_V2,
                 sizeProfile);
         SizeAdjuster.adjustText(itemView.getContext(), mCallButton, opticalParams);
         SizeAdjuster.adjustText(itemView.getContext(), mMessageButton, opticalParams);
+
+        // more text
+        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.MORE_TEXT,
+                sizeProfile);
+        SizeAdjuster.adjustText(itemView.getContext(), mMoreText, opticalParams);
+
+        // level_2 action icons
+        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_2_ACTION_ICON,
+                sizeProfile);
+        SizeAdjuster.adjustIcon(itemView.getContext(), mCreateContactIcon, opticalParams);
+        SizeAdjuster.adjustIcon(itemView.getContext(), mEditContactIcon, opticalParams);
+
+        // level_2 action text
+        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_2_ACTION_TEXT,
+                sizeProfile);
+        SizeAdjuster.adjustText(itemView.getContext(), mCreateContactText, opticalParams);
+        SizeAdjuster.adjustText(itemView.getContext(), mEditContactText, opticalParams);
 
         adjustColorProfile();
     }

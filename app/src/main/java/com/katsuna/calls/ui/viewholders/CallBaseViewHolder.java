@@ -6,7 +6,6 @@ import android.provider.CallLog;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -16,8 +15,13 @@ import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.utils.DrawableGenerator;
+import com.katsuna.commons.entities.OpticalParams;
+import com.katsuna.commons.entities.SizeProfile;
+import com.katsuna.commons.entities.SizeProfileKey;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.utils.DateFormatter;
+import com.katsuna.commons.utils.SizeAdjuster;
+import com.katsuna.commons.utils.SizeCalc;
 
 abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
 
@@ -25,7 +29,6 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
     final UserProfileContainer mUserProfileContainer;
     final TextView mDisplayName;
     final TextView mContactDesc;
-    private final TextView mDayInfo;
     private final TextView mCallDetails;
     private final CardView mCallContainer;
     private final RelativeLayout mCallContainerInner;
@@ -35,7 +38,6 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         mDisplayName = itemView.findViewById(R.id.display_name);
         mContactDesc = itemView.findViewById(R.id.contact_desc);
-        mDayInfo = itemView.findViewById(R.id.day_info);
         mListener = listener;
         mUserProfileContainer = mListener.getUserProfileContainer();
 
@@ -65,23 +67,25 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
     }
 
     void adjustProfile() {
-/*        SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
 
-        // display name
-        OpticalParams nameOpticalParams = SizeCalc.getOpticalParams(SizeProfileKey.TITLE,
-                sizeProfile);
-        SizeAdjuster.adjustText(itemView.getContext(), mDisplayName, nameOpticalParams);
+        SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
 
-        // display name
-        OpticalParams contactDescOpticalParams = SizeCalc.getOpticalParams(SizeProfileKey.BODY_2,
+        // item type icon
+        OpticalParams opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.ITEM_TYPE_ICON,
                 sizeProfile);
-        SizeAdjuster.adjustText(itemView.getContext(), mContactDesc, contactDescOpticalParams);
+        SizeAdjuster.adjustIcon(itemView.getContext(), mCallTypeImage, opticalParams);
 
         // date
-        OpticalParams dateOpticalParams = SizeCalc.getOpticalParams(SizeProfileKey.BODY_1,
-                sizeProfile);
-        SizeAdjuster.adjustText(itemView.getContext(), mCallDetails, dateOpticalParams);*/
+        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_1_TEXT, sizeProfile);
+        SizeAdjuster.adjustText(itemView.getContext(), mCallDetails, opticalParams);
 
+        // display name
+        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_2_TEXT, sizeProfile);
+        SizeAdjuster.adjustText(itemView.getContext(), mDisplayName, opticalParams);
+
+        // contact description
+        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_3_TEXT, sizeProfile);
+        SizeAdjuster.adjustText(itemView.getContext(), mContactDesc, opticalParams);
     }
 
     private void adjustColorBasedOnCallType(int callType) {

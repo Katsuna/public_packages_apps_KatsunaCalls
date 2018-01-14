@@ -38,6 +38,8 @@ import android.widget.Toast;
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.domain.Contact;
+import com.katsuna.calls.notifications.calls.CallsAlarmReceiver;
+import com.katsuna.calls.notifications.sms.SmsAlarmReceiver;
 import com.katsuna.calls.providers.CallsProvider;
 import com.katsuna.calls.providers.ContactInfoHelper;
 import com.katsuna.calls.ui.adapters.CallsAdapter;
@@ -82,6 +84,17 @@ public class MainActivity extends SearchBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED ){
+            setupCallsLogReceiver();
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED ) {
+
+            setupSmsLogReceiver();
+        }
         initControls();
 
         mContactCache = new LinkedHashMap<>();
@@ -608,6 +621,19 @@ public class MainActivity extends SearchBarActivity implements
             return false;
         }
         return true;
+    }
+
+
+    private void setupCallsLogReceiver() {
+
+        CallsAlarmReceiver alarm = new CallsAlarmReceiver();
+        alarm.setAlarm(this);
+    }
+
+    private void setupSmsLogReceiver() {
+
+        SmsAlarmReceiver alarm = new SmsAlarmReceiver();
+        alarm.setAlarm(this);
     }
 
     @Override

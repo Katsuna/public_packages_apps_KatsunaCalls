@@ -142,7 +142,7 @@
                         android:layout_marginStart="12dp"
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center"
-                        android:text="@string/edit_contact"
+                        android:text="@string/common_edit_contact"
                         android:textColor="@color/common_black54"
                         android:textSize="16sp" />
 

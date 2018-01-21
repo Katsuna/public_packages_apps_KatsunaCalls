@@ -37,3 +37,7 @@
 -keep class com.makeramen.** { *; }
 -keep class com.squareup.** { *; }
 -keep class com.google.** { *; }
+
+# Hide warnings
+-dontwarn com.squareup.**
+-dontwarn org.joda.**

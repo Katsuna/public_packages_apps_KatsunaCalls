@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,6 +32,8 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     private final LinearLayout mEditContactContainer;
     private final TextView mCreateContactText;
     private final TextView mEditContactText;
+    private final View mCreateContactContainerDivider;
+    private final View mEditContactContainerDivider;
 
     public CallSelectedViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView, listener);
@@ -42,7 +43,9 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         mMoreText = itemView.findViewById(R.id.txt_more);
         mMoreActionsContainer = itemView.findViewById(R.id.more_actions_container);
         mCreateContactContainer = itemView.findViewById(R.id.create_contact_container);
+        mCreateContactContainerDivider = itemView.findViewById(R.id.create_contact_container_divider);
         mEditContactContainer = itemView.findViewById(R.id.edit_contact_container);
+        mEditContactContainerDivider = itemView.findViewById(R.id.edit_contact_container_divider);
         mCreateContactText = itemView.findViewById(R.id.create_contact_text);
         mEditContactText = itemView.findViewById(R.id.edit_contact_text);
     }
@@ -122,10 +125,14 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
 
         if (call.getContact() == null) {
             mCreateContactContainer.setVisibility(View.VISIBLE);
+            mCreateContactContainerDivider.setVisibility(View.VISIBLE);
             mEditContactContainer.setVisibility(View.GONE);
+            mEditContactContainerDivider.setVisibility(View.GONE);
         } else {
             mEditContactContainer.setVisibility(View.VISIBLE);
+            mEditContactContainerDivider.setVisibility(View.VISIBLE);
             mCreateContactContainer.setVisibility(View.GONE);
+            mCreateContactContainerDivider.setVisibility(View.GONE);
         }
 
         adjustProfile();

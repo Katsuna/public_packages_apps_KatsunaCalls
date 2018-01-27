@@ -17,11 +17,11 @@ import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.utils.DrawableGenerator;
 import com.katsuna.commons.entities.OpticalParams;
 import com.katsuna.commons.entities.SizeProfile;
-import com.katsuna.commons.entities.SizeProfileKey;
+import com.katsuna.commons.entities.SizeProfileKeyV2;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.utils.DateFormatter;
 import com.katsuna.commons.utils.SizeAdjuster;
-import com.katsuna.commons.utils.SizeCalc;
+import com.katsuna.commons.utils.SizeCalcV2;
 
 abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
 
@@ -71,20 +71,20 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
         SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
 
         // item type icon
-        OpticalParams opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.ITEM_TYPE_ICON,
+        OpticalParams opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.ICON_1,
                 sizeProfile);
         SizeAdjuster.adjustIcon(itemView.getContext(), mCallTypeImage, opticalParams);
 
         // date
-        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_1_TEXT, sizeProfile);
+        opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.BODY_1, sizeProfile);
         SizeAdjuster.adjustText(itemView.getContext(), mCallDetails, opticalParams);
 
         // display name
-        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_2_TEXT, sizeProfile);
+        opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.TITLE, sizeProfile);
         SizeAdjuster.adjustText(itemView.getContext(), mDisplayName, opticalParams);
 
         // contact description
-        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_3_TEXT, sizeProfile);
+        opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.SUBHEADING_1, sizeProfile);
         SizeAdjuster.adjustText(itemView.getContext(), mContactDesc, opticalParams);
     }
 

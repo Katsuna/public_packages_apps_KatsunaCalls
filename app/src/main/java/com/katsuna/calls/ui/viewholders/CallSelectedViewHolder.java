@@ -17,10 +17,10 @@ import com.katsuna.calls.domain.Contact;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.commons.entities.OpticalParams;
 import com.katsuna.commons.entities.SizeProfile;
-import com.katsuna.commons.entities.SizeProfileKey;
+import com.katsuna.commons.entities.SizeProfileKeyV2;
 import com.katsuna.commons.utils.Shape;
 import com.katsuna.commons.utils.SizeAdjuster;
-import com.katsuna.commons.utils.SizeCalc;
+import com.katsuna.commons.utils.SizeCalcV2;
 
 public class CallSelectedViewHolder extends CallBaseViewHolder {
 
@@ -31,9 +31,7 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     private final View mMoreActionsContainer;
     private final LinearLayout mCreateContactContainer;
     private final LinearLayout mEditContactContainer;
-    private final ImageView mCreateContactIcon;
     private final TextView mCreateContactText;
-    private final ImageView mEditContactIcon;
     private final TextView mEditContactText;
 
     public CallSelectedViewHolder(View itemView, ICallInteractionListener listener) {
@@ -45,9 +43,7 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         mMoreActionsContainer = itemView.findViewById(R.id.more_actions_container);
         mCreateContactContainer = itemView.findViewById(R.id.create_contact_container);
         mEditContactContainer = itemView.findViewById(R.id.edit_contact_container);
-        mCreateContactIcon = itemView.findViewById(R.id.create_contact_icon);
         mCreateContactText = itemView.findViewById(R.id.create_contact_text);
-        mEditContactIcon = itemView.findViewById(R.id.edit_contact_icon);
         mEditContactText = itemView.findViewById(R.id.edit_contact_text);
     }
 
@@ -150,24 +146,18 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
 
         // adjust buttons
-        OpticalParams opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.ACTION_BUTTON_V2,
+        OpticalParams opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.BUTTON,
                 sizeProfile);
         SizeAdjuster.adjustText(itemView.getContext(), mCallButton, opticalParams);
         SizeAdjuster.adjustText(itemView.getContext(), mMessageButton, opticalParams);
 
         // more text
-        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.MORE_TEXT,
+        opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.BUTTON,
                 sizeProfile);
         SizeAdjuster.adjustText(itemView.getContext(), mMoreText, opticalParams);
 
-        // level_2 action icons
-        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_2_ACTION_ICON,
-                sizeProfile);
-        SizeAdjuster.adjustIcon(itemView.getContext(), mCreateContactIcon, opticalParams);
-        SizeAdjuster.adjustIcon(itemView.getContext(), mEditContactIcon, opticalParams);
-
         // level_2 action text
-        opticalParams = SizeCalc.getOpticalParams(SizeProfileKey.LEVEL_2_ACTION_TEXT,
+        opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.SUBHEADING_2,
                 sizeProfile);
         SizeAdjuster.adjustText(itemView.getContext(), mCreateContactText, opticalParams);
         SizeAdjuster.adjustText(itemView.getContext(), mEditContactText, opticalParams);

@@ -28,12 +28,14 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     private final Button mMessageButton;
     private final TextView mMoreText;
     private final View mMoreActionsContainer;
-    private final LinearLayout mCreateContactContainer;
-    private final LinearLayout mEditContactContainer;
+    private final View mCreateContactContainer;
+    private final View mAddToExistingContainer;
+    private final View mCallHistoryContainer;
+    private final View mEditContactContainer;
     private final TextView mCreateContactText;
+    private final TextView mAddToExistingText;
     private final TextView mEditContactText;
-    private final View mCreateContactContainerDivider;
-    private final View mEditContactContainerDivider;
+    private final TextView mCallHistoryText;
 
     public CallSelectedViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView, listener);
@@ -43,10 +45,12 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         mMoreText = itemView.findViewById(R.id.txt_more);
         mMoreActionsContainer = itemView.findViewById(R.id.more_actions_container);
         mCreateContactContainer = itemView.findViewById(R.id.create_contact_container);
-        mCreateContactContainerDivider = itemView.findViewById(R.id.create_contact_container_divider);
+        mAddToExistingContainer = itemView.findViewById(R.id.add_to_existing_contact_container);
+        mCallHistoryContainer = itemView.findViewById(R.id.call_history_container);
         mEditContactContainer = itemView.findViewById(R.id.edit_contact_container);
-        mEditContactContainerDivider = itemView.findViewById(R.id.edit_contact_container_divider);
         mCreateContactText = itemView.findViewById(R.id.create_contact_text);
+        mAddToExistingText = itemView.findViewById(R.id.add_to_existing_contact_text);
+        mCallHistoryText = itemView.findViewById(R.id.call_history_text);
         mEditContactText = itemView.findViewById(R.id.edit_contact_text);
     }
 
@@ -125,14 +129,14 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
 
         if (call.getContact() == null) {
             mCreateContactContainer.setVisibility(View.VISIBLE);
-            mCreateContactContainerDivider.setVisibility(View.VISIBLE);
+            mAddToExistingContainer.setVisibility(View.VISIBLE);
+            mCallHistoryContainer.setVisibility(View.GONE);
             mEditContactContainer.setVisibility(View.GONE);
-            mEditContactContainerDivider.setVisibility(View.GONE);
         } else {
+            mCallHistoryContainer.setVisibility(View.VISIBLE);
             mEditContactContainer.setVisibility(View.VISIBLE);
-            mEditContactContainerDivider.setVisibility(View.VISIBLE);
             mCreateContactContainer.setVisibility(View.GONE);
-            mCreateContactContainerDivider.setVisibility(View.GONE);
+            mAddToExistingContainer.setVisibility(View.GONE);
         }
 
         adjustProfile();
@@ -167,6 +171,8 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.SUBHEADING_2,
                 sizeProfile);
         SizeAdjuster.adjustText(itemView.getContext(), mCreateContactText, opticalParams);
+        SizeAdjuster.adjustText(itemView.getContext(), mAddToExistingText, opticalParams);
+        SizeAdjuster.adjustText(itemView.getContext(), mCallHistoryText, opticalParams);
         SizeAdjuster.adjustText(itemView.getContext(), mEditContactText, opticalParams);
 
         adjustColorProfile();

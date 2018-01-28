@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.katsuna.calls.R;
@@ -124,6 +123,13 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
             @Override
             public void onClick(View v) {
                 mListener.editContact(call);
+            }
+        });
+
+        mCallHistoryContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.showCallDetails(call);
             }
         });
 

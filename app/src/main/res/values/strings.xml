@@ -55,4 +55,6 @@
 
     <string name="call_details">Call Details</string>
 
+    <string name="caller">Caller</string>
+
 </resources>

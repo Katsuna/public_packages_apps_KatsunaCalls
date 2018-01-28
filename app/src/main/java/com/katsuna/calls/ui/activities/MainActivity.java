@@ -598,6 +598,13 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     @Override
+    public void showCallDetails(Call call) {
+        Intent i = new Intent(this, CallDetailsActivity.class);
+        i.putExtra("call", call);
+        startActivity(i);
+    }
+
+    @Override
     public void deleteCall(final Call call) {
         if (!checkPermission()) {
             return;

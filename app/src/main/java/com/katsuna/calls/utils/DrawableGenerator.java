@@ -51,10 +51,12 @@ public class DrawableGenerator {
         // calc color and icon
         int circleColorId = R.color.priority_one;
         int iconId = R.drawable.ic_call_made_black_24dp;
+        int iconColor = ContextCompat.getColor(ctx, com.katsuna.commons.R.color.common_black87);
 
         if (callType == CallLog.Calls.INCOMING_TYPE) {
             circleColorId = R.color.priority_two;
-            iconId = R.drawable.ic_call_received_black_24dp;
+            iconId = R.drawable.ic_call_received_white87_24dp;
+            iconColor = ContextCompat.getColor(ctx, com.katsuna.commons.R.color.common_white87);
         } else if (callType == CallLog.Calls.OUTGOING_TYPE) {
             circleColorId = R.color.priority_one;
             iconId = R.drawable.ic_call_made_black_24dp;
@@ -72,8 +74,7 @@ public class DrawableGenerator {
 
         // adjust icon
         Drawable icon = ctx.getDrawable(iconId);
-        int black87 = ContextCompat.getColor(ctx, com.katsuna.commons.R.color.common_black87);
-        DrawUtils.setColor(icon, black87);
+        DrawUtils.setColor(icon, iconColor);
 
         // compose layers
         Drawable[] layers = {circleDrawable, icon};

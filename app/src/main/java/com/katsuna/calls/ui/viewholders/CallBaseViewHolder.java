@@ -1,9 +1,6 @@
 package com.katsuna.calls.ui.viewholders;
 
-import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
-import android.provider.CallLog;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,12 +11,13 @@ import android.widget.TextView;
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
+import com.katsuna.calls.utils.CallInfo;
+import com.katsuna.calls.utils.CallTypeAdjuster;
 import com.katsuna.calls.utils.DrawableGenerator;
 import com.katsuna.commons.entities.OpticalParams;
 import com.katsuna.commons.entities.SizeProfile;
 import com.katsuna.commons.entities.SizeProfileKeyV2;
 import com.katsuna.commons.entities.UserProfileContainer;
-import com.katsuna.commons.utils.DateFormatter;
 import com.katsuna.commons.utils.SizeAdjuster;
 import com.katsuna.commons.utils.SizeCalcV2;
 
@@ -49,19 +47,7 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
 
     void bind(Call call) {
 
-        // calc call details
-        String callDetails = "";
-        if (call.getType() == CallLog.Calls.INCOMING_TYPE) {
-            callDetails = itemView.getResources().getString(R.string.incoming_call);
-        } else if (call.getType() == CallLog.Calls.OUTGOING_TYPE) {
-            callDetails = itemView.getResources().getString(R.string.outgoing_call);
-        } else if (call.getType() == CallLog.Calls.MISSED_TYPE) {
-            callDetails = itemView.getResources().getString(R.string.missed_call);
-        }
-        // add date
-        callDetails += ", " + DateFormatter.format(call.getDate());
-        mCallDetails.setText(callDetails);
-
+        mCallDetails.setText(CallInfo.getDetails(itemView.getContext(), call));
 
         adjustColorBasedOnCallType(call.getType());
     }
@@ -90,28 +76,8 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
 
     private void adjustColorBasedOnCallType(int callType) {
 
-        // calc colors
-        int cardColor = 0;
-        int cardColorAlpha = 0;
-
-        if (callType == CallLog.Calls.INCOMING_TYPE) {
-            cardColor = R.color.priority_two;
-            cardColorAlpha = R.color.priority_two_tone_one;
-        } else if (callType == CallLog.Calls.OUTGOING_TYPE) {
-            cardColor = R.color.priority_one;
-            cardColorAlpha = R.color.priority_one_tone_one;
-        } else if (callType == CallLog.Calls.MISSED_TYPE) {
-            cardColor = R.color.priority_three;
-            cardColorAlpha = R.color.priority_three_tone_one;
-        }
-
-        // set colors
-        if (cardColor != 0) {
-            mCallContainer.setCardBackgroundColor(ColorStateList.valueOf(
-                    ContextCompat.getColor(itemView.getContext(), cardColor)));
-            mCallContainerInner.setBackgroundColor(
-                    ContextCompat.getColor(itemView.getContext(), cardColorAlpha));
-        }
+        CallTypeAdjuster.adjustCardLayout(itemView.getContext(), callType, mCallContainer,
+                mCallContainerInner);
 
         // style callTypeDrawable based on call type
         Drawable callTypeDrawable = DrawableGenerator.getCallTypeDrawable(itemView.getContext(),

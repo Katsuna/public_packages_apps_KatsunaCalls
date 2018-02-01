@@ -51,7 +51,7 @@ public class CallDetailsActivity extends KatsunaActivity {
     }
 
     private void initControls() {
-        initToolbar();
+        initToolbar(R.drawable.common_ic_close_black54_24dp);
 
         mCallContainerCard = findViewById(R.id.call_container_card);
         mCallHistContainerCard = findViewById(R.id.call_hist_container_card);

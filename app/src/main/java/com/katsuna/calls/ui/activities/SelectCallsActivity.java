@@ -256,6 +256,11 @@ public class SelectCallsActivity extends KatsunaActivity implements IContactReso
     }
 
     @Override
+    public void addToContact(Call call) {
+        // no op
+    }
+
+    @Override
     public void editContact(Call call) {
         // no op
     }

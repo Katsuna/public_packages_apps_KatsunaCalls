@@ -53,8 +53,10 @@ import com.katsuna.commons.utils.KatsunaUtils;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static com.katsuna.commons.utils.Constants.ADD_TO_CONTACT_ACTION_NUMBER;
 import static com.katsuna.commons.utils.Constants.CREATE_CONTACT_ACTION;
 import static com.katsuna.commons.utils.Constants.EDIT_CONTACT_ACTION;
+import static com.katsuna.commons.utils.Constants.ADD_TO_CONTACT_ACTION;
 import static com.katsuna.commons.utils.Constants.KATSUNA_PRIVACY_URL;
 
 public class MainActivity extends SearchBarActivity implements
@@ -64,6 +66,7 @@ public class MainActivity extends SearchBarActivity implements
     private static final int REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION = 2;
     private static final int CREATE_CONTACT_REQUEST = 3;
     private static final int EDIT_CONTACT_REQUEST = 4;
+    private static final int ADD_TO_CONTACT_REQUEST = 5;
     private static final String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
@@ -578,6 +581,25 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     @Override
+    public void addToContact(Call call) {
+        Intent i = new Intent(ADD_TO_CONTACT_ACTION);
+        i.putExtra(ADD_TO_CONTACT_ACTION_NUMBER, call.getNumber());
+
+        PackageManager packageManager = getPackageManager();
+        List activities = packageManager.queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+        boolean isIntentSafe = activities.size() > 0;
+
+        if (isIntentSafe) {
+            startActivityForResult(i, ADD_TO_CONTACT_REQUEST);
+            mCallNumberFocus = call.getNumber();
+            //clear it from cache to enable fetching the fresh contact
+            mContactSearchedMap.remove(mCallNumberFocus);
+        } else {
+            showContactsAppInstallationDialog();
+        }
+    }
+
+    @Override
     public void editContact(Call call) {
         Intent i = new Intent(EDIT_CONTACT_ACTION);
         i.putExtra("number", call.getNumber());
@@ -655,7 +677,8 @@ public class MainActivity extends SearchBarActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == EDIT_CONTACT_REQUEST || requestCode == CREATE_CONTACT_REQUEST) {
+        if (requestCode == EDIT_CONTACT_REQUEST || requestCode == CREATE_CONTACT_REQUEST
+                || requestCode == ADD_TO_CONTACT_REQUEST) {
             mContactCache.clear();
             loadCalls();
         }

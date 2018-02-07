@@ -95,10 +95,12 @@ public class MainActivity extends SearchBarActivity implements
 
     private void showContactsAppInstallationDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-        alert.setTitle(R.string.missing_app);
+        String appName = getString(R.string.common_katsuna_contacts_app);
+        String title = getString(R.string.common_missing_app, appName);
+        alert.setTitle(title);
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                KatsunaUtils.goToGooglePlay(MainActivity.this, Constants.CONTACTS_APP);
+                KatsunaUtils.goToGooglePlay(MainActivity.this, KatsunaUtils.KATSUNA_CONTACTS_PACKAGE);
             }
         });
         alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -239,7 +241,7 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void openContactsApp() {
-        if (!Device.openApp(MainActivity.this, Constants.CONTACTS_APP)) {
+        if (!Device.openApp(MainActivity.this, KatsunaUtils.KATSUNA_CONTACTS_PACKAGE)) {
             showContactsAppInstallationDialog();
         }
     }

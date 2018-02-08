@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.katsuna.calls.BuildConfig;
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.domain.Contact;
@@ -241,7 +242,12 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void openContactsApp() {
-        if (!Device.openApp(MainActivity.this, KatsunaUtils.KATSUNA_CONTACTS_PACKAGE)) {
+        String targetPackage = KatsunaUtils.KATSUNA_CONTACTS_PACKAGE;
+        if (BuildConfig.BUILD_TYPE == KatsunaUtils.BUILD_TYPE_STAGING) {
+            targetPackage = KatsunaUtils.KATSUNA_CONTACTS_STAGING_PACKAGE;
+        }
+
+        if (!Device.openApp(MainActivity.this, targetPackage)) {
             showContactsAppInstallationDialog();
         }
     }

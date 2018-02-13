@@ -8,15 +8,18 @@ import android.view.ViewGroup;
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.viewholders.CallsHistViewHolder;
+import com.katsuna.commons.entities.UserProfileContainer;
 
 import java.util.List;
 
 public class CallsHistAdapter extends RecyclerView.Adapter<CallsHistViewHolder> {
 
     private final List<Call> mCalls;
+    private final UserProfileContainer mUserProfileContainer;
 
-    public CallsHistAdapter(List<Call> calls) {
+    public CallsHistAdapter(List<Call> calls, UserProfileContainer userProfileContainer) {
         mCalls = calls;
+        mUserProfileContainer = userProfileContainer;
     }
 
     @Override
@@ -27,7 +30,7 @@ public class CallsHistAdapter extends RecyclerView.Adapter<CallsHistViewHolder> 
     @Override
     public CallsHistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_hist, parent, false);
-        return new CallsHistViewHolder(view);
+        return new CallsHistViewHolder(view, mUserProfileContainer);
     }
 
     @Override

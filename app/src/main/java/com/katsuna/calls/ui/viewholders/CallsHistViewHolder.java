@@ -11,26 +11,30 @@ import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.utils.CallInfo;
 import com.katsuna.calls.utils.DrawableGenerator;
+import com.katsuna.commons.entities.UserProfile;
+import com.katsuna.commons.entities.UserProfileContainer;
 
 public class CallsHistViewHolder extends RecyclerView.ViewHolder {
     private final ImageView mCallTypeImage;
     private final TextView mCallDetails;
     private final TextView mCallDuration;
+    private final UserProfile mUserProfile;
 
 
-    public CallsHistViewHolder(View v) {
+    public CallsHistViewHolder(View v, UserProfileContainer userProfileContainer) {
         super(v);
 
         mCallTypeImage = itemView.findViewById(R.id.call_type_image);
         mCallDetails = v.findViewById(R.id.call_details);
         mCallDuration = v.findViewById(R.id.call_duration);
+        mUserProfile = userProfileContainer.getActiveUserProfile();
     }
 
 
     public void bind(Call call) {
         // style callTypeDrawable based on call type
         Drawable callTypeDrawable = DrawableGenerator.getCallTypeDrawable(itemView.getContext(),
-                call.getType());
+                call.getType(), mUserProfile);
         mCallTypeImage.setImageDrawable(callTypeDrawable);
 
         mCallDetails.setText(CallInfo.getDetails(itemView.getContext(), call));

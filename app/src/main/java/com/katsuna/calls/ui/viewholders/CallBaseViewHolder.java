@@ -77,11 +77,11 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
     private void adjustColorBasedOnCallType(int callType) {
 
         CallTypeAdjuster.adjustCardLayout(itemView.getContext(), callType, mCallContainer,
-                mCallContainerInner);
+                mCallContainerInner, mListener.getUserProfileContainer().getActiveUserProfile());
 
         // style callTypeDrawable based on call type
         Drawable callTypeDrawable = DrawableGenerator.getCallTypeDrawable(itemView.getContext(),
-                callType);
+                callType, mUserProfileContainer.getActiveUserProfile());
         mCallTypeImage.setImageDrawable(callTypeDrawable);
     }
 

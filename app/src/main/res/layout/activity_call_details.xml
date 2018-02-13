@@ -72,7 +72,6 @@
                 android:layout_margin="8dp"
                 android:clipToPadding="false"
                 android:gravity="center"
-                card_view:cardBackgroundColor="@color/priority_one"
                 card_view:cardCornerRadius="8dp"
                 card_view:cardElevation="2dp">
 
@@ -150,7 +149,6 @@
                 android:layout_marginStart="8dp"
                 android:clipToPadding="false"
                 android:gravity="center"
-                card_view:cardBackgroundColor="@color/priority_one"
                 card_view:cardCornerRadius="8dp"
                 card_view:cardElevation="2dp">
 

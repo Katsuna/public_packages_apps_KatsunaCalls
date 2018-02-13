@@ -105,10 +105,11 @@ public class CallDetailsActivity extends KatsunaActivity {
         mCallDuration.setText(CallInfo.getCallDuration(this, call));
 
         CallTypeAdjuster.adjustCardLayout(this, call.getType(), mCallContainerCard,
-                mCallContainerInner);
+                mCallContainerInner, mUserProfileContainer.getActiveUserProfile());
 
         // style callTypeDrawable based on call type
-        Drawable callTypeDrawable = DrawableGenerator.getCallTypeDrawable(this, call.getType());
+        Drawable callTypeDrawable = DrawableGenerator.getCallTypeDrawable(this, call.getType(),
+                mUserProfileContainer.getActiveUserProfile());
         mCallTypeImage.setImageDrawable(callTypeDrawable);
 
 
@@ -119,7 +120,7 @@ public class CallDetailsActivity extends KatsunaActivity {
         if (calls.size() == 0) {
             mCallHistContainerCard.setVisibility(View.GONE);
         } else {
-            CallsHistAdapter adapter = new CallsHistAdapter(calls);
+            CallsHistAdapter adapter = new CallsHistAdapter(calls, mUserProfileContainer);
             mRecentCallsList.setAdapter(adapter);
         }
     }

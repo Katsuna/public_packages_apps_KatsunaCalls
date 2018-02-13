@@ -1,9 +1,7 @@
 package com.katsuna.calls.ui.viewholders;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.provider.CallLog;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +14,7 @@ import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.commons.entities.OpticalParams;
 import com.katsuna.commons.entities.SizeProfile;
 import com.katsuna.commons.entities.SizeProfileKeyV2;
-import com.katsuna.commons.utils.Shape;
+import com.katsuna.commons.utils.ColorAdjusterV2;
 import com.katsuna.commons.utils.SizeAdjuster;
 import com.katsuna.commons.utils.SizeCalcV2;
 
@@ -192,19 +190,8 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     }
 
     private void adjustColorProfile() {
-        adjustPrimaryButton(itemView.getContext(), mCallButton);
-        adjustSecondaryButton(itemView.getContext(), mMessageButton);
+        ColorAdjusterV2.adjustButtons(itemView.getContext(),
+                mUserProfileContainer.getActiveUserProfile(),
+                mCallButton, mMessageButton, mMoreText);
     }
-
-    private void adjustPrimaryButton(Context context, Button button) {
-        int color1 = ContextCompat.getColor(context, R.color.buttons_color);
-        Shape.setRoundedBackground(button, color1);
-    }
-
-    private void adjustSecondaryButton(Context context, Button button) {
-        int color1 = ContextCompat.getColor(context, R.color.buttons_color);
-        int white = ContextCompat.getColor(context, R.color.common_white);
-        Shape.setRoundedBorder(button, color1, white);
-    }
-
 }

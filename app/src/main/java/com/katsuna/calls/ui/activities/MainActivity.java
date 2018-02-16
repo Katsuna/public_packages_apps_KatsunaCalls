@@ -40,10 +40,10 @@ import com.katsuna.calls.providers.CallsProvider;
 import com.katsuna.calls.providers.ContactInfoHelper;
 import com.katsuna.calls.ui.adapters.CallsAdapter;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
-import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.DayInfoFormatter;
 import com.katsuna.calls.utils.Device;
 import com.katsuna.calls.utils.TelecomUtils;
+import com.katsuna.commons.controls.KatsunaNavigationView;
 import com.katsuna.commons.entities.KatsunaConstants;
 import com.katsuna.commons.entities.UserProfile;
 import com.katsuna.commons.entities.UserProfileContainer;
@@ -54,10 +54,10 @@ import com.katsuna.commons.utils.KatsunaUtils;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static com.katsuna.commons.utils.Constants.ADD_TO_CONTACT_ACTION;
 import static com.katsuna.commons.utils.Constants.ADD_TO_CONTACT_ACTION_NUMBER;
 import static com.katsuna.commons.utils.Constants.CREATE_CONTACT_ACTION;
 import static com.katsuna.commons.utils.Constants.EDIT_CONTACT_ACTION;
-import static com.katsuna.commons.utils.Constants.ADD_TO_CONTACT_ACTION;
 import static com.katsuna.commons.utils.Constants.KATSUNA_PRIVACY_URL;
 
 public class MainActivity extends SearchBarActivity implements
@@ -243,7 +243,7 @@ public class MainActivity extends SearchBarActivity implements
 
     private void openContactsApp() {
         String targetPackage = KatsunaUtils.KATSUNA_CONTACTS_PACKAGE;
-        if (BuildConfig.BUILD_TYPE == KatsunaUtils.BUILD_TYPE_STAGING) {
+        if (BuildConfig.BUILD_TYPE.equals(KatsunaUtils.BUILD_TYPE_STAGING)) {
             targetPackage = KatsunaUtils.KATSUNA_CONTACTS_STAGING_PACKAGE;
         }
 
@@ -439,32 +439,32 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void setupDrawerLayout() {
-        NavigationView view = findViewById(R.id.nav_view);
-        assert view != null;
-        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        KatsunaNavigationView mKatsunaNavigationView = findViewById(R.id.katsuna_navigation_view);
+        mKatsunaNavigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                mDrawerLayout.closeDrawers();
+                        mDrawerLayout.closeDrawers();
 
-                switch (menuItem.getItemId()) {
-                    case R.id.drawer_settings:
-                        if (readContactsPermissionGranted()) {
-                            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                        switch (menuItem.getItemId()) {
+                            case R.id.drawer_settings:
+                                if (readContactsPermissionGranted()) {
+                                    startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                                }
+                                break;
+                            case R.id.drawer_info:
+                                startActivity(new Intent(MainActivity.this, InfoActivity.class));
+                                break;
+                            case R.id.drawer_privacy:
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(KATSUNA_PRIVACY_URL));
+                                startActivity(browserIntent);
+                                break;
                         }
-                        break;
-                    case R.id.drawer_info:
-                        startActivity(new Intent(MainActivity.this, InfoActivity.class));
-                        break;
-                    case R.id.drawer_privacy:
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(KATSUNA_PRIVACY_URL));
-                        startActivity(browserIntent);
-                        break;
-                }
 
-                return true;
-            }
-        });
+                        return true;
+                    }
+                });
     }
 
     @Override

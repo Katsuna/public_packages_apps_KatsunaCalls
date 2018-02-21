@@ -3,6 +3,7 @@ package com.katsuna.calls.ui.viewholders;
 import android.content.res.Resources;
 import android.provider.CallLog;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
@@ -20,13 +21,13 @@ public class CallViewHolder extends CallBaseViewHolder {
     }
 
     public void bindGreyed(Call call, final int position) {
-        this.bind(call, position);
+        this.bind(call, position, false);
         if (mOpacityLayer != null) {
             mOpacityLayer.setVisibility(View.VISIBLE);
         }
     }
 
-    public void bind(Call call, final int position) {
+    public void bind(final Call call, final int position, boolean deleteMode) {
         super.bind(call);
 
         // bind display name
@@ -45,24 +46,41 @@ public class CallViewHolder extends CallBaseViewHolder {
         mDisplayName.setText(name);
 
 
-        mCallContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.selectCall(position);
-            }
-        });
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mCallContainer.getLayoutParams();
+        if (deleteMode) {
+            int marginEnd = res.getDimensionPixelSize(R.dimen.delete_button_container_margin);
+            params.setMarginEnd(marginEnd);
+            mDeleteCallCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.deleteCall(call);
+                }
+            });
 
-        // direct focus on non selected contact if photo or name is clicked
-        View.OnClickListener focusContact = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.focusCall(position);
-            }
-        };
-        mDisplayName.setOnClickListener(focusContact);
+            mCallContainer.setOnClickListener(null);
+            mDisplayName.setOnClickListener(null);
+        } else {
+            params.setMarginEnd(0);
 
-        if (mOpacityLayer != null) {
-            mOpacityLayer.setVisibility(View.INVISIBLE);
+            mCallContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.selectCall(position);
+                }
+            });
+
+            // direct focus on non selected contact if photo or name is clicked
+            View.OnClickListener focusContact = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.focusCall(position);
+                }
+            };
+            mDisplayName.setOnClickListener(focusContact);
+
+            if (mOpacityLayer != null) {
+                mOpacityLayer.setVisibility(View.INVISIBLE);
+            }
         }
 
         //

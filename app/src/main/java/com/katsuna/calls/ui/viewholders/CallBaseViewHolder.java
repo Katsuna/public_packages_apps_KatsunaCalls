@@ -27,6 +27,7 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
     final UserProfileContainer mUserProfileContainer;
     final TextView mDisplayName;
     final TextView mContactDesc;
+    final View mDeleteCallCard;
     private final TextView mCallDetails;
     private final CardView mCallContainer;
     private final RelativeLayout mCallContainerInner;
@@ -43,6 +44,7 @@ abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
         mCallDetails = itemView.findViewById(R.id.call_details);
         mCallContainer = itemView.findViewById(R.id.call_container_card);
         mCallContainerInner = itemView.findViewById(R.id.call_container_card_inner);
+        mDeleteCallCard = itemView.findViewById(R.id.delete_call_card);
     }
 
     void bind(Call call) {

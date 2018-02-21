@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/show_missed_calls"
+            android:title="@string/show_missed_calls" />
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/show_incoming_calls"
+            android:title="@string/show_incoming_calls" />
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/show_outgoing_calls"
+            android:title="@string/show_outgoing_calls" />
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/delete_calls_action"
+            android:icon="@drawable/common_ic_delete_black54_24dp"
+            android:title="@string/delete_calls" />
+    </group>
+</menu>

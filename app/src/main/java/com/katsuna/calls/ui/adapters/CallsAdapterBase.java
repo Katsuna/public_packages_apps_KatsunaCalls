@@ -15,11 +15,11 @@ import java.util.List;
 public abstract class CallsAdapterBase extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements Filterable {
 
-    protected static final int NO_CONTACT_POSITION = -1;
+    boolean mDeleteMode = false;
+    final IContactResolver mContactResolver;
     private final CallFilter mFilter = new CallFilter();
     List<Call> mOriginalCalls;
     List<Call> mFilteredCalls;
-    final IContactResolver mContactResolver;
     int mSelectedCallPosition = Constants.NOT_SELECTED_CALL_VALUE;
 
     CallsAdapterBase(IContactResolver contactResolver) {
@@ -63,7 +63,19 @@ public abstract class CallsAdapterBase extends RecyclerView.Adapter<RecyclerView
         notifyDataSetChanged();
     }
 
-    private class CallFilter extends Filter {
+    public class CallFilter extends Filter {
+        public void show(int callType, boolean deleteMode) {
+            mDeleteMode = deleteMode;
+            mFilteredCalls = new ArrayList<>();
+
+            for (Call call : mOriginalCalls) {
+                if (call.getType() == callType) {
+                    mFilteredCalls.add(call);
+                }
+            }
+            notifyDataSetChanged();
+        }
+
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
 

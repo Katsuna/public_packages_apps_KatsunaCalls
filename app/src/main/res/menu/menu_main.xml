@@ -9,4 +9,10 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/calls_action_selection"
+        android:icon="@drawable/common_ic_more_vert_black54_24dp"
+        android:title=""
+        app:showAsAction="always" />
+
 </menu>

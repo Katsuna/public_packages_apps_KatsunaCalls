@@ -61,5 +61,8 @@
 
     <string name="minutes">min</string>
     <string name="seconds">sec</string>
+    <string name="show_missed_calls">Show All Missed Calls</string>
+    <string name="show_incoming_calls">Show All Incoming Calls</string>
+    <string name="show_outgoing_calls">Show All Outgoing Calls</string>
 
 </resources>

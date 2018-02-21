@@ -34,10 +34,15 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
     @Override
     public int getItemViewType(int position) {
         int viewType = CALL_NOT_SELECTED;
-        if (position == mSelectedCallPosition) {
-            viewType = CALL_SELECTED;
-        } else if (mSelectedCallPosition != Constants.NOT_SELECTED_CALL_VALUE) {
-            viewType = CALL_GREYED;
+
+        if (mDeleteMode) {
+            viewType = CALL_NOT_SELECTED;
+        } else {
+            if (position == mSelectedCallPosition) {
+                viewType = CALL_SELECTED;
+            } else if (mSelectedCallPosition != Constants.NOT_SELECTED_CALL_VALUE) {
+                viewType = CALL_GREYED;
+            }
         }
 
         return viewType;
@@ -84,7 +89,7 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
         switch (viewHolder.getItemViewType()) {
             case CALL_NOT_SELECTED:
                 CallViewHolder callViewHolder = (CallViewHolder) viewHolder;
-                callViewHolder.bind(model, position);
+                callViewHolder.bind(model, position, mDeleteMode);
                 break;
             case CALL_GREYED:
                 CallViewHolder callGreyedViewHolder = (CallViewHolder) viewHolder;
@@ -97,32 +102,12 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
         }
     }
 
-    public void removeItem(Call call) {
-        int filteredPosition = -1;
-        for (int i = 0; i < mFilteredCalls.size(); i++) {
-            if (mFilteredCalls.get(i).getId() == call.getId()) {
-                filteredPosition = i;
-                break;
-            }
-        }
-        //position found
-        if (filteredPosition > -1) {
-            mFilteredCalls.remove(filteredPosition);
-            notifyItemRemoved(filteredPosition);
-        }
-
-        //remove also from original list
-        int originalListPosition = -1;
-        for (int i = 0; i < mOriginalCalls.size(); i++) {
-            if (mOriginalCalls.get(i).getId() == call.getId()) {
-                originalListPosition = i;
-                break;
-            }
-        }
-        if (originalListPosition > -1) {
-            mOriginalCalls.remove(originalListPosition);
-        }
+    public void setDeleteMode(boolean flag) {
+        mDeleteMode = flag;
     }
 
-
+    public void enableDeleteMode(boolean flag) {
+        mDeleteMode = flag;
+        notifyDataSetChanged();
+    }
 }

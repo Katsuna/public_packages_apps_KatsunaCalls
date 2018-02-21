@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
@@ -23,12 +25,13 @@ import android.support.v7.widget.SearchView;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +42,7 @@ import com.katsuna.calls.domain.Contact;
 import com.katsuna.calls.providers.CallsProvider;
 import com.katsuna.calls.providers.ContactInfoHelper;
 import com.katsuna.calls.ui.adapters.CallsAdapter;
+import com.katsuna.calls.ui.adapters.CallsAdapterBase;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.utils.DayInfoFormatter;
 import com.katsuna.calls.utils.Device;
@@ -81,6 +85,8 @@ public class MainActivity extends SearchBarActivity implements
     private FrameLayout mPopupFrame;
     private String mCallNumberFocus;
     private boolean mDontAskForPermissions;
+    private boolean mDeleteModeOn = false;
+    private boolean mCallTypeFilteringOn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +124,15 @@ public class MainActivity extends SearchBarActivity implements
         assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (mDeleteModeOn) {
+            enableDeleteMode(false);
+        } else if (mCallTypeFilteringOn) {
+            if (mAdapter != null) {
+                mAdapter.resetFilter();
+                mCallTypeFilteringOn = false;
+            }
+        } else if (mItemSelected) {
+            deselectItem();
         } else {
             super.onBackPressed();
         }
@@ -147,13 +162,17 @@ public class MainActivity extends SearchBarActivity implements
                 TelecomUtils.cancelMissedCallsNotification(this);
             }
         }
+        mDeleteModeOn = false;
+        mCallTypeFilteringOn = false;
     }
 
     @Override
     protected void showPopup(boolean show) {
         if (show) {
-            //don't show popup if menu drawer is open or a call is selected.
-            if (!mDrawerLayout.isDrawerOpen(GravityCompat.START) && !mItemSelected) {
+            //don't show popup if menu drawer is open or a call is selected or delete mode is enabled.
+            if (!mDrawerLayout.isDrawerOpen(GravityCompat.START)
+                    && !mItemSelected
+                    && !mDeleteModeOn) {
                 mPopupFrame.setVisibility(View.VISIBLE);
                 mPopupButton1.setVisibility(View.VISIBLE);
                 mPopupButton2.setVisibility(View.VISIBLE);
@@ -181,11 +200,10 @@ public class MainActivity extends SearchBarActivity implements
         initFabs();
 
         mPopupFrame = findViewById(R.id.popup_frame);
-        mPopupFrame.setOnTouchListener(new View.OnTouchListener() {
+        mPopupFrame.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 showPopup(false);
-                return true;
             }
         });
 
@@ -292,6 +310,7 @@ public class MainActivity extends SearchBarActivity implements
         DayInfoFormatter.calculateDateInfo(this, mModels);
 
         mAdapter = new CallsAdapter(mModels, this, this);
+        mAdapter.setDeleteMode(mDeleteModeOn);
 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -372,33 +391,97 @@ public class MainActivity extends SearchBarActivity implements
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         // Assumes current activity is the searchable activity
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                search(newText);
-                return false;
-            }
-        });
-        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                if (mAdapter != null) {
-                    mAdapter.resetFilter();
+        if (searchManager != null) {
+            mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
                 }
-                return false;
-            }
-        });
 
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    search(newText);
+                    return false;
+                }
+            });
+            mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    if (mAdapter != null) {
+                        mAdapter.resetFilter();
+                    }
+                    return false;
+                }
+            });
+        }
 
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.calls_action_selection:
+                displayPopupWindow(mToolbar);
+                break;
+        }
+        return true;
+    }
+
+    private void displayPopupWindow(View anchorView) {
+        final PopupWindow popup = new PopupWindow(this);
+        View layout = getLayoutInflater().inflate(R.layout.calls_actions_menu, null);
+
+        TextView missedCallsSelector = layout.findViewById(R.id.missed_calls_menu_item);
+        missedCallsSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCallType(CallLog.Calls.MISSED_TYPE);
+                popup.dismiss();
+            }
+        });
+
+        TextView incomingCallsSelector = layout.findViewById(R.id.incoming_calls_menu_item);
+        incomingCallsSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCallType(CallLog.Calls.INCOMING_TYPE);
+                popup.dismiss();
+            }
+        });
+
+        TextView outgoingCallsSelector = layout.findViewById(R.id.outgoing_calls_menu_item);
+        outgoingCallsSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCallType(CallLog.Calls.OUTGOING_TYPE);
+                popup.dismiss();
+            }
+        });
+
+
+        TextView deleteCallsItem = layout.findViewById(R.id.delete_calls_menu_item);
+        deleteCallsItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enableDeleteMode(!mDeleteModeOn);
+                popup.dismiss();
+            }
+        });
+
+        popup.setContentView(layout);
+
+        // Closes the popup window when touch outside of it - when looses focus
+        popup.setOutsideTouchable(true);
+        popup.setFocusable(true);
+        popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        int margin = getResources().getDimensionPixelSize(R.dimen.common_4dp);
+
+        popup.showAtLocation(anchorView, Gravity.TOP | Gravity.END, margin, margin);
     }
 
     @Override
@@ -426,6 +509,32 @@ public class MainActivity extends SearchBarActivity implements
         } else {
             mAdapter.getFilter().filter(query);
         }
+    }
+
+    private void filterByCallType(int callType) {
+        if (mAdapter == null) return;
+
+        deselectItem();
+
+        tintFabs(mDeleteModeOn);
+        adjustFabPosition(!mDeleteModeOn);
+
+        CallsAdapterBase.CallFilter filter = (CallsAdapterBase.CallFilter) mAdapter.getFilter();
+        filter.show(callType, mDeleteModeOn);
+
+        mCallTypeFilteringOn = true;
+    }
+
+    private void enableDeleteMode(boolean flag) {
+        if (mAdapter == null) return;
+
+        deselectItem();
+
+        mDeleteModeOn = flag;
+        mAdapter.enableDeleteMode(flag);
+
+        tintFabs(flag);
+        adjustFabPosition(!flag);
     }
 
     private void showNoResultsView() {

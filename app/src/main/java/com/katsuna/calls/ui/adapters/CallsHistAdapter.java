@@ -1,5 +1,6 @@
 package com.katsuna.calls.ui.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +28,15 @@ public class CallsHistAdapter extends RecyclerView.Adapter<CallsHistViewHolder> 
         return mCalls.size();
     }
 
+    @NonNull
     @Override
-    public CallsHistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CallsHistViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_hist, parent, false);
         return new CallsHistViewHolder(view, mUserProfileContainer);
     }
 
     @Override
-    public void onBindViewHolder(CallsHistViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CallsHistViewHolder holder, int position) {
         Call call = mCalls.get(position);
         holder.bind(call);
     }

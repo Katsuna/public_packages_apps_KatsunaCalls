@@ -46,11 +46,5 @@ public class CallsHistViewHolder extends RecyclerView.ViewHolder {
             mCallDuration.setText(CallInfo.getCallDuration(itemView.getContext(), call));
         }
 
-        adjustProfile();
-    }
-
-    private void adjustProfile() {
-
-
     }
 }

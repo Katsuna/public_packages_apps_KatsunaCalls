@@ -1,5 +1,6 @@
 package com.katsuna.calls.ui.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,9 +49,10 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
         return viewType;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder = null;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder;
         boolean isRightHanded = mListener.getUserProfileContainer().isRightHanded();
         View view;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -74,13 +76,15 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
                 }
                 viewHolder = new CallSelectedViewHolder(view, mListener);
                 break;
+            default:
+                throw new RuntimeException("viewType not defined");
         }
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         Call model = mFilteredCalls.get(position);
         if (model.getContact() == null) {
             model.setContact(mListener.getCallContact(model));

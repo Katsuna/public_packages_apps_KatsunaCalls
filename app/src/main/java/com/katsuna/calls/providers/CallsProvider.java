@@ -115,11 +115,9 @@ public class CallsProvider {
      * @return Query string to get all unread missed calls.
      */
     private String getUnreadMissedCallsQuery() {
-        StringBuilder where = new StringBuilder();
-        where.append(CallLog.Calls.IS_READ).append(" = 0 OR ").append(CallLog.Calls.IS_READ).append(" IS NULL");
-        where.append(" AND ");
-        where.append(CallLog.Calls.TYPE).append(" = ").append(CallLog.Calls.MISSED_TYPE);
-        return where.toString();
+        return CallLog.Calls.IS_READ + " = 0 OR " + CallLog.Calls.IS_READ + " IS NULL" +
+                " AND " +
+                CallLog.Calls.TYPE + " = " + CallLog.Calls.MISSED_TYPE;
     }
 
 }

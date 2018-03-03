@@ -25,10 +25,6 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
     private final Button mMessageButton;
     private final TextView mMoreText;
     private final View mMoreActionsContainer;
-    private final View mCreateContactContainer;
-    private final View mAddToExistingContainer;
-    private final View mCallHistoryContainer;
-    private final View mEditContactContainer;
     private final TextView mCreateContactText;
     private final TextView mAddToExistingText;
     private final TextView mEditContactText;
@@ -41,10 +37,6 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         mMessageButton = itemView.findViewById(R.id.button_message);
         mMoreText = itemView.findViewById(R.id.txt_more);
         mMoreActionsContainer = itemView.findViewById(R.id.more_actions_container);
-        mCreateContactContainer = itemView.findViewById(R.id.create_contact_container);
-        mAddToExistingContainer = itemView.findViewById(R.id.add_to_existing_contact_container);
-        mCallHistoryContainer = itemView.findViewById(R.id.call_history_container);
-        mEditContactContainer = itemView.findViewById(R.id.edit_contact_container);
         mCreateContactText = itemView.findViewById(R.id.create_contact_text);
         mAddToExistingText = itemView.findViewById(R.id.add_to_existing_contact_text);
         mCallHistoryText = itemView.findViewById(R.id.call_history_text);
@@ -110,7 +102,7 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         // by default more actions are hidden
         expandMoreActions(false);
 
-        mCreateContactContainer.setOnClickListener(new View.OnClickListener() {
+        mCreateContactText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.createContact(call);
@@ -124,14 +116,14 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
             }
         });
 
-        mEditContactContainer.setOnClickListener(new View.OnClickListener() {
+        mEditContactText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.editContact(call);
             }
         });
 
-        mCallHistoryContainer.setOnClickListener(new View.OnClickListener() {
+        mCallHistoryText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.showCallDetails(call);
@@ -139,15 +131,15 @@ public class CallSelectedViewHolder extends CallBaseViewHolder {
         });
 
         if (call.getContact() == null) {
-            mCreateContactContainer.setVisibility(View.VISIBLE);
-            mAddToExistingContainer.setVisibility(View.VISIBLE);
-            mCallHistoryContainer.setVisibility(View.GONE);
-            mEditContactContainer.setVisibility(View.GONE);
+            mCreateContactText.setVisibility(View.VISIBLE);
+            mAddToExistingText.setVisibility(View.VISIBLE);
+            mCallHistoryText.setVisibility(View.GONE);
+            mEditContactText.setVisibility(View.GONE);
         } else {
-            mCallHistoryContainer.setVisibility(View.VISIBLE);
-            mEditContactContainer.setVisibility(View.VISIBLE);
-            mCreateContactContainer.setVisibility(View.GONE);
-            mAddToExistingContainer.setVisibility(View.GONE);
+            mCallHistoryText.setVisibility(View.VISIBLE);
+            mEditContactText.setVisibility(View.VISIBLE);
+            mCreateContactText.setVisibility(View.GONE);
+            mAddToExistingText.setVisibility(View.GONE);
         }
 
         adjustProfile();

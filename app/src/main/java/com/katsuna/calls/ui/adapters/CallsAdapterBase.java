@@ -16,7 +16,7 @@ public abstract class CallsAdapterBase extends RecyclerView.Adapter<RecyclerView
         implements Filterable {
 
     boolean mDeleteMode = false;
-    final IContactResolver mContactResolver;
+    private final IContactResolver mContactResolver;
     private final CallFilter mFilter = new CallFilter();
     List<Call> mOriginalCalls;
     List<Call> mFilteredCalls;

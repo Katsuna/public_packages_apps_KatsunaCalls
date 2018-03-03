@@ -28,6 +28,7 @@
                     android:layout_height="56dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginTop="2dp"
+                    android:contentDescription="@string/contact_photo"
                     android:src="@drawable/ic_person_black54_28dp" />
 
                 <TextView
@@ -89,6 +90,7 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="6dp"
+                        android:contentDescription="@string/call_type"
                         android:gravity="top" />
 
                     <LinearLayout
@@ -166,6 +168,7 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="11dp"
+                        android:contentDescription="@string/other_calls"
                         android:gravity="top"
                         android:src="@drawable/ic_call_black54_24dp" />
 

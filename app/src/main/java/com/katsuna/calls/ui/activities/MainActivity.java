@@ -271,10 +271,6 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void dial() {
-        dial("");
-    }
-
-    private void dial(String number) {
         KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
         builder.setTitle(R.string.common_dial_instruction);
         builder.setMessage(0);
@@ -495,7 +491,7 @@ public class MainActivity extends SearchBarActivity implements
         String action = intent.getAction();
         if (Intent.ACTION_VIEW.equals(action)) {
             String number = PhoneNumberUtils.getNumberFromIntent(intent, this);
-            dial(number);
+            dial();
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             mSearchView.setQuery(query, false);

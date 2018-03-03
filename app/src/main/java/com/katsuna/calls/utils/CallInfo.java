@@ -1,5 +1,6 @@
 package com.katsuna.calls.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.provider.CallLog;
@@ -25,6 +26,7 @@ public class CallInfo {
         return callDetails;
     }
 
+    @SuppressLint("DefaultLocale")
     public static String getCallDuration(Context context, Call call) {
         String output;
 

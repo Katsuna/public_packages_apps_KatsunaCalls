@@ -58,7 +58,7 @@ public class Contact implements Parcelable {
     public Contact() {
     }
 
-    protected Contact(Parcel in) {
+    Contact(Parcel in) {
         this.id = in.readLong();
         this.name = in.readString();
         this.photoUri = in.readString();

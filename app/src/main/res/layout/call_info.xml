@@ -72,7 +72,7 @@
                     android:layout_marginTop="8dp"
                     android:gravity="start|center"
                     android:minHeight="25dp"
-                    android:textColor="@color/common_black87"
+                    android:textColor="@color/common_black54"
                     android:textSize="14sp" />
 
                 <TextView
@@ -94,6 +94,7 @@
                     android:gravity="start|center"
                     android:maxLines="1"
                     android:minHeight="28dp"
+                    android:textColor="@color/common_black54"
                     android:textSize="16sp"
                     android:visibility="gone" />
 

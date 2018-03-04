@@ -33,15 +33,24 @@ public class DrawableGenerator {
 
         if (callType == CallLog.Calls.INCOMING_TYPE) {
             iconId = R.drawable.ic_call_received_white87_24dp;
-            iconColor = ContextCompat.getColor(context, R.color.common_white);
+            if (colorProfile == ColorProfile.CONTRAST) {
+                iconColor = ContextCompat.getColor(context, R.color.common_white87);
+            } else {
+                iconColor = ContextCompat.getColor(context, R.color.common_white);
+            }
             iconBackground = primaryColor2;
         } else if (callType == CallLog.Calls.OUTGOING_TYPE) {
             iconId = R.drawable.ic_call_made_black_24dp;
             if (colorProfile == ColorProfile.COLOR_IMPAIRMENT_AND_CONTRAST) {
                 iconColor = ContextCompat.getColor(context, R.color.common_white);
+            } else if (colorProfile == ColorProfile.CONTRAST) {
+                iconColor = ContextCompat.getColor(context, R.color.common_white87);
             }
             iconBackground = grey_color_1;
         } else if (callType == CallLog.Calls.MISSED_TYPE) {
+            if (colorProfile == ColorProfile.CONTRAST) {
+                iconColor = ContextCompat.getColor(context, R.color.common_white);
+            }
             iconId = R.drawable.ic_call_missed_black_24dp;
             iconBackground = primaryColor1;
         }

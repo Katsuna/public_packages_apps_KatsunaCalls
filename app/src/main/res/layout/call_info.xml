@@ -131,7 +131,7 @@
                         android:drawableStart="@drawable/ic_person_black54_28dp"
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center"
-                        android:text="@string/add_contact"
+                        android:text="@string/common_add_contact"
                         android:textColor="@color/common_black54"
                         android:textSize="16sp" />
 
@@ -168,7 +168,7 @@
                         android:drawableStart="@drawable/ic_person_black54_28dp"
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center"
-                        android:text="@string/add_to_existing_contact"
+                        android:text="@string/common_add_to_existing_contact"
                         android:textColor="@color/common_black54"
                         android:textSize="16sp" />
 

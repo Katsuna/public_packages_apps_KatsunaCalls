@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -23,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.telephony.PhoneNumberUtils;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -101,21 +101,22 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void showContactsAppInstallationDialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
         String appName = getString(R.string.common_katsuna_contacts_app);
         String title = getString(R.string.common_missing_app, appName);
-        alert.setTitle(title);
-        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                KatsunaUtils.goToGooglePlay(MainActivity.this, KatsunaUtils.KATSUNA_CONTACTS_PACKAGE);
+        builder.setTitle(title);
+        builder.setView(R.layout.common_katsuna_alert);
+        builder.setUserProfile(mUserProfileContainer.getActiveUserProfile());
+        builder.setOkListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KatsunaUtils.goToGooglePlay(MainActivity.this,
+                        KatsunaUtils.KATSUNA_CONTACTS_PACKAGE);
             }
         });
-        alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //Put actions for CANCEL button here, or leave in blank
-            }
-        });
-        alert.show();
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -272,10 +273,11 @@ public class MainActivity extends SearchBarActivity implements
 
     private void dial() {
         KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
-        builder.setTitle(R.string.common_dial_instruction);
-        builder.setMessage(0);
-        builder.setView(R.layout.common_katsuna_dialer);
-        builder.setUserProfileContainer(mUserProfileContainer);
+        builder.setTitle(getString(R.string.common_dial_instruction));
+        builder.setView(R.layout.common_katsuna_alert);
+        builder.setTextVisibility(View.VISIBLE);
+        builder.setTextInputType(InputType.TYPE_CLASS_PHONE);
+        builder.setUserProfile(mUserProfileContainer.getActiveUserProfile());
         builder.setOkListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -746,10 +748,10 @@ public class MainActivity extends SearchBarActivity implements
         }
 
         KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
-        builder.setTitle(R.string.delete_calls);
-        builder.setMessage(R.string.delete_call_approval);
+        builder.setTitle(getString(R.string.delete_calls));
+        builder.setMessage(getString(R.string.delete_call_approval));
         builder.setView(R.layout.common_katsuna_alert);
-        builder.setUserProfileContainer(mUserProfileContainer);
+        builder.setUserProfile(mUserProfileContainer.getActiveUserProfile());
         builder.setOkListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

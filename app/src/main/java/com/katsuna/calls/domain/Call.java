@@ -1,7 +1,10 @@
 package com.katsuna.calls.domain;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 @SuppressWarnings("WeakerAccess")
-public class Call {
+public class Call implements Parcelable {
 
     private long id;
     private int type;
@@ -111,4 +114,55 @@ public class Call {
     public void setDayInfo(String dayInfo) {
         this.dayInfo = dayInfo;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeInt(this.type);
+        dest.writeString(this.number);
+        dest.writeInt(this.numberPresentation);
+        dest.writeString(this.name);
+        dest.writeLong(this.date);
+        dest.writeLong(this.duration);
+        dest.writeInt(this.isNew);
+        dest.writeInt(this.isRead);
+        dest.writeParcelable(this.contact, flags);
+        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
+        dest.writeString(this.dayInfo);
+    }
+
+    public Call() {
+    }
+
+    protected Call(Parcel in) {
+        this.id = in.readLong();
+        this.type = in.readInt();
+        this.number = in.readString();
+        this.numberPresentation = in.readInt();
+        this.name = in.readString();
+        this.date = in.readLong();
+        this.duration = in.readLong();
+        this.isNew = in.readInt();
+        this.isRead = in.readInt();
+        this.contact = in.readParcelable(Contact.class.getClassLoader());
+        this.selected = in.readByte() != 0;
+        this.dayInfo = in.readString();
+    }
+
+    public static final Parcelable.Creator<Call> CREATOR = new Parcelable.Creator<Call>() {
+        @Override
+        public Call createFromParcel(Parcel source) {
+            return new Call(source);
+        }
+
+        @Override
+        public Call[] newArray(int size) {
+            return new Call[size];
+        }
+    };
 }

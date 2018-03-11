@@ -21,7 +21,7 @@
         android:paddingStart="16dp"
         android:paddingTop="4dp">
 
-        <include layout="@layout/call_info_lh" />
+        <include layout="@layout/call_info" />
 
     </RelativeLayout>
 

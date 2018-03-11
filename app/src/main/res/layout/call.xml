@@ -1,45 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/common_grey50">
+    android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/call_container"
+    <include
+        layout="@layout/call_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp" />
 
-        <include
-            android:id="@+id/day_info_container"
-            layout="@layout/day_info"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:visibility="gone" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/day_info_container"
-            android:gravity="center"
-            android:paddingBottom="4dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="4dp">
-
-            <include
-                layout="@layout/call_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-    <FrameLayout
+    <android.support.v7.widget.CardView
         android:id="@+id/opacity_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/common_black07"
-        android:visibility="invisible" />
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:visibility="invisible"
+        card_view:cardBackgroundColor="@color/common_black34"
+        card_view:cardCornerRadius="8dp"
+        card_view:cardElevation="2dp" />
 
 </FrameLayout>
 

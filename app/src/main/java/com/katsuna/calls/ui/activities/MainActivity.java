@@ -4,14 +4,14 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,19 +22,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.telephony.PhoneNumberUtils;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.katsuna.calls.BuildConfig;
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.domain.Contact;
@@ -43,11 +44,12 @@ import com.katsuna.calls.notifications.sms.SmsAlarmReceiver;
 import com.katsuna.calls.providers.CallsProvider;
 import com.katsuna.calls.providers.ContactInfoHelper;
 import com.katsuna.calls.ui.adapters.CallsAdapter;
+import com.katsuna.calls.ui.adapters.CallsAdapterBase;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
-import com.katsuna.calls.utils.Constants;
 import com.katsuna.calls.utils.DayInfoFormatter;
 import com.katsuna.calls.utils.Device;
 import com.katsuna.calls.utils.TelecomUtils;
+import com.katsuna.commons.controls.KatsunaNavigationView;
 import com.katsuna.commons.entities.KatsunaConstants;
 import com.katsuna.commons.entities.UserProfile;
 import com.katsuna.commons.entities.UserProfileContainer;
@@ -58,6 +60,10 @@ import com.katsuna.commons.utils.KatsunaUtils;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static com.katsuna.commons.utils.Constants.ADD_TO_CONTACT_ACTION;
+import static com.katsuna.commons.utils.Constants.ADD_TO_CONTACT_ACTION_NUMBER;
+import static com.katsuna.commons.utils.Constants.CREATE_CONTACT_ACTION;
+import static com.katsuna.commons.utils.Constants.EDIT_CONTACT_ACTION;
 import static com.katsuna.commons.utils.Constants.KATSUNA_PRIVACY_URL;
 
 public class MainActivity extends SearchBarActivity implements
@@ -66,6 +72,8 @@ public class MainActivity extends SearchBarActivity implements
     private static final int REQUEST_CODE_ASK_CALL_PERMISSION = 1;
     private static final int REQUEST_CODE_ASK_READ_CALL_LOG_PERMISSION = 2;
     private static final int CREATE_CONTACT_REQUEST = 3;
+    private static final int EDIT_CONTACT_REQUEST = 4;
+    private static final int ADD_TO_CONTACT_REQUEST = 5;
     private static final String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
@@ -78,6 +86,9 @@ public class MainActivity extends SearchBarActivity implements
     private LinkedHashMap<String, Boolean> mContactSearchedMap;
     private FrameLayout mPopupFrame;
     private String mCallNumberFocus;
+    private boolean mDontAskForPermissions;
+    private boolean mDeleteModeOn = false;
+    private boolean mCallTypeFilteringOn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,27 +114,39 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void showContactsAppInstallationDialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-        alert.setTitle(R.string.missing_app);
-        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                KatsunaUtils.goToGooglePlay(MainActivity.this, Constants.CONTACTS_APP);
+        KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
+        String appName = getString(R.string.common_katsuna_contacts_app);
+        String title = getString(R.string.common_missing_app, appName);
+        builder.setTitle(title);
+        builder.setView(R.layout.common_katsuna_alert);
+        builder.setUserProfile(mUserProfileContainer.getActiveUserProfile());
+        builder.setOkListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KatsunaUtils.goToGooglePlay(MainActivity.this,
+                        KatsunaUtils.KATSUNA_CONTACTS_PACKAGE);
             }
         });
-        alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //Put actions for CANCEL button here, or leave in blank
-            }
-        });
-        alert.show();
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (mDeleteModeOn) {
+            enableDeleteMode(false);
+        } else if (mCallTypeFilteringOn) {
+            if (mAdapter != null) {
+                mAdapter.resetFilter();
+                mCallTypeFilteringOn = false;
+            }
+        } else if (mItemSelected) {
+            deselectItem();
         } else {
             super.onBackPressed();
         }
@@ -153,13 +176,17 @@ public class MainActivity extends SearchBarActivity implements
                 TelecomUtils.cancelMissedCallsNotification(this);
             }
         }
+        mDeleteModeOn = false;
+        mCallTypeFilteringOn = false;
     }
 
     @Override
     protected void showPopup(boolean show) {
         if (show) {
-            //don't show popup if menu drawer is open or a call is selected.
-            if (!mDrawerLayout.isDrawerOpen(GravityCompat.START) && !mItemSelected) {
+            //don't show popup if menu drawer is open or a call is selected or delete mode is enabled.
+            if (!mDrawerLayout.isDrawerOpen(GravityCompat.START)
+                    && !mItemSelected
+                    && !mDeleteModeOn) {
                 mPopupFrame.setVisibility(View.VISIBLE);
                 mPopupButton1.setVisibility(View.VISIBLE);
                 mPopupButton2.setVisibility(View.VISIBLE);
@@ -174,10 +201,10 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void initControls() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.calls_list);
+        mRecyclerView = findViewById(R.id.calls_list);
         mRecyclerView.setItemAnimator(null);
-        mNoResultsView = (TextView) findViewById(R.id.no_results);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNoResultsView = findViewById(R.id.no_results);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mLastTouchTimestamp = System.currentTimeMillis();
         initPopupActionHandler();
         initDeselectionActionHandler();
@@ -186,19 +213,18 @@ public class MainActivity extends SearchBarActivity implements
         initDrawer();
         initFabs();
 
-        mPopupFrame = (FrameLayout) findViewById(R.id.popup_frame);
-        mPopupFrame.setOnTouchListener(new View.OnTouchListener() {
+        mPopupFrame = findViewById(R.id.popup_frame);
+        mPopupFrame.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 showPopup(false);
-                return true;
             }
         });
 
     }
 
     private void initDrawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, mToolbar, R.string.common_navigation_drawer_open,
                 R.string.common_navigation_drawer_close);
@@ -210,10 +236,10 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void initFabs() {
-        mFabContainer = (LinearLayout) findViewById(R.id.fab_container);
+        mFabContainer = findViewById(R.id.fab_container);
 
-        mButtonsContainer1 = (LinearLayout) findViewById(R.id.dial_buttons_container);
-        mPopupButton1 = (Button) findViewById(R.id.dial_button);
+        mButtonsContainer1 = findViewById(R.id.dial_buttons_container);
+        mPopupButton1 = findViewById(R.id.dial_button);
         mPopupButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,7 +247,7 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
-        mFab1 = (FloatingActionButton) findViewById(R.id.fabDial);
+        mFab1 = findViewById(R.id.fabDial);
         mFab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -229,8 +255,8 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
-        mButtonsContainer2 = (LinearLayout) findViewById(R.id.search_buttons_container);
-        mPopupButton2 = (Button) findViewById(R.id.search_button);
+        mButtonsContainer2 = findViewById(R.id.search_buttons_container);
+        mPopupButton2 = findViewById(R.id.search_button);
         mPopupButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,7 +264,7 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
-        mFab2 = (FloatingActionButton) findViewById(R.id.fabContacts);
+        mFab2 = findViewById(R.id.fabContacts);
         mFab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -248,21 +274,23 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void openContactsApp() {
-        if (!Device.openApp(MainActivity.this, Constants.CONTACTS_APP)) {
+        String targetPackage = KatsunaUtils.KATSUNA_CONTACTS_PACKAGE;
+        if (BuildConfig.BUILD_TYPE.equals(KatsunaUtils.BUILD_TYPE_STAGING)) {
+            targetPackage = KatsunaUtils.KATSUNA_CONTACTS_STAGING_PACKAGE;
+        }
+
+        if (!Device.openApp(MainActivity.this, targetPackage)) {
             showContactsAppInstallationDialog();
         }
     }
 
     private void dial() {
-        dial("");
-    }
-
-    private void dial(String number) {
         KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
-        builder.setTitle(R.string.common_dial_instruction);
-        builder.setMessage(0);
-        builder.setView(R.layout.common_katsuna_dialer);
-        builder.setUserProfileContainer(mUserProfileContainer);
+        builder.setTitle(getString(R.string.common_dial_instruction));
+        builder.setView(R.layout.common_katsuna_alert);
+        builder.setTextVisibility(View.VISIBLE);
+        builder.setTextInputType(InputType.TYPE_CLASS_PHONE);
+        builder.setUserProfile(mUserProfileContainer.getActiveUserProfile());
         builder.setOkListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -293,6 +321,7 @@ public class MainActivity extends SearchBarActivity implements
         DayInfoFormatter.calculateDateInfo(this, mModels);
 
         mAdapter = new CallsAdapter(mModels, this, this);
+        mAdapter.setDeleteMode(mDeleteModeOn);
 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -306,8 +335,6 @@ public class MainActivity extends SearchBarActivity implements
 
         return true;
     }
-
-    private boolean mDontAskForPermissions;
 
     private boolean readContactsPermissionGranted() {
         boolean output;
@@ -363,7 +390,7 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void sendSMS(String number, String name) {
-        Intent i  = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null));
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null));
         i.putExtra(KatsunaConstants.EXTRA_DISPLAY_NAME, name);
         startActivity(i);
     }
@@ -375,33 +402,97 @@ public class MainActivity extends SearchBarActivity implements
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         // Assumes current activity is the searchable activity
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                search(newText);
-                return false;
-            }
-        });
-        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                if (mAdapter != null) {
-                    mAdapter.resetFilter();
+        if (searchManager != null) {
+            mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
                 }
-                return false;
-            }
-        });
 
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    search(newText);
+                    return false;
+                }
+            });
+            mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    if (mAdapter != null) {
+                        mAdapter.resetFilter();
+                    }
+                    return false;
+                }
+            });
+        }
 
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.calls_action_selection:
+                displayPopupWindow(mToolbar);
+                break;
+        }
+        return true;
+    }
+
+    private void displayPopupWindow(View anchorView) {
+        final PopupWindow popup = new PopupWindow(this);
+        View layout = getLayoutInflater().inflate(R.layout.calls_actions_menu, null);
+
+        TextView missedCallsSelector = layout.findViewById(R.id.missed_calls_menu_item);
+        missedCallsSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCallType(CallLog.Calls.MISSED_TYPE);
+                popup.dismiss();
+            }
+        });
+
+        TextView incomingCallsSelector = layout.findViewById(R.id.incoming_calls_menu_item);
+        incomingCallsSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCallType(CallLog.Calls.INCOMING_TYPE);
+                popup.dismiss();
+            }
+        });
+
+        TextView outgoingCallsSelector = layout.findViewById(R.id.outgoing_calls_menu_item);
+        outgoingCallsSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCallType(CallLog.Calls.OUTGOING_TYPE);
+                popup.dismiss();
+            }
+        });
+
+
+        TextView deleteCallsItem = layout.findViewById(R.id.delete_calls_menu_item);
+        deleteCallsItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enableDeleteMode(!mDeleteModeOn);
+                popup.dismiss();
+            }
+        });
+
+        popup.setContentView(layout);
+
+        // Closes the popup window when touch outside of it - when looses focus
+        popup.setOutsideTouchable(true);
+        popup.setFocusable(true);
+        popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        int margin = getResources().getDimensionPixelSize(R.dimen.common_4dp);
+
+        popup.showAtLocation(anchorView, Gravity.TOP | Gravity.END, margin, margin);
     }
 
     @Override
@@ -415,7 +506,7 @@ public class MainActivity extends SearchBarActivity implements
         String action = intent.getAction();
         if (Intent.ACTION_VIEW.equals(action)) {
             String number = PhoneNumberUtils.getNumberFromIntent(intent, this);
-            dial(number);
+            dial();
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             mSearchView.setQuery(query, false);
@@ -431,6 +522,32 @@ public class MainActivity extends SearchBarActivity implements
         }
     }
 
+    private void filterByCallType(int callType) {
+        if (mAdapter == null) return;
+
+        deselectItem();
+
+        tintFabs(mDeleteModeOn);
+        adjustFabPosition(!mDeleteModeOn);
+
+        CallsAdapterBase.CallFilter filter = (CallsAdapterBase.CallFilter) mAdapter.getFilter();
+        filter.show(callType, mDeleteModeOn);
+
+        mCallTypeFilteringOn = true;
+    }
+
+    private void enableDeleteMode(boolean flag) {
+        if (mAdapter == null) return;
+
+        deselectItem();
+
+        mDeleteModeOn = flag;
+        mAdapter.enableDeleteMode(flag);
+
+        tintFabs(flag);
+        adjustFabPosition(!flag);
+    }
+
     private void showNoResultsView() {
         if (mAdapter.getItemCount() > 0) {
             mNoResultsView.setVisibility(View.GONE);
@@ -442,32 +559,32 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void setupDrawerLayout() {
-        NavigationView view = (NavigationView) findViewById(R.id.nav_view);
-        assert view != null;
-        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        KatsunaNavigationView mKatsunaNavigationView = findViewById(R.id.katsuna_navigation_view);
+        mKatsunaNavigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                mDrawerLayout.closeDrawers();
+                        mDrawerLayout.closeDrawers();
 
-                switch (menuItem.getItemId()) {
-                    case R.id.drawer_settings:
-                        if (readContactsPermissionGranted()) {
-                            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                        switch (menuItem.getItemId()) {
+                            case R.id.drawer_settings:
+                                if (readContactsPermissionGranted()) {
+                                    startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                                }
+                                break;
+                            case R.id.drawer_info:
+                                startActivity(new Intent(MainActivity.this, InfoActivity.class));
+                                break;
+                            case R.id.drawer_privacy:
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(KATSUNA_PRIVACY_URL));
+                                startActivity(browserIntent);
+                                break;
                         }
-                        break;
-                    case R.id.drawer_info:
-                        startActivity(new Intent(MainActivity.this, InfoActivity.class));
-                        break;
-                    case R.id.drawer_privacy:
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(KATSUNA_PRIVACY_URL));
-                        startActivity(browserIntent);
-                        break;
-                }
 
-                return true;
-            }
-        });
+                        return true;
+                    }
+                });
     }
 
     @Override
@@ -574,7 +691,7 @@ public class MainActivity extends SearchBarActivity implements
             return;
         }
 
-        Intent i = new Intent(Constants.CREATE_CONTACT_ACTION);
+        Intent i = new Intent(CREATE_CONTACT_ACTION);
         i.putExtra("number", call.getNumber());
 
         PackageManager packageManager = getPackageManager();
@@ -592,16 +709,62 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     @Override
+    public void addToContact(Call call) {
+        Intent i = new Intent(ADD_TO_CONTACT_ACTION);
+        i.putExtra(ADD_TO_CONTACT_ACTION_NUMBER, call.getNumber());
+
+        PackageManager packageManager = getPackageManager();
+        List activities = packageManager.queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+        boolean isIntentSafe = activities.size() > 0;
+
+        if (isIntentSafe) {
+            startActivityForResult(i, ADD_TO_CONTACT_REQUEST);
+            mCallNumberFocus = call.getNumber();
+            //clear it from cache to enable fetching the fresh contact
+            mContactSearchedMap.remove(mCallNumberFocus);
+        } else {
+            showContactsAppInstallationDialog();
+        }
+    }
+
+    @Override
+    public void editContact(Call call) {
+        Intent i = new Intent(EDIT_CONTACT_ACTION);
+        i.putExtra("number", call.getNumber());
+        i.putExtra("contactId", call.getContact().getId());
+
+        PackageManager packageManager = getPackageManager();
+        List activities = packageManager.queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+        boolean isIntentSafe = activities.size() > 0;
+
+        if (isIntentSafe) {
+            startActivityForResult(i, EDIT_CONTACT_REQUEST);
+            mCallNumberFocus = call.getNumber();
+            //clear it from cache to enable fetching the fresh contact
+            mContactSearchedMap.remove(mCallNumberFocus);
+        } else {
+            showContactsAppInstallationDialog();
+        }
+    }
+
+    @Override
+    public void showCallDetails(Call call) {
+        Intent i = new Intent(this, CallDetailsActivity.class);
+        i.putExtra("call", call);
+        startActivity(i);
+    }
+
+    @Override
     public void deleteCall(final Call call) {
         if (!checkPermission()) {
             return;
         }
 
         KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
-        builder.setTitle(R.string.delete_calls);
-        builder.setMessage(R.string.delete_call_approval);
+        builder.setTitle(getString(R.string.delete_calls));
+        builder.setMessage(getString(R.string.delete_call_approval));
         builder.setView(R.layout.common_katsuna_alert);
-        builder.setUserProfileContainer(mUserProfileContainer);
+        builder.setUserProfile(mUserProfileContainer.getActiveUserProfile());
         builder.setOkListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -649,5 +812,16 @@ public class MainActivity extends SearchBarActivity implements
     @Override
     public UserProfile getUserProfile() {
         return mUserProfileContainer.getActiveUserProfile();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_CONTACT_REQUEST || requestCode == CREATE_CONTACT_REQUEST
+                || requestCode == ADD_TO_CONTACT_REQUEST) {
+            mContactCache.clear();
+            loadCalls();
+        }
     }
 }

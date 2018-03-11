@@ -1,5 +1,6 @@
 package com.katsuna.calls.ui.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,46 +35,56 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
     @Override
     public int getItemViewType(int position) {
         int viewType = CALL_NOT_SELECTED;
-        if (position == mSelectedCallPosition) {
-            viewType = CALL_SELECTED;
-        } else if (mSelectedCallPosition != Constants.NOT_SELECTED_CALL_VALUE) {
-            viewType = CALL_GREYED;
+
+        if (mDeleteMode) {
+            viewType = CALL_NOT_SELECTED;
+        } else {
+            if (position == mSelectedCallPosition) {
+                viewType = CALL_SELECTED;
+            } else if (mSelectedCallPosition != Constants.NOT_SELECTED_CALL_VALUE) {
+                viewType = CALL_GREYED;
+            }
         }
 
         return viewType;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder = null;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder;
         boolean isRightHanded = mListener.getUserProfileContainer().isRightHanded();
         View view;
-
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         switch (viewType) {
             case CALL_NOT_SELECTED:
             case CALL_GREYED:
-                if (isRightHanded) {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call, parent, false);
-                } else {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_lh, parent, false);
-                }
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call, parent, false);
                 viewHolder = new CallViewHolder(view, mListener);
                 break;
             case CALL_SELECTED:
+                view = inflater.inflate(R.layout.call, parent, false);
+                ViewGroup buttonsWrapper = view.findViewById(R.id.action_buttons_wrapper);
                 if (isRightHanded) {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_selected, parent, false);
+                    View buttonsView = inflater.inflate(R.layout.action_buttons_rh, buttonsWrapper,
+                            false);
+                    buttonsWrapper.addView(buttonsView);
                 } else {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_selected_lh, parent, false);
+                    View buttonsView = inflater.inflate(R.layout.action_buttons_lh, buttonsWrapper,
+                            false);
+                    buttonsWrapper.addView(buttonsView);
                 }
                 viewHolder = new CallSelectedViewHolder(view, mListener);
                 break;
+            default:
+                throw new RuntimeException("viewType not defined");
         }
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         Call model = mFilteredCalls.get(position);
         if (model.getContact() == null) {
             model.setContact(mListener.getCallContact(model));
@@ -82,7 +93,7 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
         switch (viewHolder.getItemViewType()) {
             case CALL_NOT_SELECTED:
                 CallViewHolder callViewHolder = (CallViewHolder) viewHolder;
-                callViewHolder.bind(model, position);
+                callViewHolder.bind(model, position, mDeleteMode);
                 break;
             case CALL_GREYED:
                 CallViewHolder callGreyedViewHolder = (CallViewHolder) viewHolder;
@@ -95,32 +106,12 @@ public class CallsAdapter extends CallsAdapterBase implements Filterable {
         }
     }
 
-    public void removeItem(Call call) {
-        int filteredPosition = -1;
-        for (int i = 0; i < mFilteredCalls.size(); i++) {
-            if (mFilteredCalls.get(i).getId() == call.getId()) {
-                filteredPosition = i;
-                break;
-            }
-        }
-        //position found
-        if (filteredPosition > -1) {
-            mFilteredCalls.remove(filteredPosition);
-            notifyItemRemoved(filteredPosition);
-        }
-
-        //remove also from original list
-        int originalListPosition = -1;
-        for (int i = 0; i < mOriginalCalls.size(); i++) {
-            if (mOriginalCalls.get(i).getId() == call.getId()) {
-                originalListPosition = i;
-                break;
-            }
-        }
-        if (originalListPosition > -1) {
-            mOriginalCalls.remove(originalListPosition);
-        }
+    public void setDeleteMode(boolean flag) {
+        mDeleteMode = flag;
     }
 
-
+    public void enableDeleteMode(boolean flag) {
+        mDeleteMode = flag;
+        notifyDataSetChanged();
+    }
 }

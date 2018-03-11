@@ -4,8 +4,6 @@ import static android.provider.ContactsContract.Directory.PACKAGE_NAME;
 
 public class Constants {
 
-    public static final String CONTACTS_APP = "com.katsuna.contacts";
-    public static final String CREATE_CONTACT_ACTION = "com.katsuna.contacts.create";
     public static final int NOT_SELECTED_CALL_VALUE = -1;
     public static final String SHARED_PREFERENCES_NAME = PACKAGE_NAME + ".SHARED_PREFERENCES";
     public static final String [] SHARED_PREF_LASTCALL_HOUR_DAY = { "day1" , "day2" ,"day3", "day4", "day5", "day6", "day7"};

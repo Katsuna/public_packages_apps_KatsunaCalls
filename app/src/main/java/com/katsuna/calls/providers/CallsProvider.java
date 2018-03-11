@@ -8,6 +8,7 @@ import android.provider.CallLog;
 import android.util.Log;
 
 import com.katsuna.calls.domain.Call;
+import com.katsuna.calls.domain.CallSearchParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,37 @@ public class CallsProvider {
     }
 
     public List<Call> getCalls() {
+        return getCalls(null);
+    }
 
+    public List<Call> getCalls(CallSearchParams searchParams) {
         List<Call> calls = new ArrayList<>();
+        String where = " 1=1 ";
+        String[] whereArgs = null;
+        String limit = " ";
+        if (searchParams != null) {
+            List<String> whereArgsList = new ArrayList<>();
+            if (searchParams.number != null) {
+                where += " AND " + CallLog.Calls.NUMBER + " = ?";
+                whereArgsList.add(searchParams.number);
+            }
+
+            if (searchParams.idToExclude != null) {
+                where += " AND " + CallLog.Calls._ID + " != ? ";
+                whereArgsList.add(String.valueOf(searchParams.idToExclude));
+            }
+            if (whereArgsList.size() > 0) {
+                whereArgs = whereArgsList.toArray(new String[0]);
+            }
+            if (searchParams.limit != null) {
+                limit += " LIMIT " + searchParams.limit;
+            }
+        }
+
         String orderBy = CallLog.Calls.DATE + " DESC";
 
-        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, CallLogQuery._PROJECTION, null, null, orderBy);
+        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, CallLogQuery._PROJECTION, where,
+                whereArgs, orderBy + limit);
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 Call call = new Call();
@@ -88,11 +115,9 @@ public class CallsProvider {
      * @return Query string to get all unread missed calls.
      */
     private String getUnreadMissedCallsQuery() {
-        StringBuilder where = new StringBuilder();
-        where.append(CallLog.Calls.IS_READ).append(" = 0 OR ").append(CallLog.Calls.IS_READ).append(" IS NULL");
-        where.append(" AND ");
-        where.append(CallLog.Calls.TYPE).append(" = ").append(CallLog.Calls.MISSED_TYPE);
-        return where.toString();
+        return CallLog.Calls.IS_READ + " = 0 OR " + CallLog.Calls.IS_READ + " IS NULL" +
+                " AND " +
+                CallLog.Calls.TYPE + " = " + CallLog.Calls.MISSED_TYPE;
     }
 
 }

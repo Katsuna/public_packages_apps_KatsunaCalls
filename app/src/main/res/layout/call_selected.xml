@@ -88,6 +88,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginStart="56dp"
         android:layout_marginTop="8dp"
+        android:baselineAligned="false"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -106,7 +107,7 @@
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
                 android:drawablePadding="@dimen/common_drawable_padding"
-                android:drawableLeft="@drawable/common_ic_call_black_24dp"
+                android:drawableStart="@drawable/common_ic_call_black_24dp"
                 android:ellipsize="end"
                 android:gravity="start|center"
                 android:lines="1"
@@ -133,7 +134,7 @@
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
                 android:drawablePadding="@dimen/common_drawable_padding"
-                android:drawableLeft="@drawable/common_ic_message_white_24dp"
+                android:drawableStart="@drawable/common_ic_message_white_24dp"
                 android:ellipsize="end"
                 android:gravity="start|center"
                 android:lines="1"

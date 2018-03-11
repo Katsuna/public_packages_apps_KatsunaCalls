@@ -6,6 +6,10 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 
 import com.katsuna.calls.domain.Contact;
+import com.katsuna.commons.domain.Description;
+import com.katsuna.commons.providers.ContactProvider;
+
+import java.util.List;
 
 /**
  * Utility class to look up the contact information for a given number.
@@ -34,6 +38,12 @@ public class ContactInfoHelper {
                     contact.setId(cursor.getLong(PhoneQuery._ID));
                     contact.setName(cursor.getString(PhoneQuery.DISPLAY_NAME));
                     contact.setPhotoUri(cursor.getString(PhoneQuery.PHOTO_THUMBNAIL_URI));
+
+                    ContactProvider contactProvider = new ContactProvider(mContext);
+                    List<Description> descriptions = contactProvider.getDescriptions(contact.getId());
+                    if (descriptions.size() > 0) {
+                        contact.setDescription(descriptions.get(0).getDescription());
+                    }
                 }
             } finally {
                 cursor.close();

@@ -1,108 +1,90 @@
 package com.katsuna.calls.ui.viewholders;
 
-import android.graphics.Typeface;
-import android.provider.CallLog;
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
+import com.katsuna.calls.utils.CallInfo;
+import com.katsuna.calls.utils.CallTypeAdjuster;
+import com.katsuna.calls.utils.DrawableGenerator;
 import com.katsuna.commons.entities.OpticalParams;
 import com.katsuna.commons.entities.SizeProfile;
-import com.katsuna.commons.entities.SizeProfileKey;
+import com.katsuna.commons.entities.SizeProfileKeyV2;
 import com.katsuna.commons.entities.UserProfileContainer;
-import com.katsuna.commons.utils.DateFormatter;
 import com.katsuna.commons.utils.SizeAdjuster;
-import com.katsuna.commons.utils.SizeCalc;
-import com.squareup.picasso.Picasso;
+import com.katsuna.commons.utils.SizeCalcV2;
 
 abstract class CallBaseViewHolder extends RecyclerView.ViewHolder {
 
-    private final TextView mDateTime;
     final ICallInteractionListener mListener;
     final UserProfileContainer mUserProfileContainer;
-    final ImageView mPhoto;
     final TextView mDisplayName;
-    private final TextView mNumber;
-    private final View mDayContainer;
-    private final TextView mDayInfo;
+    final TextView mContactDesc;
+    final View mDeleteCallCard;
+    private final TextView mCallDetails;
+    private final CardView mCallContainer;
+    private final RelativeLayout mCallContainerInner;
+    private final ImageView mCallTypeImage;
 
     CallBaseViewHolder(View itemView, ICallInteractionListener listener) {
         super(itemView);
-        mPhoto = (ImageView) itemView.findViewById(R.id.photo);
-        mDisplayName = (TextView) itemView.findViewById(R.id.displayName);
-        mNumber = (TextView) itemView.findViewById(R.id.number);
-        mDateTime = (TextView) itemView.findViewById(R.id.dateTime);
-        mDayContainer = itemView.findViewById(R.id.day_info_container);
-        mDayInfo = (TextView) itemView.findViewById(R.id.day_info);
+        mDisplayName = itemView.findViewById(R.id.display_name);
+        mContactDesc = itemView.findViewById(R.id.contact_desc);
         mListener = listener;
         mUserProfileContainer = mListener.getUserProfileContainer();
+
+        mCallTypeImage = itemView.findViewById(R.id.call_type_image);
+        mCallDetails = itemView.findViewById(R.id.call_details);
+        mCallContainer = itemView.findViewById(R.id.call_container_card);
+        mCallContainerInner = itemView.findViewById(R.id.call_container_card_inner);
+        mDeleteCallCard = itemView.findViewById(R.id.delete_call_card);
     }
 
     void bind(Call call) {
 
-        if (call.getContact() == null) {
-            mPhoto.setImageBitmap(null);
-            mDisplayName.setText(R.string.unknown);
-        } else {
-            Picasso.with(itemView.getContext())
-                    .load(call.getContact().getPhotoUri())
-                    .fit()
-                    .into(mPhoto);
+        mCallDetails.setText(CallInfo.getDetails(itemView.getContext(), call));
 
-            mDisplayName.setText(call.getContact().getName());
-        }
-
-        if (call.getNumberPresentation() == CallLog.Calls.PRESENTATION_ALLOWED) {
-            mNumber.setText(call.getNumber());
-        }
-
-        mDateTime.setText(DateFormatter.format(call.getDate()));
-        if (mDayContainer != null) {
-            if (TextUtils.isEmpty(call.getDayInfo())) {
-                mDayContainer.setVisibility(View.GONE);
-            } else {
-                mDayContainer.setVisibility(View.VISIBLE);
-            }
-            mDayInfo.setText(call.getDayInfo());
-        }
+        adjustColorBasedOnCallType(call.getType());
     }
 
     void adjustProfile() {
+
         SizeProfile sizeProfile = mUserProfileContainer.getOpticalSizeProfile();
-        int size = itemView.getResources()
-                .getDimensionPixelSize(R.dimen.common_contact_photo_size_intemediate);
-        if (sizeProfile == SizeProfile.ADVANCED) {
-            size = itemView.getResources()
-                    .getDimensionPixelSize(R.dimen.common_contact_photo_size_advanced);
-        } else if (sizeProfile == SizeProfile.SIMPLE) {
-            size = itemView.getResources()
-                    .getDimensionPixelSize(R.dimen.common_contact_photo_size_simple);
-        }
-        ViewGroup.LayoutParams layoutParams = mPhoto.getLayoutParams();
-        layoutParams.height = size;
-        layoutParams.width = size;
-        mPhoto.setLayoutParams(layoutParams);
 
-        // display name
-        OpticalParams nameOpticalParams = SizeCalc.getOpticalParams(SizeProfileKey.TITLE,
+        // item type icon
+        OpticalParams opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.ICON_1,
                 sizeProfile);
-        SizeAdjuster.adjustText(itemView.getContext(), mDisplayName, nameOpticalParams);
-
-        // number
-        OpticalParams numberOpticalParams = SizeCalc.getOpticalParams(SizeProfileKey.SUBHEADER,
-                sizeProfile);
-        SizeAdjuster.adjustText(itemView.getContext(), mNumber, numberOpticalParams);
+        SizeAdjuster.adjustIcon(itemView.getContext(), mCallTypeImage, opticalParams);
 
         // date
-        OpticalParams dateOpticalParams = SizeCalc.getOpticalParams(SizeProfileKey.BODY_1,
-                sizeProfile);
-        SizeAdjuster.adjustText(itemView.getContext(), mDateTime, dateOpticalParams);
+        opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.BODY_1, sizeProfile);
+        SizeAdjuster.adjustText(itemView.getContext(), mCallDetails, opticalParams);
+
+        // display name
+        opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.TITLE, sizeProfile);
+        SizeAdjuster.adjustText(itemView.getContext(), mDisplayName, opticalParams);
+
+        // contact description
+        opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.SUBHEADING_1, sizeProfile);
+        SizeAdjuster.adjustText(itemView.getContext(), mContactDesc, opticalParams);
+    }
+
+    private void adjustColorBasedOnCallType(int callType) {
+
+        CallTypeAdjuster.adjustCardLayout(itemView.getContext(), callType, mCallContainer,
+                mCallContainerInner, mListener.getUserProfileContainer().getActiveUserProfile());
+
+        // style callTypeDrawable based on call type
+        Drawable callTypeDrawable = DrawableGenerator.getCallTypeDrawable(itemView.getContext(),
+                callType, mUserProfileContainer.getActiveUserProfile());
+        mCallTypeImage.setImageDrawable(callTypeDrawable);
     }
 
 }

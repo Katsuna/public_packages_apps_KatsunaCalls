@@ -285,9 +285,14 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void dial() {
+        dial("");
+    }
+
+    private void dial(String number) {
         KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
         builder.setTitle(getString(R.string.common_dial_instruction));
         builder.setView(R.layout.common_katsuna_alert);
+        builder.setText(number);
         builder.setTextVisibility(View.VISIBLE);
         builder.setTextInputType(InputType.TYPE_CLASS_PHONE);
         builder.setUserProfile(mUserProfileContainer.getActiveUserProfile());
@@ -473,6 +478,15 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
+        TextView allCallsSelector = layout.findViewById(R.id.all_calls_menu_item);
+        allCallsSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAdapter.resetFilter();
+                mCallTypeFilteringOn = false;
+                popup.dismiss();
+            }
+        });
 
         TextView deleteCallsItem = layout.findViewById(R.id.delete_calls_menu_item);
         deleteCallsItem.setOnClickListener(new View.OnClickListener() {
@@ -506,7 +520,7 @@ public class MainActivity extends SearchBarActivity implements
         String action = intent.getAction();
         if (Intent.ACTION_VIEW.equals(action)) {
             String number = PhoneNumberUtils.getNumberFromIntent(intent, this);
-            dial();
+            dial(number);
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             mSearchView.setQuery(query, false);

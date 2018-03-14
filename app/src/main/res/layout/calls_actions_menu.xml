@@ -55,6 +55,20 @@
             android:background="@color/common_black12" />
 
         <TextView
+            android:id="@+id/all_calls_menu_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:minHeight="19dp"
+            android:text="@string/show_all_calls"
+            android:textColor="@color/common_black54" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/common_black12" />
+
+        <TextView
             android:id="@+id/delete_calls_menu_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

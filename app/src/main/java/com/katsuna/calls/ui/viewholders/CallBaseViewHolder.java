@@ -13,7 +13,7 @@ import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.ui.listeners.ICallInteractionListener;
 import com.katsuna.calls.utils.CallInfo;
 import com.katsuna.calls.utils.CallTypeAdjuster;
-import com.katsuna.calls.utils.DrawableGenerator;
+import com.katsuna.commons.utils.DrawableGenerator;
 import com.katsuna.commons.entities.OpticalParams;
 import com.katsuna.commons.entities.SizeProfile;
 import com.katsuna.commons.entities.SizeProfileKeyV2;

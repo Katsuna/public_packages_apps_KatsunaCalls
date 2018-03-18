@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- redesign v2 -->
-    <dimen name="item_type_icon_size_diff">5dp</dimen>
     <dimen name="delete_button_container_margin">58dp</dimen>
 </resources>

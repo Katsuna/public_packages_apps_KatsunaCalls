@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.katsuna.calls.R;
 import com.katsuna.calls.domain.Call;
 import com.katsuna.calls.utils.CallInfo;
-import com.katsuna.calls.utils.DrawableGenerator;
+import com.katsuna.commons.utils.DrawableGenerator;
 import com.katsuna.commons.entities.UserProfile;
 import com.katsuna.commons.entities.UserProfileContainer;
 

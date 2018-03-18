@@ -19,7 +19,7 @@ import com.katsuna.calls.ui.adapters.CallsHistAdapter;
 import com.katsuna.calls.utils.CallInfo;
 import com.katsuna.calls.utils.CallTypeAdjuster;
 import com.katsuna.calls.utils.DividerItemDecorator;
-import com.katsuna.calls.utils.DrawableGenerator;
+import com.katsuna.commons.utils.DrawableGenerator;
 import com.katsuna.commons.ui.KatsunaActivity;
 import com.squareup.picasso.Picasso;
 

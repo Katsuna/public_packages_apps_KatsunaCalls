@@ -89,6 +89,7 @@ public class MainActivity extends SearchBarActivity implements
     private boolean mDontAskForPermissions;
     private boolean mDeleteModeOn = false;
     private boolean mCallTypeFilteringOn = false;
+    private AlertDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,12 +98,12 @@ public class MainActivity extends SearchBarActivity implements
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED ){
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             setupCallsLogReceiver();
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED ) {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
 
             setupSmsLogReceiver();
         }
@@ -128,8 +129,8 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        mDialog = builder.create();
+        mDialog.show();
     }
 
     @Override
@@ -186,6 +187,7 @@ public class MainActivity extends SearchBarActivity implements
             //don't show popup if menu drawer is open or a call is selected or delete mode is enabled.
             if (!mDrawerLayout.isDrawerOpen(GravityCompat.START)
                     && !mItemSelected
+                    && !dialogActive()
                     && !mDeleteModeOn) {
                 mPopupFrame.setVisibility(View.VISIBLE);
                 mPopupButton1.setVisibility(View.VISIBLE);
@@ -198,6 +200,10 @@ public class MainActivity extends SearchBarActivity implements
             mPopupButton2.setVisibility(View.GONE);
             mPopupVisible = false;
         }
+    }
+
+    private boolean dialogActive() {
+        return mDialog != null && mDialog.isShowing();
     }
 
     private void initControls() {
@@ -311,8 +317,8 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        mDialog = builder.create();
+        mDialog.show();
     }
 
     private boolean loadCalls() {
@@ -789,7 +795,8 @@ public class MainActivity extends SearchBarActivity implements
                         .show();
             }
         });
-        builder.create().show();
+        mDialog = builder.create();
+        mDialog.show();
     }
 
     private boolean checkPermission() {

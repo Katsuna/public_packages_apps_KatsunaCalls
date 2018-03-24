@@ -29,20 +29,20 @@
   <string name="day_info_older">Plus âgés</string>
   <!-- Delete call label at settings activity -->
   <string name="delele_call_from_list">Supprimez l’appel de la liste</string>
-  <string name="outgoing_call">Outgoing call</string>
-  <string name="incoming_call">Incoming call</string>
-  <string name="missed_call">Missed call</string>
-  <string name="call_details">Call Details</string>
-  <string name="caller">Caller</string>
-  <string name="other_calls">Other Calls</string>
-  <string name="call_duration">Call Duration</string>
+  <string name="outgoing_call">Appel sortant</string>
+  <string name="incoming_call">Appel entrant</string>
+  <string name="missed_call">Appels manqués</string>
+  <string name="call_details">Détails des appels</string>
+  <string name="caller">Appelant</string>
+  <string name="other_calls">Autres appels</string>
+  <string name="call_duration">Durée de l’appel</string>
   <string name="minutes">min</string>
   <string name="seconds">sec</string>
-  <string name="show_missed_calls">Show All Missed Calls</string>
-  <string name="show_incoming_calls">Show All Incoming Calls</string>
-  <string name="show_outgoing_calls">Show All Outgoing Calls</string>
-  <string name="show_all_calls">Show All Calls</string>
-  <string name="call_type">Call type</string>
-  <string name="contact_photo">Contact photo</string>
-  <string name="delete_call">Delete call</string>
+  <string name="show_missed_calls">Afficher tous les appels manqués </string>
+  <string name="show_incoming_calls">Afficher tous les appels entrants</string>
+  <string name="show_outgoing_calls">Afficher tous les appels sortants</string>
+  <string name="show_all_calls">Afficher tous les appels</string>
+  <string name="call_type">Type d’appel</string>
+  <string name="contact_photo">Photo contact</string>
+  <string name="delete_call">Supprimer l’appel</string>
 </resources>

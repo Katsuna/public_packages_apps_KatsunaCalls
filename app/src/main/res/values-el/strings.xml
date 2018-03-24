@@ -29,20 +29,20 @@
   <string name="day_info_older">Παλαιότερα</string>
   <!-- Delete call label at settings activity -->
   <string name="delele_call_from_list">Διάγραψε την κλήση από τη λίστα</string>
-  <string name="outgoing_call">Outgoing call</string>
-  <string name="incoming_call">Incoming call</string>
-  <string name="missed_call">Missed call</string>
-  <string name="call_details">Call Details</string>
-  <string name="caller">Caller</string>
-  <string name="other_calls">Other Calls</string>
-  <string name="call_duration">Call Duration</string>
-  <string name="minutes">min</string>
-  <string name="seconds">sec</string>
-  <string name="show_missed_calls">Show All Missed Calls</string>
-  <string name="show_incoming_calls">Show All Incoming Calls</string>
-  <string name="show_outgoing_calls">Show All Outgoing Calls</string>
-  <string name="show_all_calls">Show All Calls</string>
-  <string name="call_type">Call type</string>
-  <string name="contact_photo">Contact photo</string>
-  <string name="delete_call">Delete call</string>
+  <string name="outgoing_call">Εξερχόμενη κλήση</string>
+  <string name="incoming_call">Εισερχόμενη κλήση</string>
+  <string name="missed_call">Αναπάντητη κλήση</string>
+  <string name="call_details">Λεπτομέρειες κλήσης</string>
+  <string name="caller">Καλών</string>
+  <string name="other_calls">Άλλες κλήσεις</string>
+  <string name="call_duration">Διάρκεια κλήσης</string>
+  <string name="minutes">λεπτά</string>
+  <string name="seconds">δευτερόλεπτα</string>
+  <string name="show_missed_calls">Εμφάνιση όλων των αναπάντητων κλήσεων</string>
+  <string name="show_incoming_calls">Εμφάνιση όλων των εισερχόμενων κλήσεων</string>
+  <string name="show_outgoing_calls">Εμφάνιση όλων των εξερχόμενων κλήσεων</string>
+  <string name="show_all_calls">Εμφάνιση όλων των κλήσεων</string>
+  <string name="call_type">Τύπος κλήσης</string>
+  <string name="contact_photo">Φωτογραφία επαφής</string>
+  <string name="delete_call">Διαγραφή κλήσης</string>
 </resources>

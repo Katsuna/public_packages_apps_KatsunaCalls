@@ -122,7 +122,7 @@
 
                     <TextView
                         android:id="@+id/create_contact_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:layout_marginStart="12dp"
@@ -130,14 +130,14 @@
                         android:drawablePadding="10dp"
                         android:drawableStart="@drawable/ic_person_black54_28dp"
                         android:fontFamily="sans-serif-medium"
-                        android:gravity="center"
+                        android:gravity="start|center"
                         android:text="@string/common_add_contact"
                         android:textColor="@color/common_black54"
                         android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/call_history_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:layout_marginStart="12dp"
@@ -145,7 +145,7 @@
                         android:drawablePadding="10dp"
                         android:drawableStart="@drawable/ic_info_outline_black54_28dp"
                         android:fontFamily="sans-serif-medium"
-                        android:gravity="center"
+                        android:gravity="start|center"
                         android:text="@string/call_details"
                         android:textColor="@color/common_black54"
                         android:textSize="16sp" />
@@ -159,7 +159,7 @@
 
                     <TextView
                         android:id="@+id/add_to_existing_contact_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:layout_marginStart="12dp"
@@ -167,14 +167,14 @@
                         android:drawablePadding="10dp"
                         android:drawableStart="@drawable/ic_person_black54_28dp"
                         android:fontFamily="sans-serif-medium"
-                        android:gravity="center"
+                        android:gravity="start|center"
                         android:text="@string/common_add_to_existing_contact"
                         android:textColor="@color/common_black54"
                         android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/edit_contact_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:layout_marginStart="12dp"
@@ -182,7 +182,7 @@
                         android:drawablePadding="10dp"
                         android:drawableStart="@drawable/ic_person_black54_28dp"
                         android:fontFamily="sans-serif-medium"
-                        android:gravity="center"
+                        android:gravity="start|center"
                         android:text="@string/common_edit_contact"
                         android:textColor="@color/common_black54"
                         android:textSize="16sp" />

@@ -16,15 +16,15 @@
   <!-- Message shown when the user tries to use a disabled action for unknown/hidden numbers -->
   <string name="hidden_number">Action unavailable for hidden numbers.</string>
   <!-- Delete calls label for activity title, alert dialog title and settings button label.-->
-  <string name="delete_calls">Delete calls</string>
+  <string name="delete_calls">Apagar chamadas</string>
   <!-- Warning when no calls are selected for deletion -->
   <string name="no_calls_selected">No calls selected.</string>
   <!-- Deletion result message -->
-  <string name="calls_deleted">Deletion succeeded.</string>
+  <string name="calls_deleted">Apagado com sucesso.</string>
   <!-- Deletion approval message for multiple calls. -->
-  <string name="delete_calls_approval">Are you sure you want to delete the selected calls?</string>
+  <string name="delete_calls_approval">Tem certeza que deseja apagar as chamadas seleccionadas?</string>
   <!-- Deletion approval message for one call. -->
-  <string name="delete_call_approval">Are you sure you want to delete the selected call?</string>
+  <string name="delete_call_approval">Tem certeza que deseja apagar a chamada seleccionada?</string>
   <!-- Call date description separator -->
   <string name="day_info_older">Older</string>
   <!-- Delete call label at settings activity -->
@@ -32,17 +32,17 @@
   <string name="outgoing_call">Outgoing call</string>
   <string name="incoming_call">Incoming call</string>
   <string name="missed_call">Missed call</string>
-  <string name="call_details">Call Details</string>
-  <string name="caller">Caller</string>
+  <string name="call_details">Detalhes da chamada</string>
+  <string name="caller">Chamador</string>
   <string name="other_calls">Other Calls</string>
   <string name="call_duration">Call Duration</string>
   <string name="minutes">min</string>
   <string name="seconds">sec</string>
-  <string name="show_missed_calls">Show All Missed Calls</string>
-  <string name="show_incoming_calls">Show All Incoming Calls</string>
-  <string name="show_outgoing_calls">Show All Outgoing Calls</string>
-  <string name="show_all_calls">Show All Calls</string>
+  <string name="show_missed_calls">Mostrar todas as chamadas perdidas</string>
+  <string name="show_incoming_calls">Mostrar todas as chamadas recebidas</string>
+  <string name="show_outgoing_calls">Mostrar todas as chamadas feitas</string>
+  <string name="show_all_calls">Mostrar todas as chamadas</string>
   <string name="call_type">Call type</string>
   <string name="contact_photo">Contact photo</string>
-  <string name="delete_call">Delete call</string>
+  <string name="delete_call">Apagar chamada</string>
 </resources>

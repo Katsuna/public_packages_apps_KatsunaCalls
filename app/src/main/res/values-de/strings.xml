@@ -14,15 +14,15 @@
   <!-- Shown on the main background when the call list is empty -->
   <string name="no_calls">Keine Anrufe zu finden.</string>
   <!-- Message shown when the user tries to use a disabled action for unknown/hidden numbers -->
-  <string name="hidden_number">Aktion bei Anonyme Anrufe nicht verfügbar.</string>
+  <string name="hidden_number">Aktion bei anonymen Anrufen nicht verfügbar.</string>
   <!-- Delete calls label for activity title, alert dialog title and settings button label.-->
   <string name="delete_calls">Anrufe löschen</string>
   <!-- Warning when no calls are selected for deletion -->
   <string name="no_calls_selected">Keine Anrufe ausgewählt.</string>
   <!-- Deletion result message -->
-  <string name="calls_deleted">Löschung erfolgreich.</string>
+  <string name="calls_deleted">Löschen erfolgreich.</string>
   <!-- Deletion approval message for multiple calls. -->
-  <string name="delete_calls_approval">Sind Sie sicher, dass Sie die ausgewählte Anrufe löschen möchten?</string>
+  <string name="delete_calls_approval">Sind Sie sicher, dass Sie die ausgewählten Anrufe löschen möchten?</string>
   <!-- Deletion approval message for one call. -->
   <string name="delete_call_approval">Sind Sie sicher, dass Sie den ausgewählten Anruf löschen möchten?</string>
   <!-- Call date description separator -->

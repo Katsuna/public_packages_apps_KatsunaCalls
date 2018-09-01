@@ -41,3 +41,7 @@
 # Hide warnings
 -dontwarn com.squareup.**
 -dontwarn org.joda.**
+
+# keep crashlytics
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**

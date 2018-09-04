@@ -611,6 +611,12 @@ public class MainActivity extends SearchBarActivity implements
                         return true;
                     }
                 });
+        mKatsunaNavigationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.closeDrawers();
+            }
+        });
     }
 
     @Override

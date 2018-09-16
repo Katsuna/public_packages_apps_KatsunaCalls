@@ -54,6 +54,7 @@ import com.katsuna.commons.entities.KatsunaConstants;
 import com.katsuna.commons.entities.UserProfile;
 import com.katsuna.commons.entities.UserProfileContainer;
 import com.katsuna.commons.ui.SearchBarActivity;
+import com.katsuna.commons.utils.BrowserUtils;
 import com.katsuna.commons.utils.KatsunaAlertBuilder;
 import com.katsuna.commons.utils.KatsunaUtils;
 
@@ -598,13 +599,10 @@ public class MainActivity extends SearchBarActivity implements
                                 startActivity(new Intent(MainActivity.this, InfoActivity.class));
                                 break;
                             case R.id.drawer_privacy:
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(KATSUNA_PRIVACY_URL));
-                                startActivity(browserIntent);
+                                BrowserUtils.openUrl(MainActivity.this, KATSUNA_PRIVACY_URL);
                                 break;
                             case R.id.drawer_terms:
-                                Intent termsIntent = new Intent(Intent.ACTION_VIEW,
-                                        Uri.parse(KATSUNA_TERMS_OF_USE));
-                                startActivity(termsIntent);
+                                BrowserUtils.openUrl(MainActivity.this, KATSUNA_TERMS_OF_USE);
                                 break;
                         }
 

@@ -852,6 +852,7 @@ public class MainActivity extends SearchBarActivity implements
         if (requestCode == EDIT_CONTACT_REQUEST || requestCode == CREATE_CONTACT_REQUEST
                 || requestCode == ADD_TO_CONTACT_REQUEST) {
             mContactCache.clear();
+            mContactSearchedMap.clear();
             loadCalls();
         }
     }

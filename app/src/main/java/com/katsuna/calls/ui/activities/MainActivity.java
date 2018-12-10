@@ -181,6 +181,9 @@ public class MainActivity extends SearchBarActivity implements
         }
         mDeleteModeOn = false;
         mCallTypeFilteringOn = false;
+
+        Intent intent = getIntent();
+        handleIntent(intent);
     }
 
     @Override
@@ -521,15 +524,14 @@ public class MainActivity extends SearchBarActivity implements
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
-        if (Intent.ACTION_VIEW.equals(action)) {
+        if (Intent.ACTION_VIEW.equals(action) || Intent.ACTION_DIAL.equals(action)) {
             String number = PhoneNumberUtils.getNumberFromIntent(intent, this);
             dial(number);
-        } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        } else if (Intent.ACTION_SEARCH.equals(action)) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             mSearchView.setQuery(query, false);
         }

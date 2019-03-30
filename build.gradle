@@ -9,9 +9,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath 'com.google.gms:google-services:4.0.2' // google-services plugin
-        classpath 'io.fabric.tools:gradle:1.26.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.google.gms:google-services:4.2.0' // google-services plugin
+        classpath 'io.fabric.tools:gradle:1.28.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -32,15 +32,15 @@ task clean(type: Delete) {
 // Define versions in a single place
 ext {
     // Sdk and tools
-    compileSdkVersion = 27
+    compileSdkVersion = 28
     buildToolsVersion = '28.0.3'
 
     minSdkVersion = 23
     targetSdkVersion = 27
 
     // App dependencies
-    supportLibraryVersion = '27.1.1'
-    firebaseVersion = '16.0.6'
-    crashlyticsVersion = '2.9.8'
+    supportLibraryVersion = '28.0.0'
+    firebaseVersion = '16.0.8'
+    crashlyticsVersion = '2.9.9'
     constraintLayoutVersion = '1.1.2'
 }

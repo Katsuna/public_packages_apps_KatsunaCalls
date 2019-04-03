@@ -14,8 +14,8 @@ android {
         applicationId "com.katsuna.calls"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 16
-        versionName "2.3.6"
+        versionCode 17
+        versionName "2.3.7"
         project.ext.set("archivesBaseName", "Calls-" + defaultConfig.versionName)
         manifestPlaceholders = [providers_auth:"com.katsuna"]
     }

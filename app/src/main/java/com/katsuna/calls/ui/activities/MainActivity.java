@@ -57,6 +57,7 @@ import com.katsuna.commons.ui.SearchBarActivity;
 import com.katsuna.commons.utils.BrowserUtils;
 import com.katsuna.commons.utils.KatsunaAlertBuilder;
 import com.katsuna.commons.utils.KatsunaUtils;
+import com.katsuna.commons.utils.KeyboardUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -91,7 +92,9 @@ public class MainActivity extends SearchBarActivity implements
     private boolean mDontAskForPermissions;
     private boolean mDeleteModeOn = false;
     private boolean mCallTypeFilteringOn = false;
+    private boolean mSearchModeOn;
     private AlertDialog mDialog;
+    private View mFabsTopContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,7 +196,8 @@ public class MainActivity extends SearchBarActivity implements
             if (!mDrawerLayout.isDrawerOpen(GravityCompat.START)
                     && !mItemSelected
                     && !dialogActive()
-                    && !mDeleteModeOn) {
+                    && !mDeleteModeOn
+                    && !mSearchModeOn) {
                 mPopupFrame.setVisibility(View.VISIBLE);
                 mPopupButton1.setVisibility(View.VISIBLE);
                 mPopupButton2.setVisibility(View.VISIBLE);
@@ -247,6 +251,7 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void initFabs() {
+        mFabsTopContainer = findViewById(R.id.fabs_top_container);
         mFabContainer = findViewById(R.id.fab_container);
 
         mButtonsContainer1 = findViewById(R.id.dial_buttons_container);
@@ -430,6 +435,9 @@ public class MainActivity extends SearchBarActivity implements
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
+                    if (mItemSelected) {
+                        deselectItem();
+                    }
                     search(newText);
                     return false;
                 }
@@ -441,6 +449,20 @@ public class MainActivity extends SearchBarActivity implements
                         mAdapter.resetFilter();
                     }
                     return false;
+                }
+            });
+
+            mSearchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    mSearchModeOn = hasFocus;
+                    if (hasFocus) {
+                        mFabsTopContainer.setVisibility(View.GONE);
+                        showPopup(false);
+                    } else {
+                        refreshLastTouchTimestamp();
+                        mFabsTopContainer.setVisibility(View.VISIBLE);
+                    }
                 }
             });
         }
@@ -680,6 +702,9 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private void focusOnCall(int position, int offset) {
+
+        KeyboardUtils.hideKeyboard(this);
+
         mDrawerLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.common_black07));
         mAdapter.selectCallAtPosition(position);
         scrollToPositionWithOffset(position, offset);

@@ -8,14 +8,13 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "com.katsuna.calls"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 18
-        versionName "2.3.8"
+        versionCode 23
+        versionName "2.3.13"
         project.ext.set("archivesBaseName", "Calls-" + defaultConfig.versionName)
         manifestPlaceholders = [providers_auth:"com.katsuna"]
     }

@@ -521,6 +521,7 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
+/*
         TextView deleteCallsItem = layout.findViewById(R.id.delete_calls_menu_item);
         deleteCallsItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -529,6 +530,7 @@ public class MainActivity extends SearchBarActivity implements
                 popup.dismiss();
             }
         });
+*/
 
         popup.setContentView(layout);
 

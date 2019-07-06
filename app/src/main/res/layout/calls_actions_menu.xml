@@ -63,7 +63,7 @@
             android:text="@string/show_all_calls"
             android:textColor="@color/common_black54" />
 
-<!--        <View
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/common_black12" />
@@ -78,7 +78,7 @@
             android:gravity="center"
             android:minHeight="28dp"
             android:text="@string/delete_calls"
-            android:textColor="@color/common_black54" />-->
+            android:textColor="@color/common_black54" />
 
     </LinearLayout>
 

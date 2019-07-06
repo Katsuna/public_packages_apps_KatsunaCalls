@@ -521,7 +521,6 @@ public class MainActivity extends SearchBarActivity implements
             }
         });
 
-/*
         TextView deleteCallsItem = layout.findViewById(R.id.delete_calls_menu_item);
         deleteCallsItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -530,7 +529,6 @@ public class MainActivity extends SearchBarActivity implements
                 popup.dismiss();
             }
         });
-*/
 
         popup.setContentView(layout);
 
@@ -839,10 +837,10 @@ public class MainActivity extends SearchBarActivity implements
     }
 
     private boolean checkPermission() {
-/*        if (!Device.hasPermission(this, Manifest.permission.WRITE_CALL_LOG)) {
+        if (!Device.hasPermission(this, Manifest.permission.WRITE_CALL_LOG)) {
             Device.requestPermission(this, Manifest.permission.WRITE_CALL_LOG, 0);
             return false;
-        }*/
+        }
         return true;
     }
 
